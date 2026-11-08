@@ -15,7 +15,7 @@
 
 ## 2. Produto (Figma)
 
-Todas: **100 g**, ~**25 h** de queima, cera vegetal, pote de vidro + tampa de madeira, **R$ 49,90**.
+Modelos (Figma): **100 g** (~25 h, pote de vidro + tampa de madeira) **R$ 45,00** · **40 g** (pote com rolha) **R$ 20,00** · **100 g com flor de cera** *em breve*. Todas de cera vegetal.
 
 Notas: cartões "Pirâmide olfativa" da página Moodboard do Figma.
 

@@ -1,4 +1,4 @@
-// Gera os assets de marca a partir do logo original (assets/logo-feitodeafeto-svg.svg).
+// Gera os assets de marca a partir do logo original (assets/marca/logo.svg).
 // Uso: npm run brand
 //
 // O SVG original desenha o miolo das letras (o, e, a...) como formas off-white sobre
@@ -7,7 +7,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import sharp from 'sharp';
 
-const SOURCE = 'assets/logo-feitodeafeto-svg.svg';
+const SOURCE = 'assets/marca/logo.svg';
 const INK = '#61162C'; // bordô
 const PAPER = '#F3F3F2'; // off-white (fundo/miolos no original)
 const ROSA = '#F3C4CC';
@@ -66,13 +66,10 @@ function canvas(width, height, background, box, logoHeight, opts) {
 const png = (svgText, out) => sharp(Buffer.from(svgText)).png({ compressionLevel: 9 }).toFile(out);
 
 mkdirSync('public/brand', { recursive: true });
+// Logo completo (nav, "Quem faz") e em rosa (color/rosa) para o rodapé bordô-escuro.
+// Para uma versão só com o nome (sem "Velas aromáticas"): logoSvg(WORDMARK, { tagline: false }).
 writeFileSync('public/brand/logo.svg', logoSvg(FULL));
-writeFileSync('public/brand/logo-wordmark.svg', logoSvg(WORDMARK, { tagline: false }));
-writeFileSync('public/brand/logo-wordmark-branco.svg', logoSvg(WORDMARK, { tagline: false, color: '#FFFFFF' }));
-// Logo completo em rosa (color/rosa), para o rodapé bordô-escuro.
 writeFileSync('public/brand/logo-rosa.svg', logoSvg(FULL, { color: '#F6DDE1' }));
-// Rosa do Figma (color/rosa), só o nome.
-writeFileSync('public/brand/logo-wordmark-rosa.svg', logoSvg(WORDMARK, { tagline: false, color: '#F6DDE1' }));
 writeFileSync('public/favicon.svg', faviconSvg());
 
 await Promise.all([

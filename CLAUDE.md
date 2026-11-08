@@ -12,7 +12,7 @@ Landing page da marca Feito de Afeto, construída a partir do design no Figma (v
 | `DESIGN.md` | Identidade visual: tokens, tipografia, componentes, do's & don'ts — extraído do Figma | pronto |
 | `docs/briefing.md` | Briefing (fictício) da marca; o **conteúdo segue o Figma** | pronto |
 
-**Figma (fonte da verdade visual e de conteúdo):** https://www.figma.com/design/LTGkf5XlUZs3OcGsCbFeLG — frame "Feito de Afeto — Landing (Desktop 1440)", node `1:49`. Cada componente em `src/components/sections/` cita o node de origem. Assets exportados ficam em `assets/figma/` e são otimizados para `public/img/` com `npm run images`.
+**Figma (fonte da verdade visual e de conteúdo):** https://www.figma.com/design/LTGkf5XlUZs3OcGsCbFeLG — frame "Feito de Afeto — Landing (Desktop 1440)", node `1:49`. Cada componente em `src/components/sections/` cita o node de origem. Imagens-fonte ficam em `assets/` (ver "Arquivos de imagem") e são otimizadas para `public/img/` com `npm run images`.
 | `docs/requisitos-tecnicos.md` | SEO (title, description, semântica, JSON-LD, canonical, indexação), performance e responsividade | **obrigatório** |
 
 ## Definição de pronto
@@ -72,16 +72,36 @@ Comandos:
 
 **Fluxo de trabalho:** a dona do projeto edita direto o frame da landing no Figma (página "Landing Page", node `1:49`). A cada pedido "repassar alterações": ler `get_metadata` do frame, comparar com o código e aplicar o que mudou — mantendo as regras fixas abaixo quando o Figma divergir (ex.: botões ficam com 56px no grid de 8). Quando uma mudança aparece só em um item repetido (ex.: só na Vela 01), aplicar em todos e avisar.
 
-**Figma:** páginas "Landing Page", "Componentes" e "Moodboard". O Moodboard é referência visual e **fonte de informação** (notas olfativas = cartões "Pirâmide olfativa"); as fotos de lá são de referência — não usar produtos de outras marcas.
+**Figma:** páginas "Landing Page", "Componentes" e "Moodboard". Camadas em português, no padrão `Grupo / Item` (ex.: "Modelos / 40g", "Coleção / Carrossel de aromas", "Rótulo 100g / Baunilha", "Baunilha / Pirâmide olfativa"); textos nomeados pelo papel (Título, Texto, Label), imagens pelo conteúdo (Foto, Pote, Rótulo, Sombra, Logo). Blocos antigos ficam como "Antigo / … (oculto)". Botão: propriedade `Estilo` (Primário, Contorno, Sobre escuro, Menu, Menu preenchido). O Moodboard é referência visual e **fonte de informação** (notas olfativas = cartões "Pirâmide olfativa"); as fotos de lá são de referência — não usar produtos de outras marcas.
 
 Variáveis de ambiente: `SITE_URL` (domínio canônico) e `PUBLIC_INDEXABLE=true` (só quando for indexar).
 
 ## Marca
 
-- Originais do logo em `assets/` (SVG + PNGs) — **não editar**; são a fonte.
-- `npm run brand` (`scripts/build-brand-assets.mjs`) gera a partir do SVG: `public/brand/logo.svg` (com "Velas aromáticas"), `logo-wordmark.svg` (só o nome, para o header), `logo-wordmark-branco.svg`, `logo-512.png` (schema), `public/og-image.png` (1200×630), `favicon.svg`, `favicon-32x32.png` e `apple-touch-icon.png`.
+- Originais do logo em `assets/marca/` (`logo.svg` + PNGs) — **não editar**; são a fonte.
+- `npm run brand` (`scripts/build-brand-assets.mjs`) gera a partir do SVG: `public/brand/logo.svg` (nav, "Quem faz"), `logo-rosa.svg` (rodapé), `logo-512.png` (schema), `public/og-image.png` (1200×630), `favicon.svg`, `favicon-32x32.png` e `apple-touch-icon.png`.
 - No SVG original os miolos das letras são formas off-white; o script os converte em máscara para o logo ficar vazado de verdade. Usar sempre os arquivos gerados, nunca o original direto na página.
 - Cores do logo: bordô `#61162C`, rosa `#F3C4CC`, off-white `#F3F3F2`.
+
+## Arquivos de imagem
+
+Nomes em minúsculas, com hífen, sem espaços. `<aroma>` = id do aroma em `src/data/content.ts`: `pimenta-rosa`, `baunilha`, `morango-com-champanhe`, `perfume-das-fadas`, `cereja-com-avela`.
+
+| Fonte (`assets/`) | O que é | Vira (`public/`) |
+|---|---|---|
+| `marca/logo.svg`, `logo-fundo-*.png` | logo original | `brand/*`, favicons, OG (`npm run brand`) |
+| `hero/hero-banner.jpg` | foto do hero (Figma) | `img/hero-banner*.webp` (`npm run hero`) |
+| `aromas/<aroma>.jpg` | fotos do Moodboard | `img/aromas/<aroma>.webp` |
+| `produto/pote-100g.png` | pote de 100g (mesmo para todos) | `img/pote-100g.webp` |
+| `produto/vela-100g-baunilha-acesa.jpg` | foto do modelo 100g | `img/vela-100g.webp` |
+| `produto/vela-40g-perfume-das-fadas-maos.jpg` | foto do modelo 40g | `img/vela-40g.webp` |
+| `produto/vela-40g-perfume-das-fadas.png` | pote de 40g recortado (alternativa) | — |
+| `rotulos/figma/<aroma>.png` | rótulo usado sobre o pote | `img/rotulos/<aroma>.webp` |
+| `rotulos/100g/`, `rotulos/40g/` | rótulos em alta (arte) | — (referência) |
+| `ui/avatar.svg`, `ui/sombra-vela.svg` | detalhes de interface | `img/*.svg` |
+| `referencias/` | mockups e peças de divulgação | — (não usados no site) |
+
+`assets/_remover/` (fora do git) guarda arquivos substituídos/duplicados; pode ser apagado.
 
 ## Ambiente (Windows)
 

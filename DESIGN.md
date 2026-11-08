@@ -115,7 +115,7 @@ Animações extras (só desktop com mouse, desligam com `prefers-reduced-motion`
 
 ## Modelos
 
-Três blocos no layout dos antigos blocos de vela: **100g com flor de cera** (placeholder até ter foto), **100g** (pote de estúdio) e **40g** (recorte da foto da Cereja do Moodboard). Preço ausente → "Sob consulta" (não inventar valores).
+Três blocos no layout dos antigos blocos de vela: **100g com flor de cera** (placeholder até ter foto, status "Em breve"), **100g** (foto da vela Baunilha sendo acesa, R$ 45,00) e **40g** (foto do pote com rolha nas mãos, R$ 20,00). Preços vêm do Figma; sem preço, mostrar o status sem o rótulo "Valor" (não inventar valores).
 
 **Barra de compra** (em cada modelo): pílula branca com contorno `line` (anel interno, não soma altura), 72px = botão de 56 + 8 de respiro. Botão à esquerda; à direita, "VALOR" (label muted) sobre o preço (H3 ink). No celular vira um card (raio 24, padding 16): valor em cima, botão em largura total embaixo.
 

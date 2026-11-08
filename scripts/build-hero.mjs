@@ -1,9 +1,9 @@
 // Otimiza o fundo do hero: Figma › Componentes › Assets › "hero-banner 1" (node 13:130).
-// Fonte: assets/figma/hero-banner-raw1.jpg (1376 × 768, imagem original do Figma).
+// Fonte: assets/hero/hero-banner.jpg (1376 × 768, imagem original do Figma).
 // Uso: npm run hero
 import sharp from 'sharp';
 
-const SRC = 'assets/figma/hero-banner-raw1.jpg';
+const SRC = 'assets/hero/hero-banner.jpg';
 
 // Desktop (srcset): o recorte que o Figma mostra no hero (1:63). A imagem está a 120.63% da
 // caixa 1440 × 803.72 (topo -97px no hero) e deslocada -10.29% → região visível da foto

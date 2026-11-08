@@ -46,11 +46,24 @@ const number = String(index + 1).padStart(2, '0');
         <img
           src={model.media.src}
           alt={model.media.alt}
-          width="1070"
-          height="1000"
+          width={model.media.width}
+          height={model.media.height}
           loading="lazy"
           decoding="async"
           class="absolute inset-0 size-full object-cover"
+        />
+      )
+    }
+    {
+      model.media.kind === 'cutout' && (
+        <img
+          src={model.media.src}
+          alt={model.media.alt}
+          width={model.media.width}
+          height={model.media.height}
+          loading="lazy"
+          decoding="async"
+          class="relative mt-[4%] h-[64%] w-auto drop-shadow-[0_24px_24px_rgb(42_20_24/0.25)]"
         />
       )
     }
@@ -70,7 +83,11 @@ const number = String(index + 1).padStart(2, '0');
     <span
       class:list={[
         'absolute top-6 left-8 text-[clamp(4rem,2rem+5vw,6rem)] leading-none font-semibold tracking-[-3px]',
-        model.media.kind === 'photo' ? 'text-white opacity-40' : 'text-bordo opacity-[0.18]',
+        model.media.kind === 'photo'
+          ? model.media.numberTone === 'dark'
+            ? 'text-bordo opacity-30'
+            : 'text-white opacity-40'
+          : 'text-bordo opacity-[0.18]',
       ]}
       aria-hidden="true">{number}</span
     >
@@ -91,12 +108,14 @@ const number = String(index + 1).padStart(2, '0');
       class="flex w-full max-w-[504px] flex-col gap-4 rounded-3xl bg-white p-4 ring-1 ring-line ring-inset sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:rounded-full sm:p-2 sm:pr-8"
     >
       <div class="flex flex-col sm:order-2 sm:items-end sm:text-right">
-        <p class="text-label text-muted uppercase">Valor</p>
         {
           model.price ? (
-            <p class="text-h3 text-ink">{model.price}</p>
+            <>
+              <p class="text-label text-muted uppercase">Valor</p>
+              <p class="text-h3 text-ink">{model.price}</p>
+            </>
           ) : (
-            <p class="text-title text-ink">Sob consulta</p>
+            <p class="text-title text-ink">{model.status ?? 'Sob consulta'}</p>
           )
         }
       </div>

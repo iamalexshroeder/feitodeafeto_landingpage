@@ -7,7 +7,7 @@ export type Tint = 'pimenta-rosa' | 'baunilha' | 'morango' | 'fadas' | 'cereja';
 
 /** Geometria da foto no Figma (frame "Velas", 9:125), em % da caixa da imagem. */
 export interface CandlePhotoSpec {
-  label: 'pimenta' | 'baunilha' | 'morango' | 'fadas' | 'cereja';
+  label: 'pimenta-rosa' | 'baunilha' | 'morango-com-champanhe' | 'perfume-das-fadas' | 'cereja-com-avela'; // = id do aroma
   labelTop: number;
   shadowTop: number;
   shadowLeft: number;
@@ -20,24 +20,29 @@ export interface Candle {
   name: string;
   description: string;
   notes: { top: string; heart: string; base: string };
-  price: string;
   tint: Tint;
-  cta: string;
   photo: CandlePhotoSpec;
 }
 
-export const specs = ['100g', '~25h de queima', 'Cera vegetal'];
 
-/** Modelos (formatos) da vela. Preço null = ainda não informado → "Valor sob consulta". */
+/**
+ * Modelos (formatos) da vela — preços do Figma (Landing › Modelos).
+ * price: valor exibido com o rótulo "Valor"; status: texto sem rótulo (ex.: "Em breve").
+ */
 export interface Model {
   id: string;
   label: string;
   name: string;
   description: string;
   specs: string[];
-  price: string | null;
+  price?: string;
+  status?: string;
   cta: string;
-  media: { kind: 'photo'; src: string; alt: string } | { kind: 'jar' } | { kind: 'placeholder'; text: string };
+  media:
+    | { kind: 'photo'; src: string; alt: string; width: number; height: number; numberTone?: 'light' | 'dark' }
+    | { kind: 'cutout'; src: string; alt: string; width: number; height: number }
+    | { kind: 'jar' }
+    | { kind: 'placeholder'; text: string };
   tint: Tint;
 }
 
@@ -49,7 +54,7 @@ export const models: Model[] = [
     description:
       'A vela de 100g com uma flor esculpida em cera dentro do pote. Mais detalhada, feita para presentear e para ficar à vista.',
     specs: ['100g', 'Flor de cera', 'Tampa de madeira'],
-    price: null,
+    status: 'Em breve',
     cta: 'Quero a de 100g com flor',
     media: { kind: 'placeholder', text: 'Foto do modelo com flor de cera' },
     tint: 'pimenta-rosa',
@@ -61,9 +66,16 @@ export const models: Model[] = [
     description:
       'O nosso formato de sempre: pote de vidro com tampa de madeira, que continua com você depois da última chama.',
     specs: ['100g', '~25h de queima', 'Cera vegetal'],
-    price: 'R$ 49,90',
+    price: 'R$ 45,00',
     cta: 'Quero a de 100g',
-    media: { kind: 'jar' },
+    media: {
+      kind: 'photo',
+      src: '/img/vela-100g.webp',
+      alt: 'Mão acendendo com um fósforo a vela Baunilha de 100g, apoiada na tampa de madeira',
+      width: 1200,
+      height: 1120,
+      numberTone: 'dark',
+    },
     tint: 'baunilha',
   },
   {
@@ -73,20 +85,27 @@ export const models: Model[] = [
     description:
       'Do tamanho certo para experimentar um aroma novo, levar na viagem ou presentear sem pesar no bolso.',
     specs: ['40g', 'Cera vegetal', 'Pote de vidro'],
-    price: null,
+    price: 'R$ 20,00',
     cta: 'Quero a de 40g',
-    media: { kind: 'photo', src: '/img/modelo-40g.webp', alt: 'Vela de 40g Cereja com Avelã acesa entre cerejas e avelãs' },
-    tint: 'cereja',
+    media: {
+      kind: 'photo',
+      src: '/img/vela-40g.webp',
+      alt: 'Mãos segurando a vela de 40g Perfume das Fadas, em pote de vidro com rolha de cortiça',
+      width: 1024,
+      height: 956,
+      numberTone: 'dark',
+    },
+    tint: 'fadas',
   },
 ];
 
 /** Foto de cada aroma no carrossel (Moodboard do Figma). */
 export const aromaPhotos: Record<string, string> = {
-  'pimenta-rosa': '/img/aromas/pimenta.webp',
+  'pimenta-rosa': '/img/aromas/pimenta-rosa.webp',
   baunilha: '/img/aromas/baunilha.webp',
-  'morango-com-champanhe': '/img/aromas/morango.webp',
-  'perfume-das-fadas': '/img/aromas/fadas.webp',
-  'cereja-com-avela': '/img/aromas/cereja.webp',
+  'morango-com-champanhe': '/img/aromas/morango-com-champanhe.webp',
+  'perfume-das-fadas': '/img/aromas/perfume-das-fadas.webp',
+  'cereja-com-avela': '/img/aromas/cereja-com-avela.webp',
 };
 
 export const candles: Candle[] = [
@@ -98,10 +117,8 @@ export const candles: Candle[] = [
     description:
       'Vibrante, com o calor da pimenta rosa abraçado por flores. Para a sala, para receber visitas, para quando a casa precisa de energia.',
     notes: { top: 'Bergamota, anis e damasco', heart: 'Violeta, lírio do vale e pimenta rosa', base: 'Almíscar, patchouli e baunilha' },
-    price: 'R$ 49,90',
     tint: 'pimenta-rosa',
-    cta: 'Quero a Pimenta Rosa',
-    photo: { label: 'pimenta', labelTop: 29.25, shadowTop: 58.53, shadowLeft: -8.83 },
+    photo: { label: 'pimenta-rosa', labelTop: 29.25, shadowTop: 58.53, shadowLeft: -8.83 },
   },
   {
     id: 'baunilha',
@@ -110,9 +127,7 @@ export const candles: Candle[] = [
     name: 'Baunilha',
     description: 'O cheiro de bolo saindo do forno na casa de vó. Uma vela para noites de cobertor, chá e livro.',
     notes: { top: 'Anis e pêssego', heart: 'Coco e sândalo', base: 'Almíscar e baunilha' },
-    price: 'R$ 49,90',
     tint: 'baunilha',
-    cta: 'Quero a Baunilha',
     photo: { label: 'baunilha', labelTop: 30.07, shadowTop: 58.46, shadowLeft: -10.02 },
   },
   {
@@ -123,10 +138,8 @@ export const candles: Candle[] = [
     description:
       'Leve, alegre e um pouco borbulhante. Feita para celebrar, seja um aniversário, seja uma terça-feira qualquer.',
     notes: { top: 'Morango, pêssego, uva e cassis', heart: 'Jasmim, rosa e baunilha', base: 'Âmbar, sândalo e almíscar' },
-    price: 'R$ 49,90',
     tint: 'morango',
-    cta: 'Quero a Morango com Champanhe',
-    photo: { label: 'morango', labelTop: 29.32, shadowTop: 58.46, shadowLeft: -8.83 },
+    photo: { label: 'morango-com-champanhe', labelTop: 29.32, shadowTop: 58.46, shadowLeft: -8.83 },
   },
   {
     id: 'perfume-das-fadas',
@@ -136,10 +149,8 @@ export const candles: Candle[] = [
     description:
       'Suave como um fim de tarde. A vela mais delicada da coleção, pensada para o quarto e para os momentos de pausa.',
     notes: { top: 'Melão, hortelã e framboesa', heart: 'Peônia, jasmim e lírio do vale', base: 'Morango, coco e almíscar' },
-    price: 'R$ 49,90',
     tint: 'fadas',
-    cta: 'Quero a Perfume das Fadas',
-    photo: { label: 'fadas', labelTop: 28.87, shadowTop: 60.25, shadowLeft: -8.83 },
+    photo: { label: 'perfume-das-fadas', labelTop: 28.87, shadowTop: 60.25, shadowLeft: -8.83 },
   },
   {
     id: 'cereja-com-avela',
@@ -148,10 +159,8 @@ export const candles: Candle[] = [
     name: 'Cereja com Avelã',
     description: 'Doce, profunda e marcante. Uma vela de inverno que transforma qualquer canto da casa em cafeteria.',
     notes: { top: 'Cereja, pêssego e cacau', heart: 'Avelã e lírio do vale', base: 'Baunilha, sândalo e almíscar' },
-    price: 'R$ 49,90',
     tint: 'cereja',
-    cta: 'Quero a Cereja com Avelã',
-    photo: { label: 'cereja', labelTop: 28.87, shadowTop: 56.82, shadowLeft: -8.83 },
+    photo: { label: 'cereja-com-avela', labelTop: 28.87, shadowTop: 56.82, shadowLeft: -8.83 },
   },
 ];
 
