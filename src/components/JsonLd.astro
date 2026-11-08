@@ -1,0 +1,68 @@
+---
+import { site, canonicalUrl } from '../config/site';
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  faq?: FaqItem[];
+}
+
+const { title, description, faq = [] } = Astro.props;
+const base = new URL('/', Astro.site).href;
+const pageUrl = canonicalUrl(Astro.url.pathname, Astro.site);
+
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'Organization',
+    '@id': `${base}#organization`,
+    name: site.name,
+    url: base,
+    logo: new URL(site.logo, Astro.site).href,
+    slogan: site.tagline,
+    sameAs: [site.instagram],
+    areaServed: site.areaServed.map((name) => ({ '@type': 'City', name })),
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${base}#website`,
+    url: base,
+    name: site.name,
+    inLanguage: site.lang,
+    publisher: { '@id': `${base}#organization` },
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${pageUrl}#webpage`,
+    url: pageUrl,
+    name: title,
+    description,
+    inLanguage: site.lang,
+    isPartOf: { '@id': `${base}#website` },
+    about: { '@id': `${base}#organization` },
+  },
+];
+
+if (faq.length) {
+  graph.push({
+    '@type': 'FAQPage',
+    '@id': `${pageUrl}#faq`,
+    mainEntity: faq.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  });
+}
+
+const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(
+  /</g,
+  '\\u003c',
+);
+---
+
+<script type="application/ld+json" is:inline set:html={json} />

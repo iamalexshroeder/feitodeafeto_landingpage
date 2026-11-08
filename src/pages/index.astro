@@ -1,0 +1,85 @@
+---
+// Esqueleto semântico e de SEO. O design final vem do Figma/DESIGN.md via impeccable.
+import Base from '../layouts/Base.astro';
+import { site, whatsappLink } from '../config/site';
+import { fragrances, products, faq } from '../data/content';
+
+const pedido = whatsappLink('Olá! Vim pelo site e quero fazer um pedido de velas.');
+const orcamento = whatsappLink('Olá! Quero um orçamento de lembrancinhas para um evento.');
+---
+
+<Base faq={faq}>
+  <header slot="header" class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+    <a href="/" class="block">
+      <img src="/brand/logo-wordmark.svg" alt={site.name} width="67" height="44" class="h-11 w-auto" />
+    </a>
+    <a href={pedido} class="min-h-11 inline-flex items-center rounded-full bg-bordo px-5 text-branco">Pedir</a>
+  </header>
+
+  <section aria-labelledby="hero-titulo" class="mx-auto max-w-6xl px-4 py-16">
+    <h1 id="hero-titulo" class="text-4xl font-semibold md:text-6xl">
+      Velas artesanais que deixam a casa com cheiro de abraço.
+    </h1>
+    <p class="mt-4 max-w-xl text-lg">
+      Feitas à mão em pequenos lotes, com cera vegetal, em Santos. Acenda, respire e deixe o dia ficar lá fora.
+    </p>
+    <a href={pedido} class="mt-8 inline-flex min-h-11 items-center rounded-full bg-bordo px-6 text-branco">
+      Pedir pelo WhatsApp
+    </a>
+  </section>
+
+  <section aria-labelledby="fragrancias-titulo" class="mx-auto max-w-6xl px-4 py-16">
+    <h2 id="fragrancias-titulo" class="text-3xl font-semibold">Fragrâncias</h2>
+    <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {fragrances.map((f) => (
+        <li>
+          <h3 class="font-semibold">{f.name}</h3>
+          <p>{f.notes}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section aria-labelledby="produtos-titulo" class="bg-rosa">
+    <div class="mx-auto max-w-6xl px-4 py-16">
+      <h2 id="produtos-titulo" class="text-3xl font-semibold">Linhas</h2>
+      <ul class="mt-8 grid gap-6 md:grid-cols-3">
+        {products.map((p) => (
+          <li>
+            <h3 class="font-semibold">{p.name}</h3>
+            <p>{p.detail}</p>
+            <p class="mt-2 font-semibold">{p.price}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="lembrancinhas-titulo" class="mx-auto max-w-6xl px-4 py-16">
+    <h2 id="lembrancinhas-titulo" class="text-3xl font-semibold">Lembrancinhas para eventos</h2>
+    <p class="mt-4 max-w-xl">Mini velas personalizadas para casamentos, chás e festas, a partir de 30 unidades.</p>
+    <a href={orcamento} class="mt-6 inline-flex min-h-11 items-center rounded-full border border-bordo px-6 text-bordo">
+      Pedir orçamento
+    </a>
+  </section>
+
+  <section aria-labelledby="faq-titulo" class="mx-auto max-w-6xl px-4 py-16">
+    <h2 id="faq-titulo" class="text-3xl font-semibold">Perguntas frequentes</h2>
+    <div class="mt-8 space-y-4">
+      {faq.map((item) => (
+        <details>
+          <summary class="min-h-11 cursor-pointer py-2 font-semibold">{item.question}</summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <footer slot="footer" class="mx-auto max-w-6xl px-4 py-10 text-sm">
+    <img src="/brand/logo.svg" alt={site.name} width="121" height="96" loading="lazy" class="mb-4 h-24 w-auto" />
+    <p>{site.tagline}</p>
+    <p>Entregas em {site.areaServed.join(', ')}.</p>
+    <p><a href={site.instagram} class="underline">Instagram</a></p>
+    <p class="mt-4 opacity-70">Projeto conceitual de portfólio. Marca fictícia.</p>
+  </footer>
+</Base>

@@ -2,15 +2,20 @@
 
 Landing page da marca Feito de Afeto, construída a partir do design no Figma (via Figma MCP).
 
-> **Status:** setup inicial. Briefing ainda não recebido — não inventar conteúdo, público ou claims da marca. Usar placeholders claros (`[TEXTO DO BRIEFING]`) onde faltar informação.
+> **Status:** projeto **conceitual de portfólio**. A marca (velas aromáticas artesanais em Santos/SP), produtos, preços, depoimentos e contatos são **fictícios** e estão definidos em `docs/briefing.md` — usar só o que está lá, sem inventar claims novos. Página publicada com `noindex` e aviso "Projeto conceitual" no rodapé.
 
 ## Arquivos de contexto
 
 | Arquivo | Papel | Status |
 |---|---|---|
-| `PRODUCT.md` | Produto, público, objetivo, tom de voz (gerado pelo `/impeccable init`) | pendente — aguarda briefing |
+| `PRODUCT.md` | Produto, público, objetivo, tom de voz (gerado pelo `/impeccable init` a partir do briefing) | pendente |
 | `DESIGN.md` | Identidade visual: tokens, tipografia, componentes, do's & don'ts | pendente — extrair do Figma |
-| `docs/briefing.md` | Briefing completo do cliente | pendente |
+| `docs/briefing.md` | Briefing (fictício) da marca | pronto |
+| `docs/requisitos-tecnicos.md` | SEO (title, description, semântica, JSON-LD, canonical, indexação), performance e responsividade | **obrigatório** |
+
+## Definição de pronto
+
+Nenhuma página é entregue sem cumprir **todos** os requisitos de `docs/requisitos-tecnicos.md` e passar pela checklist de validação no fim dele (Lighthouse mobile, JSON-LD validado, um único h1, canonical/robots corretos, sem rolagem horizontal de 360 a 1440 px). Reportar os números obtidos, não só "passou".
 
 ## Skills do projeto (`.claude/skills/`)
 
@@ -41,9 +46,34 @@ Não usar outras skills de estética (ex.: frontend-design, taste) em paralelo �
 
 ## Stack
 
-A definir. Padrão proposto: **Vite + React + Tailwind**, tokens do DESIGN.md mapeados no tema do Tailwind.
+**Astro 7 + Tailwind 4** (confirmado) — HTML estático, ilhas React só onde houver `react-bits` ou `gsap-react` (adicionar `@astrojs/react` quando precisar). Evitar SPA renderizada só no cliente.
+
+Estrutura:
+- `src/config/site.ts` — dados da marca, title/description padrão, WhatsApp, `indexable` (lê `PUBLIC_INDEXABLE`).
+- `src/data/content.ts` — fragrâncias, linhas e FAQ (o FAQ alimenta a página **e** o `FAQPage` do JSON-LD).
+- `src/components/SEO.astro` — title, description, canonical, robots, Open Graph, Twitter.
+- `src/components/JsonLd.astro` — `@graph` Organization + WebSite + WebPage (+ FAQPage).
+- `src/layouts/Base.astro` — `<html lang>`, skip link, `<main>` único.
+- `src/pages/robots.txt.ts` — libera ou bloqueia conforme `PUBLIC_INDEXABLE`; sitemap via `@astrojs/sitemap`.
+- `src/styles/global.css` — tokens provisórios (branco, rosa, bordô) até o DESIGN.md.
+
+Comandos:
+- `npm run dev` — servidor local
+- `npm run build` — build de produção em `dist/`
+- `npm run validate` — checa title, description, canonical, robots, OG, h1, headings, alt, JSON-LD, robots.txt, sitemap e 404 no `dist/`
+
+Variáveis de ambiente: `SITE_URL` (domínio canônico) e `PUBLIC_INDEXABLE=true` (só quando for indexar).
+
+## Marca
+
+- Originais do logo em `assets/` (SVG + PNGs) — **não editar**; são a fonte.
+- `npm run brand` (`scripts/build-brand-assets.mjs`) gera a partir do SVG: `public/brand/logo.svg` (com "Velas aromáticas"), `logo-wordmark.svg` (só o nome, para o header), `logo-wordmark-branco.svg`, `logo-512.png` (schema), `public/og-image.png` (1200×630), `favicon.svg`, `favicon-32x32.png` e `apple-touch-icon.png`.
+- No SVG original os miolos das letras são formas off-white; o script os converte em máscara para o logo ficar vazado de verdade. Usar sempre os arquivos gerados, nunca o original direto na página.
+- Cores do logo: bordô `#61162C`, rosa `#F3C4CC`, off-white `#F3F3F2`.
 
 ## Ambiente (Windows)
+
+O build exige o **Microsoft Visual C++ Redistributable (x64)** — sem ele o binário nativo do compilador do Astro (`satteri`) falha com `ERR_DLOPEN_FAILED`.
 
 Node e Git estão instalados, mas a sessão pode herdar um PATH antigo. Se `node`/`git` não forem reconhecidos, recarregar o PATH no comando:
 

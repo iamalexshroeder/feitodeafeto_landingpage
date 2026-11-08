@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+/* Cores extraídas dos arquivos de logo (assets/). Demais tokens virão do DESIGN.md / Figma. */
+@theme {
+  --color-branco: #ffffff;
+  --color-papel: #f3f3f2; /* off-white do logo */
+  --color-rosa: #f3c4cc; /* rosa bebê do logo */
+  --color-bordo: #61162c; /* bordô do logo */
+  --color-tinta: #2a0f17; /* texto corrido: bordô quase preto */
+}
+
+/* Regras base ficam em @layer base: CSS fora de camada venceria os utilitários do Tailwind. */
+@layer base {
+  html {
+    color: var(--color-tinta);
+    background: var(--color-branco);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-bordo);
+    outline-offset: 3px;
+  }
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  padding: 0.75rem 1rem;
+  background: var(--color-bordo);
+  color: var(--color-branco);
+  z-index: 50;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
