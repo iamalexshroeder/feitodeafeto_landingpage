@@ -6,6 +6,7 @@
 //   assets/aromas/<aroma>.jpg                → public/img/aromas/<aroma>.webp
 //   assets/produto/vela-40g-*-maos.jpg       → public/img/vela-40g.webp
 //   assets/produto/vela-100g-*.jpg           → public/img/vela-100g.webp
+//   assets/produto/kit-3-velas.png           → public/img/kit-3-velas.webp
 //   assets/ui/*.svg                          → public/img/*.svg
 //
 // <aroma> = id do aroma em src/data/content.ts (pimenta-rosa, baunilha, morango-com-champanhe,
@@ -83,6 +84,13 @@ await sharp(`${SRC}/produto/vela-100g-baunilha-acesa.jpg`)
   .resize(1200, 1120)
   .webp({ quality: 80 })
   .toFile(`${OUT}/vela-100g.webp`);
+
+// Kit com 3 velas: mãos segurando três potes de 100g (1024 × 1024, Figma "Modelos / Kit").
+// Mesmo recorte do Figma: imagem 788px em x -72 / y -228 numa caixa de 600 × 560.
+await sharp(`${SRC}/produto/kit-3-velas.png`)
+  .extract({ left: 94, top: 296, width: 780, height: 728 })
+  .webp({ quality: 82 })
+  .toFile(`${OUT}/kit-3-velas.webp`);
 
 // SVGs pequenos: copiados como estão.
 for (const f of ['sombra-vela.svg', 'avatar.svg']) {

@@ -25,19 +25,31 @@ export interface Candle {
 }
 
 
+/** Opção do kit (tamanho das 3 velas). saving = diferença para as 3 avulsas. */
+export interface KitSize {
+  id: string;
+  label: string;
+  size: string;
+  price: string;
+  saving: string;
+}
+
 /**
  * Modelos (formatos) da vela — preços do Figma (Landing › Modelos).
- * price: valor exibido com o rótulo "Valor"; status: texto sem rótulo (ex.: "Em breve").
+ * order: 'single' = escolhe 1 aroma; 'kit' = escolhe tamanho + 3 aromas; sem order = ainda não vende
+ * (mostra o status, ex.: "Disponível em breve").
  */
 export interface Model {
   id: string;
   label: string;
   name: string;
+  /** Nome usado na mensagem do WhatsApp ("a vela de 100g"). */
+  orderName: string;
   description: string;
   specs: string[];
   price?: string;
   status?: string;
-  cta: string;
+  order?: { type: 'single' } | { type: 'kit'; sizes: KitSize[] };
   media:
     | { kind: 'photo'; src: string; alt: string; width: number; height: number; numberTone?: 'light' | 'dark' }
     | { kind: 'cutout'; src: string; alt: string; width: number; height: number }
@@ -50,24 +62,25 @@ export const models: Model[] = [
   {
     id: 'modelo-100g-flor',
     label: 'Edição especial',
-    name: '100g com flor de cera',
+    name: 'Vela Flor de Cera',
+    orderName: 'vela de 100g com flor de cera',
     description:
       'A vela de 100g com uma flor esculpida em cera dentro do pote. Mais detalhada, feita para presentear e para ficar à vista.',
     specs: ['100g', 'Flor de cera', 'Tampa de madeira'],
-    status: 'Em breve',
-    cta: 'Quero a de 100g com flor',
+    status: 'Disponível em breve',
     media: { kind: 'placeholder', text: 'Foto do modelo com flor de cera' },
     tint: 'pimenta-rosa',
   },
   {
     id: 'modelo-100g',
     label: 'Clássica',
-    name: '100g',
+    name: 'Vela de 100g',
+    orderName: 'vela de 100g',
     description:
       'O nosso formato de sempre: pote de vidro com tampa de madeira, que continua com você depois da última chama.',
     specs: ['100g', '~25h de queima', 'Cera vegetal'],
     price: 'R$ 45,00',
-    cta: 'Quero a de 100g',
+    order: { type: 'single' },
     media: {
       kind: 'photo',
       src: '/img/vela-100g.webp',
@@ -81,12 +94,13 @@ export const models: Model[] = [
   {
     id: 'modelo-40g',
     label: 'Mini',
-    name: '40g',
+    name: 'Vela de 40g',
+    orderName: 'vela de 40g',
     description:
       'Do tamanho certo para experimentar um aroma novo, levar na viagem ou presentear sem pesar no bolso.',
     specs: ['40g', 'Cera vegetal', 'Pote de vidro'],
     price: 'R$ 20,00',
-    cta: 'Quero a de 40g',
+    order: { type: 'single' },
     media: {
       kind: 'photo',
       src: '/img/vela-40g.webp',
@@ -96,6 +110,31 @@ export const models: Model[] = [
       numberTone: 'dark',
     },
     tint: 'fadas',
+  },
+  {
+    id: 'kit-3-velas',
+    label: 'Para presentear',
+    name: 'Kit com 3 velas',
+    orderName: 'kit com 3 velas',
+    description:
+      'Monte o seu trio com os aromas que quiser, iguais ou diferentes. Um para cada canto da casa, ou três presentes resolvidos de uma vez.',
+    specs: ['3 velas', 'Aromas à sua escolha', 'Todas do mesmo tamanho'],
+    price: 'R$ 120,00',
+    order: {
+      type: 'kit',
+      sizes: [
+        { id: '100g', label: '3 de 100g', size: '100g', price: 'R$ 120,00', saving: 'R$ 15 a menos que avulsas' },
+        { id: '40g', label: '3 de 40g', size: '40g', price: 'R$ 55,00', saving: 'R$ 5 a menos que avulsas' },
+      ],
+    },
+    media: {
+      kind: 'photo',
+      src: '/img/kit-3-velas.webp',
+      alt: 'Mãos segurando três velas de 100g lado a lado: Morango com Champanhe, Cereja com Avelã e Baunilha',
+      width: 780,
+      height: 728,
+    },
+    tint: 'cereja',
   },
 ];
 
@@ -212,7 +251,20 @@ export const faq: FaqItem[] = [
   {
     question: 'Como faço o pedido?',
     answer:
-      'Escolha o aroma e clique em qualquer botão. Você cai direto no nosso WhatsApp para combinar entrega e pagamento.',
+      'Escolha o modelo e o aroma e clique em "Quero encomendar". Você cai direto no nosso WhatsApp, com a mensagem pronta, para combinar a entrega e o pagamento.',
+  },
+  {
+    question: 'Vocês entregam onde?',
+    answer: 'Entregamos em Santos e região. O dia e os detalhes da entrega a gente combina com você pelo WhatsApp.',
+  },
+  {
+    question: 'Quais as formas de pagamento?',
+    answer: 'Por enquanto, só Pix. A chave é enviada no atendimento pelo WhatsApp.',
+  },
+  {
+    question: 'Como funciona o kit com 3 velas?',
+    answer:
+      'Você escolhe o tamanho (3 de 100g por R$ 120,00 ou 3 de 40g por R$ 55,00) e os três aromas, iguais ou diferentes. Sai mais em conta que comprar as velas avulsas.',
   },
   {
     question: 'Qual o prazo de produção?',

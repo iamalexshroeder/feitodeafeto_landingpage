@@ -16,7 +16,11 @@ export const site = {
   indexable: import.meta.env.PUBLIC_INDEXABLE === 'true',
   // Número de exemplo (fictício). Substituir antes de qualquer uso real.
   whatsapp: '5513999990000',
-  instagram: 'https://www.instagram.com/feitodeafeto.velas',
+  instagram: 'https://www.instagram.com/feitodeafeto_velas',
+  instagramHandle: '@feitodeafeto_velas',
+  // Entrega e pagamento (informados pela dona do projeto).
+  delivery: 'Santos e região',
+  payment: 'Pix',
   areaServed: ['Santos', 'São Vicente', 'Guarujá', 'Praia Grande', 'Cubatão'],
 } as const;
 

@@ -115,9 +115,9 @@ Animações extras (só desktop com mouse, desligam com `prefers-reduced-motion`
 
 ## Modelos
 
-Três blocos no layout dos antigos blocos de vela: **100g com flor de cera** (placeholder até ter foto, status "Em breve"), **100g** (foto da vela Baunilha sendo acesa, R$ 45,00) e **40g** (foto do pote com rolha nas mãos, R$ 20,00). Preços vêm do Figma; sem preço, mostrar o status sem o rótulo "Valor" (não inventar valores).
+Quatro blocos no layout dos antigos blocos de vela, sem número na imagem: **Vela Flor de Cera** (placeholder até ter foto; pílula de contorno "Disponível em breve", sem link), **Vela de 100g** (foto da Baunilha sendo acesa, R$ 45,00), **Vela de 40g** (pote com rolha nas mãos, R$ 20,00) e **Kit com 3 velas** (três potes de 100g nas mãos; 3 de 100g R$ 120,00 ou 3 de 40g R$ 55,00, com a economia em relação às avulsas). Preços vêm do Figma/dona; não inventar valores.
 
-**Barra de compra** (em cada modelo): pílula branca com contorno `line` (anel interno, não soma altura), 72px = botão de 56 + 8 de respiro. Botão à esquerda; à direita, "VALOR" (label muted) sobre o preço (H3 ink). No celular vira um card (raio 24, padding 16): valor em cima, botão em largura total embaixo.
+**Pedido** (em cada modelo à venda): select "Aroma" (pílula branca 56px, anel `line`, seta bordô); no kit, seletor de tamanho (2 pílulas, a escolhida em bordô) + 3 selects de aroma. A escolha monta a mensagem do WhatsApp; sem JS, o botão abre a mensagem padrão. Embaixo: botão "Quero encomendar" + "VALOR"/preço ao lado (no celular: valor em cima, botão em largura total) e a linha "Entrega em Santos e região · Pagamento via Pix". Os seletores ainda não estão no Figma.
 
 ## Pilha da coleção
 
@@ -140,5 +140,5 @@ Breakpoints Tailwind: `sm` 640, `md` 768, `lg` 1024, `xl` 1280. Grades de 2 colu
 
 - As 5 velas usam a mesma foto de pote com rótulos trocados; fotos individuais (ou da vela acesa) dariam mais variedade.
 - O Figma não posiciona as fotos dentro dos blocos da coleção (lá ainda há o placeholder); o tamanho de 80% da caixa foi decisão de implementação.
-- Não há frame mobile no Figma; o mobile foi derivado do desktop.
-- Avaliação "4,9 de 5" e depoimentos são de exemplo.
+- Frame mobile (390, iPhone 13) no Figma: node 47:37. No celular a faixa de benefícios não aparece.
+- "Mais de 100 velas vendidas" (Figma) e os depoimentos são de exemplo até haver dados reais.

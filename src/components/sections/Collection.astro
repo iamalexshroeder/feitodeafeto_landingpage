@@ -1,5 +1,5 @@
 ---
-// Coleção: intro (Figma 1:105) → carrossel de aromas → os 3 modelos (blocos no layout dos antigos
+// Coleção: intro (Figma 1:105) → carrossel de aromas → os modelos + kit (blocos no layout dos antigos
 // "Candle 01…05") → faixa "Não sabe qual escolher?" (1:226).
 // Os modelos e a faixa usam o efeito de pilha: cada bloco para sob o menu e o próximo desliza por cima.
 import AromaCarousel from './AromaCarousel.astro';
@@ -24,14 +24,14 @@ import { whatsappLink } from '../../config/site';
 <section id="modelos" aria-labelledby="modelos-titulo">
   <div class="container-page flex flex-col items-center gap-6 pt-16 pb-12 text-center lg:pt-24 lg:pb-24" data-reveal>
     <p class="text-label text-bordo uppercase">Os modelos</p>
-    <h2 id="modelos-titulo" class="max-w-[504px] text-h2 text-ink">Três jeitos de levar o seu aroma para casa.</h2>
+    <h2 id="modelos-titulo" class="max-w-[504px] text-h2 text-ink">Quatro jeitos de levar o seu aroma para casa.</h2>
   </div>
 
   <div class="stack" data-stack>
     {
       models.map((model, i) => (
         <div class="stack-card" style={`--i:${i}`}>
-          <ModelFeature model={model} index={i} reverse={i % 2 === 1} />
+          <ModelFeature model={model} reverse={i % 2 === 1} />
         </div>
       ))
     }

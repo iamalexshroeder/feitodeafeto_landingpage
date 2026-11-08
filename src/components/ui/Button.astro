@@ -10,9 +10,10 @@ interface Props {
   external?: boolean;
   /** sm = variante "navbar-buttom" do Figma (40px de altura). */
   size?: 'md' | 'sm';
+  [key: `data-${string}`]: string | undefined;
 }
 
-const { href, variant = 'primary', class: className = '', external = true, size = 'md' } = Astro.props;
+const { href, variant = 'primary', class: className = '', external = true, size = 'md', ...rest } = Astro.props;
 
 const styles = {
   primary: 'bg-bordo text-white hover:bg-bordo-dark',
@@ -33,6 +34,7 @@ const styles = {
     className,
   ]}
   {...external ? { target: '_blank', rel: 'noopener' } : {}}
+  {...rest}
 >
   <slot />
   {external && <span class="sr-only">(abre o WhatsApp)</span>}

@@ -1,17 +1,18 @@
 ---
-// Bloco de modelo (formato) — mesmo layout dos antigos blocos de vela (Figma "Candle 01…05"):
+// Bloco de modelo (formato) — Figma "Modelos / …" (25:82, 25:122, 25:163, kit 54:218; mobile 48:68…56:253):
 // imagem numa caixa colorida + texto, alternando de lado.
+// Compra: escolha do aroma (ou do tamanho + 3 aromas no kit) monta a mensagem pronta do WhatsApp.
+// Sem JS, o botão abre o WhatsApp com a mensagem padrão (sem aroma escolhido).
 import Button from '../ui/Button.astro';
 import CandlePhoto from '../ui/CandlePhoto.astro';
-import { whatsappLink } from '../../config/site';
+import { site, whatsappLink } from '../../config/site';
 import { candles, type Model } from '../../data/content';
 
 interface Props {
   model: Model;
-  index: number;
   reverse?: boolean;
 }
-const { model, index, reverse = false } = Astro.props;
+const { model, reverse = false } = Astro.props;
 
 const tints = {
   'pimenta-rosa': 'bg-tint-pimenta-rosa',
@@ -22,7 +23,15 @@ const tints = {
 } as const;
 const jarPhoto = candles.find((c) => c.id === 'baunilha')!.photo;
 const headingId = `${model.id}-titulo`;
-const number = String(index + 1).padStart(2, '0');
+const order = model.order;
+const kitSize = order?.type === 'kit' ? order.sizes[0] : undefined;
+const price = kitSize?.price ?? model.price;
+
+// Mensagem padrão (igual à que o script monta quando nenhum aroma foi escolhido).
+const defaultMessage = kitSize
+  ? `Olá! Quero encomendar o kit com 3 velas de ${kitSize.size} (${kitSize.price}). Me ajuda a escolher os aromas?`
+  : `Olá! Quero encomendar a ${model.orderName}. Quais aromas estão disponíveis?`;
+const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
 ---
 
 <article
@@ -80,17 +89,6 @@ const number = String(index + 1).padStart(2, '0');
         </div>
       )
     }
-    <span
-      class:list={[
-        'absolute top-6 left-8 text-[clamp(4rem,2rem+5vw,6rem)] leading-none font-semibold tracking-[-3px]',
-        model.media.kind === 'photo'
-          ? model.media.numberTone === 'dark'
-            ? 'text-bordo opacity-30'
-            : 'text-white opacity-40'
-          : 'text-bordo opacity-[0.18]',
-      ]}
-      aria-hidden="true">{number}</span
-    >
   </div>
 
   <div class="flex flex-col items-start gap-6" data-reveal style="--reveal-delay: 120ms">
@@ -102,29 +100,134 @@ const number = String(index + 1).padStart(2, '0');
       {model.specs.map((spec) => <li class="rounded-full bg-rosa-soft px-4 py-2 text-small text-bordo">{spec}</li>)}
     </ul>
 
-    {/* Barra de compra: botão à esquerda, valor à direita, numa pílula branca (72px = 56 + 2×8).
-        No celular empilha: valor em cima, botão em largura total embaixo. */}
-    <div
-      class="flex w-full max-w-[504px] flex-col gap-4 rounded-3xl bg-white p-4 ring-1 ring-line ring-inset sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:rounded-full sm:p-2 sm:pr-8"
-    >
-      <div class="flex flex-col sm:order-2 sm:items-end sm:text-right">
-        {
-          model.price ? (
-            <>
+    {
+      !order && (
+        <p class="inline-flex min-h-14 items-center rounded-full px-8 font-semibold text-bordo shadow-[inset_0_0_0_1.5px_var(--color-bordo)] max-sm:w-full max-sm:justify-center">
+          {model.status ?? 'Sob consulta'}
+        </p>
+      )
+    }
+
+    {
+      order && (
+        <div
+          class="flex w-full max-w-[504px] flex-col gap-6"
+          data-order={order.type}
+          data-name={model.orderName}
+          data-phone={site.whatsapp}
+        >
+          {kitSize && order.type === 'kit' && (
+            <fieldset class="flex flex-col gap-2">
+              <legend class="mb-2 text-label text-muted uppercase">Tamanho</legend>
+              <div class="grid grid-cols-2 gap-2">
+                {order.sizes.map((s, i) => (
+                  <label class="relative">
+                    <input
+                      type="radio"
+                      name={`${model.id}-tamanho`}
+                      value={s.id}
+                      checked={i === 0}
+                      data-size={s.size}
+                      data-price={s.price}
+                      data-saving={s.saving}
+                      class="peer sr-only"
+                    />
+                    <span class="flex min-h-14 cursor-pointer items-center justify-center rounded-full bg-white px-4 text-center font-semibold text-ink ring-1 ring-line transition-colors ring-inset peer-checked:bg-bordo peer-checked:text-white peer-checked:ring-bordo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo">
+                      {s.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
+          <div class="flex flex-col gap-2">
+            <p class="text-label text-muted uppercase" id={`${model.id}-aromas`}>
+              {slots.length > 1 ? 'Aromas' : 'Aroma'}
+            </p>
+            <div class:list={['grid gap-2', slots.length > 1 && 'sm:grid-cols-3']}>
+              {slots.map((n) => (
+                <select
+                  class="order-select min-h-14 w-full cursor-pointer appearance-none rounded-full bg-white pr-12 pl-6 text-body text-ink ring-1 ring-line ring-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bordo"
+                  aria-label={slots.length > 1 ? `Aroma da vela ${n}` : 'Aroma'}
+                  aria-describedby={`${model.id}-aromas`}
+                >
+                  <option value="">{slots.length > 1 ? `Vela ${n}` : 'Escolha o aroma'}</option>
+                  {candles.map((c) => (
+                    <option value={c.name}>{c.name}</option>
+                  ))}
+                </select>
+              ))}
+            </div>
+          </div>
+
+          {/* Compra: no desktop botão à esquerda e valor ao lado (Figma); no celular valor em cima. */}
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <div class="flex flex-col sm:order-2">
               <p class="text-label text-muted uppercase">Valor</p>
-              <p class="text-h3 text-ink">{model.price}</p>
-            </>
-          ) : (
-            <p class="text-title text-ink">{model.status ?? 'Sob consulta'}</p>
-          )
-        }
-      </div>
-      <Button
-        href={whatsappLink(`Olá! Quero a vela de ${model.name}. Quais aromas estão disponíveis?`)}
-        class="sm:order-1"
-      >
-        {model.cta}
-      </Button>
-    </div>
+              <p class="text-h3 text-ink" data-order-price aria-live="polite">{price}</p>
+              {kitSize && (
+                <p class="text-small text-bordo" data-order-saving>
+                  {kitSize.saving}
+                </p>
+              )}
+            </div>
+            <Button href={whatsappLink(defaultMessage)} class="sm:order-1" data-order-cta="">
+              Quero encomendar
+            </Button>
+          </div>
+
+          <p class="text-small text-muted">
+            Entrega em {site.delivery} · Pagamento via {site.payment}
+          </p>
+        </div>
+      )
+    }
   </div>
 </article>
+
+<style>
+  /* Seta do select (detalhe de campo, não de botão). */
+  .order-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%236B1E2E' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 24px center;
+  }
+</style>
+
+<script>
+  // Monta a mensagem do WhatsApp com o modelo, o tamanho (kit) e os aromas escolhidos.
+  const list = (items: string[]) =>
+    items.length > 1 ? `${items.slice(0, -1).join(', ')} e ${items[items.length - 1]}` : items[0];
+
+  document.querySelectorAll<HTMLElement>('[data-order]').forEach((box) => {
+    const cta = box.querySelector<HTMLAnchorElement>('[data-order-cta]');
+    const priceEl = box.querySelector<HTMLElement>('[data-order-price]');
+    const savingEl = box.querySelector<HTMLElement>('[data-order-saving]');
+    const selects = [...box.querySelectorAll<HTMLSelectElement>('select')];
+    if (!cta) return;
+
+    const update = () => {
+      const chosen = selects.map((s) => s.value);
+      let text: string;
+      if (box.dataset.order === 'kit') {
+        const size = box.querySelector<HTMLInputElement>('input[type=radio]:checked');
+        const { size: grams = '', price = '', saving = '' } = size?.dataset ?? {};
+        if (priceEl) priceEl.textContent = price;
+        if (savingEl) savingEl.textContent = saving;
+        text = `Olá! Quero encomendar o kit com 3 velas de ${grams} (${price}).`;
+        text += chosen.some(Boolean)
+          ? ` Aromas: ${list(chosen.map((a) => a || 'a escolher'))}.`
+          : ' Me ajuda a escolher os aromas?';
+      } else {
+        text = chosen[0]
+          ? `Olá! Quero encomendar a ${box.dataset.name} no aroma ${chosen[0]}.`
+          : `Olá! Quero encomendar a ${box.dataset.name}. Quais aromas estão disponíveis?`;
+      }
+      cta.href = `https://wa.me/${box.dataset.phone}?text=${encodeURIComponent(text)}`;
+    };
+
+    box.addEventListener('change', update);
+    update();
+  });
+</script>
