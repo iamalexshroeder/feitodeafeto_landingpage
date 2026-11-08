@@ -8,12 +8,16 @@ import { whatsappLink } from '../../config/site';
 <section id="duvidas" aria-labelledby="duvidas-titulo" class="bg-white">
   <div class="container-page grid gap-12 py-20 lg:grid-cols-[416px_minmax(0,1fr)] lg:gap-24 lg:py-24">
     <div class="flex flex-col items-start gap-6" data-reveal>
-      <p class="text-label text-bordo uppercase">Dúvidas</p>
+      <p class="text-label uppercase text-bordo">Dúvidas</p>
       <h2 id="duvidas-titulo" class="text-h2 text-ink">
         Perguntas frequentes
       </h2>
       <p class="max-w-[384px] text-body-l text-muted">Não achou o que procurava? Chama a gente.</p>
-      <Button href={whatsappLink('Olá! Tenho uma dúvida sobre as velas.')} variant="secondary">
+      <Button
+        href={whatsappLink('Olá! Tenho uma dúvida sobre as velas.')}
+        variant="secondary"
+        class="lg:bg-whatsapp lg:text-white lg:shadow-none lg:hover:bg-whatsapp-dark"
+      >
         Tirar dúvida no WhatsApp
       </Button>
     </div>

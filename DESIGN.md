@@ -14,6 +14,8 @@ colors:
   muted: "#7A6266"        # texto de apoio
   line: "#EAD6D9"         # bordas e divisores
   wood: "#B98A63"         # tampa do pote (ilustração)
+  wood-dark: "#8E6A4C"    # texto em tom madeira (benefício "Vidro + tampa"), AA sobre creme
+  whatsapp: "#37CE65"     # botões do WhatsApp no desktop (Dúvidas, CTA final) — exceção aprovada ao AA (texto branco, 2,1:1)
   tint-pimenta-rosa: "#F3D3D6"
   tint-baunilha: "#F4E8D8"
   tint-morango: "#F7D9DC"
@@ -70,11 +72,11 @@ Página de produto em tom de conversa. Muito respiro, um aroma por vez, tipograf
 
 ## Typography
 
-Uma família só (Inter). Hierarquia por tamanho e peso, nunca por cor extra. Labels sempre em caixa alta com tracking positivo, acima de títulos. Os tamanhos são fluidos (`clamp`) e chegam ao valor do Figma a partir de ~1190px.
+Uma família só (Inter). Hierarquia por tamanho e peso, nunca por cor extra. Labels sempre em caixa alta com tracking positivo, acima de títulos. Uma família só — nada de serifa ou segunda fonte. Na opção de tamanho do kit: label (tamanho) → preço → economia, cada um na sua linha. Os tamanhos são fluidos (`clamp`) e chegam ao valor do Figma a partir de ~1190px.
 
 ## Layout
 
-- Container de 1200px. **Desktop** (Figma): página branca com seções alternando branco e creme — coleção, título dos modelos, Flor de Cera, 40g, faixa de ajuda, Quem faz, Dúvidas e CTA em branco; benefícios, 100g, kit e depoimentos em creme; Como fazemos em bordô-escuro. Painéis (faixa de ajuda, Quem faz, CTA) em creme sobre o branco. **Celular:** fundo creme, Como fazemos e CTA em rosa suave, Dúvidas em branco.
+- Container de 1200px. **Desktop** (Figma): página branca com seções alternando branco e creme — coleção, título dos modelos, 40g, faixa de ajuda, Quem faz, Dúvidas e CTA em branco; benefícios, 100g, kit e depoimentos em creme; Como fazemos em bordô-escuro. Painéis (faixa de ajuda, Quem faz, CTA) em creme sobre o branco. **Celular:** fundo creme, Como fazemos e CTA em rosa suave, Dúvidas em branco.
 - Menu no desktop: logo à esquerda; links e "Fale com a gente" juntos à direita.
 - Velas: grade 600/520 com 96px de espaço, imagem e texto **alternando de lado**. A faixa CTA entra entre a 3ª e a 4ª vela.
 - Hero: coluna de texto de 707px; a imagem passa 73px da grade à direita no desktop (como no Figma).
@@ -94,7 +96,7 @@ Uma família só (Inter). Hierarquia por tamanho e peso, nunca por cor extra. La
 - **Acessibilidade**: todo par texto/fundo em WCAG AA — `npm run contrast` confere os 18 pares usados. No hero, texto só em ink/bordô sobre o véu creme (o muted não passa sobre a parede).
 - **Grid de 8**: espaçamentos, raios, alturas e entrelinhas em múltiplos de 8 (4 só em detalhes). Classes Tailwind de passo ímpar (`gap-1.5`, `py-3.5`…) não são usadas.
 - **Títulos** (display e h2): letter-spacing **-3px**.
-- **Botões**: só texto, sem ícone nem emoji (exceção: o ícone de sacola no menu do celular, com a quantidade); 56px de altura no celular e 48px no desktop. **No celular ocupam toda a largura disponível** (respeitando o padding do container ou do painel); dentro de cards (verso do aroma) ocupam a largura do card. Exceção: o botão do menu.
+- **Botões**: só texto, sem ícone nem emoji (exceção: o ícone de sacola no menu do celular, com a quantidade); no desktop, os botões de conversa ("Tirar dúvida", "Pedir pelo WhatsApp") são verdes (`whatsapp`), no celular bordô; 56px de altura no celular e 48px no desktop. **No celular ocupam toda a largura disponível** (respeitando o padding do container ou do painel); dentro de cards (verso do aroma) ocupam a largura do card. Exceção: o botão do menu.
 - **Cards lado a lado têm a mesma altura** (depoimentos, passos): o grid estica todos e o rodapé do card (assinatura) fica alinhado embaixo.
 - **Efeitos ao rolar**: `data-reveal` (sobe 24px + fade, 0.8s) e `data-reveal="zoom"` nas imagens; atraso em cascata via `--reveal-delay`. Menu fixo ganha sombra ao rolar. Hero: a cena assenta (escala 1.04 → 1). Nada acima da dobra depende de JS; tudo desliga com `prefers-reduced-motion`.
 
@@ -118,7 +120,7 @@ Animações extras (só desktop com mouse, desligam com `prefers-reduced-motion`
 
 ## Modelos
 
-Quatro blocos no layout dos antigos blocos de vela, sem número na imagem: **Vela Flor de Cera** (placeholder até ter foto; pílula de contorno "Disponível em breve", sem link), **Vela de 100g** (uma foto por aroma, mesmo estúdio; começa em Pimenta Rosa e troca com fade ao escolher o aroma; R$ 45,00), **Vela de 40g** (uma foto por aroma, mesma base: só o rótulo muda, como na 100g; R$ 20,00) e **Kit com 3 velas** (foto com 3 velas — uma na frente, duas atrás — que troca com o tamanho escolhido; 3 de 100g R$ 120,00 ou 3 de 40g R$ 55,00, com a economia em relação às avulsas). Preços vêm do Figma/dona; não inventar valores.
+Três blocos no layout dos antigos blocos de vela, sem número na imagem (a Flor de Cera saiu: só entra o que dá para comprar): **Vela de 100g** (uma foto por aroma, mesmo estúdio; começa em Pimenta Rosa e troca com fade ao escolher o aroma; R$ 45,00), **Vela de 40g** (uma foto por aroma, mesma base: só o rótulo muda, como na 100g; R$ 20,00) e **Kit com 3 velas** (foto com 3 velas — uma na frente, duas atrás — que troca com o tamanho escolhido; 3 de 100g R$ 120,00 ou 3 de 40g R$ 55,00, com a economia em relação às avulsas). Preços vêm do Figma/dona; não inventar valores.
 
 **Tamanho no desktop:** cada bloco de modelo cabe numa tela de notebook (~680px) sob o menu — imagem 600×512, 16px de respiro vertical, 16px entre os itens; no kit, sem chips (as opções de tamanho já dizem isso) e cada opção com preço e economia na mesma linha.
 
@@ -130,7 +132,7 @@ Quatro blocos no layout dos antigos blocos de vela, sem número na imagem: **Vel
 
 Em cada modelo e no kit, o botão principal é **"Adicionar à sacola"** (com o aroma/tamanho escolhidos); embaixo, o link "Ou peça só este direto pelo WhatsApp". Ao adicionar: o botão mostra "Adicionado à sacola", aparece um aviso escuro com "Ver sacola" e o menu ganha o botão **"Sacola · n"** (só texto; no celular ele ocupa o lugar do "Fale com a gente"). A barra fixa do celular vira "Sacola · n itens / total" + "Ver sacola".
 
-O painel abre à direita (pouco menos da metade da tela no desktop; tela inteira no celular), com os itens e o resumo em formato de **ticket** (papel branco, data, logo, linhas tracejadas e serrilhado embaixo). Tem **3 passos** (Sacola → Entrega → Enviar): itens com −/+ e remover; nome, cidade (Santos e região), bairro e observações (salvos no aparelho); resumo, **próximos passos** (enviar → confirmar aromas, prazo e entrega → pagar via Pix → entregar) e "Enviar pedido pelo WhatsApp" com a mensagem pronta. Total sempre "sem a entrega". Sem servidor nem pagamento online. Métricas: `add_to_cart`, `begin_checkout`, `send_order` no dataLayer.
+O painel abre à direita (pouco menos da metade da tela no desktop; tela inteira no celular), com os itens e o resumo em formato de **ticket** (papel branco, data, **mini card fatiado** com a foto de cada item — até 4 fatias, "+n" na última —, linhas tracejadas e serrilhado embaixo). No Figma: seção "Sacola — telas (site)" na página Landing. Tem **3 passos** (Sacola → Entrega → Enviar): itens com −/+ e remover; nome, cidade (Santos e região), bairro e rua/número **obrigatórios** (mensagem de erro em cada campo; não avança nem envia sem eles) e observações opcionais (salvos no aparelho); resumo, **próximos passos** (enviar → confirmar aromas, prazo e entrega → pagar via Pix → entregar) e "Enviar pelo WhatsApp" com a mensagem pronta. Total sempre "sem a entrega". Sem servidor nem pagamento online. Métricas: `add_to_cart`, `begin_checkout`, `send_order` no dataLayer.
 
 ## Modelos ao rolar
 

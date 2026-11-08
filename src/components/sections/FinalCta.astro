@@ -15,9 +15,14 @@ import { site, whatsappLink } from '../../config/site';
         Leve um pouco de afeto para casa.
       </h2>
       <p class="max-w-[640px] text-body-l text-ink">Escolha o seu aroma e fale com a gente. Respondemos rapidinho.</p>
-      <Button href={whatsappLink('Olá! Quero fazer um pedido.')}>Pedir pelo WhatsApp</Button>
+      <Button href={whatsappLink('Olá! Quero fazer um pedido.')} variant="whatsapp">
+        Pedir pelo WhatsApp
+      </Button>
       <p class="text-small text-ink">
-        Entrega em {site.delivery} · Pagamento via {site.payment}{' '}
+        Entrega em {site.delivery}{' '}
+        <span class="lg:hidden">·{' '}</span>
+        <br class="max-lg:hidden" />
+        Pagamento via {site.payment}{' '}
         <span class="lg:hidden">
           · Veja mais no Instagram{' '}
           <a

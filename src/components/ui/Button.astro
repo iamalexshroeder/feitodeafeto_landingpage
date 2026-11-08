@@ -5,7 +5,7 @@
 interface Props {
   /** Sem href, vira <button type="button"> (ações na página, como adicionar à sacola). */
   href?: string;
-  variant?: 'primary' | 'secondary' | 'ondark' | 'soft';
+  variant?: 'primary' | 'secondary' | 'ondark' | 'soft' | 'whatsapp';
   class?: string;
   /** Link externo (WhatsApp) abre em nova aba. */
   external?: boolean;
@@ -24,6 +24,8 @@ const styles = {
   ondark: 'bg-white text-bordo hover:bg-rosa',
   // Rosa preenchido (Figma: Menu preenchido): menu e 'Ver a coleção' no celular.
   soft: 'bg-rosa text-bordo hover:bg-bordo hover:text-white',
+  // Verde do WhatsApp (Figma, desktop): no celular segue o bordô do Figma mobile.
+  whatsapp: 'bg-bordo text-white hover:bg-bordo-dark lg:bg-whatsapp lg:hover:bg-whatsapp-dark',
 };
 ---
 

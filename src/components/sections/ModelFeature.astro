@@ -113,7 +113,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
   </div>
 
   <div class="flex flex-col items-start gap-6 lg:gap-4" data-reveal style="--reveal-delay: 120ms">
-    <p class="text-label text-bordo uppercase">{model.label}</p>
+    <p class="text-label uppercase text-bordo">{model.label}</p>
     <h3 id={headingId} class="text-h2 text-ink">
       {model.name}
     </h3>
@@ -146,7 +146,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
       >
         {kitSize && order.type === 'kit' && (
           <fieldset class="flex w-full min-w-0 flex-col">
-            <legend class="mb-2 text-label text-muted uppercase">Tamanho</legend>
+            <legend class="mb-2 text-label uppercase text-muted">Tamanho</legend>
             <div class="grid grid-cols-2 gap-2">
               {order.sizes.map((s, i) => (
                 <label class="relative flex">
@@ -161,13 +161,12 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
                     data-thumb={`/img/kit/kit-${s.id}-thumb.webp`}
                     class="peer sr-only"
                   />
-                  {/* Opção com o valor de cada tamanho visível (os dois preços lado a lado). */}
+                  {/* */}
                   <span class="size-opt flex h-full w-full cursor-pointer flex-col rounded-2xl bg-white px-4 py-4 text-ink ring-1 ring-line transition-colors ring-inset peer-checked:bg-bordo peer-checked:text-white peer-checked:ring-bordo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo sm:px-6">
-                    <span class="font-semibold">{s.label}</span>
-                    <span class="flex flex-wrap items-baseline gap-x-2">
-                      <span class="text-title">{s.price}</span>
-                      <span class="size-saving text-small text-bordo">{s.saving}</span>
-                    </span>
+                    {/* Hierarquia fixa nas duas opções: tamanho → preço → economia (sempre na própria linha). */}
+                    <span class="text-label uppercase">{s.label}</span>
+                    <span class="text-title">{s.price}</span>
+                    <span class="size-saving text-small text-bordo">{s.saving}</span>
                   </span>
                 </label>
               ))}
@@ -211,7 +210,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
           </fieldset>
         ) : (
           <div class="flex flex-col gap-2">
-            <p class="text-label text-muted uppercase" id={`${model.id}-aromas`}>
+            <p class="text-label uppercase text-muted" id={`${model.id}-aromas`}>
               {slots.length > 1 ? 'Aromas' : 'Aroma'}
             </p>
             <div class:list={['grid gap-2', slots.length > 1 && 'sm:grid-cols-3']}>
@@ -229,7 +228,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
         {/* Compra: no desktop botão à esquerda e valor ao lado (Figma); no celular valor em cima. */}
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <div class="flex flex-col sm:order-2">
-            <p class="text-label text-muted uppercase">Valor</p>
+            <p class="text-label uppercase text-muted">Valor</p>
             <p class="text-h3 text-ink" data-order-price aria-live="polite">
               {price}
             </p>

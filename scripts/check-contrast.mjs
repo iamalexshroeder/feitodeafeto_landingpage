@@ -10,6 +10,8 @@ const c = {
   ink: '#2a1418',
   muted: '#7a6266',
   white: '#ffffff',
+  'wood-dark': '#8e6a4c',
+  whatsapp: '#37ce65',
   // Hero desktop (sem véu, como no Figma): pior ponto (5% mais escuro) da parede atrás de cada texto,
   // medido em public/img/hero-banner.webp.
   'hero-label': '#d7bea4',
@@ -71,7 +73,10 @@ const pairs = [
   ['white', 'bordo-dark', 4.5, 'hover do botão'],
   ['rosa', 'bordo', 4.5, 'textos sobre bordô'],
   ['rosa', 'bordo-dark', 4.5, 'rodapé'],
+  ['wood-dark', 'creme', 4.5, 'título "Vidro + tampa" nos benefícios'],
 ];
+// Exceções aprovadas pela dona do projeto (aparecem como aviso, não reprovam).
+const exceptions = [['white', 'whatsapp', 4.5, 'botões do WhatsApp no desktop (verde do Figma, escolha de marca)']];
 c['rosa/80 sobre bordo'] = mix(c.rosa, c.bordo, 0.8);
 c['rosa/70 sobre bordo-dark'] = mix(c.rosa, c['bordo-dark'], 0.7);
 pairs.push(['rosa/80 sobre bordo', 'bordo', 4.5, 'labels do verso do card de aroma']);
@@ -84,5 +89,8 @@ for (const [fg, bg, min, where] of pairs) {
   if (!ok) fail++;
   console.log(`${ok ? '  ok  ' : '  FAIL'} ${r.toFixed(2).padStart(5)}:1  ${fg} / ${bg}  — ${where}`);
 }
-console.log(fail ? `\n${fail} par(es) abaixo de AA.` : '\nTodos os pares passam em WCAG AA.');
+for (const [fg, bg, min, where] of exceptions) {
+  console.log(`  aviso ${ratio(c[fg], c[bg]).toFixed(2).padStart(5)}:1  ${fg} / ${bg}  — ${where} (exceção aprovada, mínimo ${min})`);
+}
+console.log(fail ? `\n${fail} par(es) abaixo de AA.` : `\nTodos os pares passam em WCAG AA (fora ${exceptions.length} exceção aprovada, acima).`);
 process.exit(fail ? 1 : 0);

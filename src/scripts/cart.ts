@@ -19,12 +19,13 @@ export interface Customer {
   name: string;
   city: string;
   district: string;
+  address: string;
   notes: string;
 }
 
 const ITEMS_KEY = 'fda-sacola';
 const CUSTOMER_KEY = 'fda-sacola-dados';
-const emptyCustomer: Customer = { name: '', city: '', district: '', notes: '' };
+const emptyCustomer: Customer = { name: '', city: '', district: '', address: '', notes: '' };
 
 const read = <T>(key: string, fallback: T): T => {
   try {
@@ -93,13 +94,13 @@ export function setCustomer(data: Partial<Customer>) {
 export function orderMessage(): string {
   const lines = items.map((i) => `• ${i.qty}× ${i.title}${i.detail ? ` — ${i.detail}` : ''} (${brl(i.unit * i.qty)})`);
   const c = customer;
-  const where = [c.district.trim(), c.city.trim()].filter(Boolean).join(', ');
+  const where = [c.address.trim(), c.district.trim(), c.city.trim()].filter(Boolean).join(', ');
   return [
     'Olá! Quero fazer este pedido:',
     ...lines,
     `Total: ${brl(total())} (sem a entrega)`,
     c.name.trim() && `Nome: ${c.name.trim()}`,
-    where && `Entrega em: ${where}`,
+    where && `Endereço de entrega: ${where}`,
     c.notes.trim() && `Observações: ${c.notes.trim()}`,
     'Pagamento via Pix.',
   ]

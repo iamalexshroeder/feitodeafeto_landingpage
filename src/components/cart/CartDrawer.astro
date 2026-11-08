@@ -58,10 +58,10 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
         <div class="flex flex-col gap-4">
           <div class="flex items-start justify-between gap-4">
             <div class="flex flex-col">
-              <p class="text-label text-bordo uppercase">Seu pedido</p>
+              <p class="text-label uppercase text-bordo">Seu pedido</p>
               <p class="text-small text-muted" data-ticket-date></p>
             </div>
-            <div class="ticket-thumbs" data-ticket-thumbs aria-hidden="true"></div>
+            <div class="ticket-slices" data-ticket-thumbs aria-hidden="true"></div>
           </div>
           <hr class="ticket__rule" />
           <ul class="flex flex-col divide-y divide-dashed divide-line" data-cart-list></ul>
@@ -90,37 +90,97 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
 
     <!-- 2. Entrega -->
     <section class="cart__body" data-step="1" aria-label="Dados para a entrega" hidden>
-      <form class="flex flex-col gap-4" data-cart-form>
+      <form class="flex flex-col gap-4" data-cart-form novalidate>
         <p class="text-small text-muted">
-          Entregamos em {site.delivery}. Os dados entram na mensagem; o dia e a taxa de entrega a gente combina com
-          você.
+          Entregamos em {site.delivery}. Preencha os dados para a entrega (só as observações são opcionais); o dia e a
+          taxa de entrega a gente combina com você no WhatsApp.
         </p>
         <label class="cart__field">
-          <span>Seu nome</span>
-          <input name="name" autocomplete="name" placeholder="Como podemos te chamar?" />
+          <span>
+            Seu nome{' '}
+            <span class="text-bordo" aria-hidden="true">
+              *
+            </span>
+          </span>
+          <input
+            name="name"
+            autocomplete="name"
+            required
+            minlength="2"
+            placeholder="Como podemos te chamar?"
+            aria-describedby="erro-name"
+          />
+          <small class="cart__error" id="erro-name" hidden>
+            Conta pra gente o seu nome.
+          </small>
         </label>
         <label class="cart__field">
-          <span>Cidade</span>
-          <select name="city" autocomplete="address-level2">
+          <span>
+            Cidade{' '}
+            <span class="text-bordo" aria-hidden="true">
+              *
+            </span>
+          </span>
+          <select name="city" autocomplete="address-level2" required aria-describedby="erro-city">
             <option value="">Escolha a cidade</option>
             {site.areaServed.map((c) => (
               <option value={c}>{c}</option>
             ))}
             <option value="Outra cidade">Outra cidade</option>
           </select>
+          <small class="cart__error" id="erro-city" hidden>
+            Escolha a cidade da entrega.
+          </small>
         </label>
         <label class="cart__field">
           <span>
-            Bairro <em class="text-muted not-italic">(opcional)</em>
+            Bairro{' '}
+            <span class="text-bordo" aria-hidden="true">
+              *
+            </span>
           </span>
-          <input name="district" autocomplete="address-level3" />
+          <input
+            name="district"
+            autocomplete="address-level3"
+            required
+            minlength="2"
+            aria-describedby="erro-district"
+          />
+          <small class="cart__error" id="erro-district" hidden>
+            Informe o bairro.
+          </small>
         </label>
         <label class="cart__field">
           <span>
-            Observações <em class="text-muted not-italic">(opcional)</em>
+            Rua e número{' '}
+            <span class="text-bordo" aria-hidden="true">
+              *
+            </span>
+          </span>
+          <input
+            name="address"
+            autocomplete="street-address"
+            required
+            minlength="4"
+            placeholder="Ex.: Rua das Flores, 120, ap. 32"
+            aria-describedby="erro-address"
+          />
+          <small class="cart__error" id="erro-address" hidden>
+            Informe a rua e o número.
+          </small>
+        </label>
+        <label class="cart__field">
+          <span>
+            Observações <em class="font-normal text-muted not-italic">(opcional)</em>
           </span>
           <textarea name="notes" rows="3" placeholder="É presente? Quer um bilhete? Conte pra gente."></textarea>
         </label>
+        <p class="text-small text-muted">
+          <span class="text-bordo" aria-hidden="true">
+            *
+          </span>{' '}
+          Campos obrigatórios.
+        </p>
       </form>
     </section>
 
@@ -131,10 +191,10 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
           <div class="flex flex-col gap-4">
             <div class="flex items-start justify-between gap-4">
               <div class="flex flex-col">
-                <p class="text-label text-bordo uppercase">Resumo do pedido</p>
+                <p class="text-label uppercase text-bordo">Resumo do pedido</p>
                 <p class="text-small text-muted" data-ticket-date></p>
               </div>
-              <div class="ticket-thumbs" data-ticket-thumbs aria-hidden="true"></div>
+              <div class="ticket-slices" data-ticket-thumbs aria-hidden="true"></div>
             </div>
             <hr class="ticket__rule" />
             <ul class="flex flex-col gap-3 text-small text-ink" data-cart-summary></ul>
@@ -149,7 +209,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
           </div>
         </div>
         <div class="flex flex-col gap-3">
-          <p class="text-label text-muted uppercase">Próximos passos</p>
+          <p class="text-label uppercase text-muted">Próximos passos</p>
           <ol class="flex flex-col gap-3">
             <li class="cart__next">
               <span>1</span>Você envia o pedido pelo WhatsApp (a mensagem já vai pronta).
@@ -177,7 +237,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
           Continuar
         </button>
         <a href="#" target="_blank" rel="noopener" class="cart__btn cart__btn--primary flex-1" data-cart-send hidden>
-          Enviar pedido pelo WhatsApp<span class="sr-only"> (abre o WhatsApp)</span>
+          Enviar pelo WhatsApp<span class="sr-only"> (abre o WhatsApp)</span>
         </a>
       </div>
       <button type="button" class="cart__link self-center text-small" data-cart-clear>
@@ -309,6 +369,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
   }
   .cart__btn {
     display: inline-flex;
+    white-space: nowrap;
     min-height: 56px;
     align-items: center;
     justify-content: center;
@@ -372,28 +433,44 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     font-size: 12px;
     font-weight: 600;
   }
-  /* Miniaturas dos itens empilhadas no topo do ticket (até 3 + "+n"). */
-  .ticket-thumbs {
+  /* Mini card "fatiado": uma fatia por item (até 4), com a foto de cada um; "+n" na última se houver mais. */
+  .ticket-slices {
     display: flex;
     flex: none;
+    gap: 2px;
+    width: 128px;
+    height: 72px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--color-white);
+    box-shadow: 0 0 0 1px var(--color-line);
   }
-  .ticket-thumbs > * {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+  .ticket-slices > * {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+  .ticket-slices img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    box-shadow: 0 0 0 2px var(--color-white);
   }
-  .ticket-thumbs > * + * {
-    margin-left: -12px;
-  }
-  .ticket-thumbs > span {
+  .ticket-slices b {
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
-    background: var(--color-rosa-soft);
-    color: var(--color-bordo);
+    background: rgb(42 20 24 / 0.55);
+    color: var(--color-white);
     font-size: 12px;
+  }
+  .cart__error {
+    color: var(--color-bordo);
+    font-size: var(--text-small);
     font-weight: 600;
+  }
+  .cart__field [aria-invalid='true'] {
+    box-shadow: inset 0 0 0 1.5px var(--color-bordo);
   }
   /* Seletor de quantidade: pílula com − e + em círculos, número no meio. */
   .cart__qty {
@@ -504,14 +581,17 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     let step = 0;
     let lastChanged = '';
 
-    // miniaturas empilhadas no topo dos tickets
+    // mini card fatiado no topo dos tickets
     const renderThumbs = () => {
       const items = getItems();
-      const html =
-        items
-          .slice(0, 3)
-          .map((i) => `<img src="${i.thumb}" alt="" width="40" height="40" />`)
-          .join('') + (items.length > 3 ? `<span>+${items.length - 3}</span>` : '');
+      const shown = items.slice(0, 4);
+      const extra = items.length - shown.length;
+      const html = shown
+        .map(
+          (i, n) =>
+            `<span><img src="${i.thumb}" alt="" width="64" height="72" />${extra > 0 && n === shown.length - 1 ? `<b>+${extra}</b>` : ''}</span>`,
+        )
+        .join('');
       dialog.querySelectorAll<HTMLElement>('[data-ticket-thumbs]').forEach((el) => (el.innerHTML = html));
     };
 
@@ -577,14 +657,40 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
         }),
       );
       const c = getCustomer();
-      const place = [c.district, c.city].filter((v) => v.trim()).join(', ');
+      const place = [c.address, c.district, c.city].filter((v) => v.trim()).join(', ');
       where.textContent =
         [c.name && `Para ${c.name}`, place && `entrega em ${place}`].filter(Boolean).join(' · ') ||
         'Sem dados de entrega: a gente combina no WhatsApp.';
       send.href = `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(orderMessage())}`;
     };
 
+    // campos obrigatórios: marca os que faltam, mostra a mensagem e leva o foco ao primeiro
+    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]')];
+    const isValid = (el: HTMLInputElement | HTMLSelectElement) =>
+      el.value.trim().length >= Number(el.getAttribute('minlength') ?? 1);
+    const showError = (el: HTMLInputElement | HTMLSelectElement, on: boolean) => {
+      el.setAttribute('aria-invalid', String(on));
+      const msg = dialog.querySelector<HTMLElement>(`#erro-${el.name}`);
+      if (msg) msg.hidden = !on;
+    };
+    const validate = () => {
+      const bad = fields.filter((el) => !isValid(el));
+      fields.forEach((el) => showError(el, bad.includes(el)));
+      bad[0]?.focus();
+      return bad.length === 0;
+    };
+    fields.forEach((el) => el.addEventListener('blur', () => el.value && showError(el, !isValid(el))));
+    fields.forEach((el) =>
+      el.addEventListener('input', () => el.getAttribute('aria-invalid') === 'true' && showError(el, !isValid(el))),
+    );
+
     const go = (n: number) => {
+      // do passo 3 em diante só com os dados completos
+      if (n >= 2 && !fields.every(isValid)) {
+        if (step !== 1) go(1);
+        validate();
+        return;
+      }
       step = Math.max(0, Math.min(2, n));
       if (getItems().length === 0) step = 0;
       panels.forEach((p, i) => (p.hidden = i !== step));
@@ -601,7 +707,8 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       next.textContent = step === 0 ? 'Continuar' : 'Revisar pedido';
       if (step === 2) renderReview();
       if (step === 1) track('begin_checkout', { value: total(), items: count() });
-      panels[step].querySelector<HTMLElement>('input, select, textarea, button')?.focus({ preventScroll: true });
+      if (step !== 1)
+        panels[step].querySelector<HTMLElement>('input, select, textarea, button')?.focus({ preventScroll: true });
     };
 
     // dados de entrega: preenche e salva enquanto digita
@@ -622,7 +729,14 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     next.addEventListener('click', () => go(step + 1));
     back.addEventListener('click', () => go(step - 1));
     clearBtn.addEventListener('click', () => clear());
-    send.addEventListener('click', () => track('send_order', { value: total(), items: count() }));
+    send.addEventListener('click', (e) => {
+      if (!fields.every(isValid)) {
+        e.preventDefault();
+        go(2);
+        return;
+      }
+      track('send_order', { value: total(), items: count() });
+    });
 
     const open = () => {
       renderList();

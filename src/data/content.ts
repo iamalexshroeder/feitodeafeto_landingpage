@@ -63,18 +63,6 @@ export interface Model {
 
 export const models: Model[] = [
   {
-    id: 'modelo-100g-flor',
-    label: 'Edição especial',
-    name: 'Vela Flor de Cera',
-    orderName: 'vela de 100g com flor de cera',
-    description:
-      'A vela de 100g com uma flor esculpida em cera dentro do pote. Mais detalhada, feita para presentear e para ficar à vista.',
-    specs: ['100g', 'Flor de cera', 'Tampa de madeira'],
-    status: 'Disponível em breve',
-    media: { kind: 'placeholder', text: 'Foto do modelo com flor de cera' },
-    tint: 'pimenta-rosa',
-  },
-  {
     id: 'modelo-100g',
     label: 'Clássica',
     name: 'Vela de 100g',
@@ -280,11 +268,12 @@ export const candles: Candle[] = [
   },
 ];
 
+/** Benefícios (Figma 1:92): cada destaque com a sua cor (classe Tailwind). */
 export const trust = [
-  { title: 'Cera 100% vegetal', text: 'Queima limpa e mais lenta' },
-  { title: 'Feita à mão', text: 'Em pequenos lotes, uma a uma' },
-  { title: 'Vidro + tampa de madeira', text: 'Pote reutilizável depois da vela' },
-  { title: 'Pedido pelo WhatsApp', text: 'Atendimento direto com a gente' },
+  { title: 'Cera 100% vegetal', text: 'Queima limpa e mais lenta', color: 'text-muted' },
+  { title: 'Feita à mão', text: 'Em pequenos lotes, uma a uma', color: 'text-bordo' },
+  { title: 'Vidro + tampa de madeira', text: 'Pote reutilizável depois da vela', color: 'text-wood-dark' },
+  { title: 'Pedido pelo WhatsApp', text: 'Atendimento direto com a gente', color: 'text-bordo-dark' },
 ];
 
 export const steps = [
@@ -296,7 +285,7 @@ export const steps = [
   {
     number: '02',
     title: 'A gente produz',
-    text: 'Cada vela é feita à mão, sob encomenda, com cera vegetal e fragrância selecionada.',
+    text: 'Cada vela é feita à mão, sob encomenda, com cera vegetal e aroma selecionado.',
   },
   {
     number: '03',
@@ -336,7 +325,7 @@ export const faq: FaqItem[] = [
   {
     question: 'Como faço o pedido?',
     answer:
-      'Escolha o modelo e o aroma e clique em "Quero encomendar". Você cai direto no nosso WhatsApp, com a mensagem pronta, para combinar a entrega e o pagamento.',
+      'Escolha o modelo e o aroma e clique em "Adicionar à sacola". Na sacola, informe os dados de entrega e envie o pedido pelo WhatsApp, com a mensagem pronta; lá a gente combina a entrega e o pagamento.',
   },
   {
     question: 'Vocês entregam onde?',

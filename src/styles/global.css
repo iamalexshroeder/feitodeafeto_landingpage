@@ -21,6 +21,11 @@
   --color-muted: #7a6266;
   --color-line: #ead6d9;
   --color-wood: #b98a63;
+  /* Madeira escurecida para texto (AA sobre creme): título "Vidro + tampa de madeira" nos benefícios. */
+  --color-wood-dark: #8e6a4c;
+  /* Verde do WhatsApp (Figma, desktop): botões de conversa. Exceção aprovada ao AA (texto branco, 2,1:1). */
+  --color-whatsapp: #37ce65;
+  --color-whatsapp-dark: #2bb555;
   --color-white: #ffffff;
   /* Estrelas decorativas do hero no celular (Figma); não usar em texto. */
   --color-estrela: #ffd900;
