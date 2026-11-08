@@ -58,7 +58,10 @@ Estrutura:
 - `src/layouts/Base.astro` — `<html lang>`, skip link, `<main>` único.
 - `src/pages/robots.txt.ts` — libera ou bloqueia conforme `PUBLIC_INDEXABLE`; sitemap via `@astrojs/sitemap`.
 - `src/styles/global.css` — tokens do Figma (cores, tints, estilos de texto fluidos, `container-page`) e fonte Inter self-hosted.
-- `src/components/ui/` — `Button` (primary/secondary/ondark, sempre WhatsApp) e `CandlePhoto` (foto do pote + rótulo do aroma + sombra; geometria por vela em `content.ts`, vinda do frame "Velas" 9:125 do Figma).
+- `src/components/ui/Button.astro` — botão (primary/secondary/ondark); repassa atributos `data-*`.
+- `src/components/sections/MobileCta.astro` — barra fixa de compra no celular ("A partir de… · Ver modelos").
+- Métrica: `Base.astro` dispara `whatsapp_click` no `dataLayer` (e no Plausible, se houver) a cada clique em link do WhatsApp. Sem script de terceiro no código.
+- `README.md` — setup, scripts, estrutura e deploy (Netlify, `netlify.toml`).
 - `src/components/sections/` — uma seção do Figma por arquivo.
 
 Comandos:
@@ -66,7 +69,9 @@ Comandos:
 - `npm run build` — build de produção em `dist/`
 - `npm run validate` — checa title, description, canonical, robots, OG, h1, headings, alt, JSON-LD, robots.txt, sitemap e 404 no `dist/`
 - `npm run contrast` — contraste WCAG AA de todos os pares de cor usados
-- `npm run images` / `npm run hero` — otimizam as imagens do Figma e montam o hero (cena + vela real)
+- `npm run check` — tipos (`astro check`); `npm run format` — Prettier (Astro + ordem das classes Tailwind)
+- `npm run verify` — check + build + validate + contrast (rodar antes de publicar/commitar)
+- `npm run assets` — `brand` + `images` + `hero`; `npm run images` gera cada foto em 2 larguras (grande + `-640`/`-360` para o `srcset`)
 
 **Regras fixas (ver DESIGN.md › Regras do projeto):** paleta do DESIGN.md, contraste AA, grid de 8, títulos com -3px, botões sem ícone/emoji, efeitos leves com `prefers-reduced-motion`.
 
@@ -91,14 +96,13 @@ Nomes em minúsculas, com hífen, sem espaços. `<aroma>` = id do aroma em `src/
 |---|---|---|
 | `marca/logo.svg`, `logo-fundo-*.png` | logo original | `brand/*`, favicons, OG (`npm run brand`) |
 | `hero/hero-banner.jpg` | foto do hero (Figma) | `img/hero-banner*.webp` (`npm run hero`) |
-| `aromas/<aroma>.jpg` | fotos do Moodboard | `img/aromas/<aroma>.webp` |
-| `produto/pote-100g.png` | pote de 100g (mesmo para todos) | `img/pote-100g.webp` |
-| `produto/vela-100g-baunilha-acesa.jpg` | foto do modelo 100g | `img/vela-100g.webp` |
-| `produto/vela-40g-perfume-das-fadas-maos.jpg` | foto do modelo 40g | `img/vela-40g.webp` |
-| `produto/vela-40g-perfume-das-fadas.png` | pote de 40g recortado (alternativa) | — |
-| `rotulos/figma/<aroma>.png` | rótulo usado sobre o pote | `img/rotulos/<aroma>.webp` |
-| `rotulos/100g/`, `rotulos/40g/` | rótulos em alta (arte) | — (referência) |
-| `ui/avatar.svg`, `ui/sombra-vela.svg` | detalhes de interface | `img/*.svg` |
+| `aromas/<aroma>.jpg` | fotos do Moodboard | `img/aromas/<aroma>{-360,}.webp` |
+| `produto/100g/<aroma>.png` | fotos do modelo 100g por aroma: Pimenta Rosa é a foto do Figma; as outras são ela com a arte do rótulo (`rotulos/100g`) aplicada | `img/100g/<aroma>{-640,}.webp` |
+| `produto/40g/<aroma>.png` | fotos do modelo 40g por aroma: base Cereja com Avelã (Figma) com o rótulo 40g de cada aroma aplicado; originais em `produto/40g/fotos-originais/` | `img/40g/<aroma>{-640,-thumb,}.webp` |
+| `produto/kit/kit-<tamanho>.png` | kit com 3 velas (1 na frente, 2 atrás), por tamanho | `img/kit/kit-<tamanho>{-640,}.webp` |
+| `produto/pote-100g.png`, `produto/vela-40g-perfume-das-fadas.png` | potes recortados (alternativas) | — |
+| `rotulos/` | rótulos (arte) | — (referência) |
+| `ui/avatar.svg` | detalhe de interface | `img/avatar.svg` |
 | `referencias/` | mockups e peças de divulgação | — (não usados no site) |
 
 `assets/_remover/` (fora do git) guarda arquivos substituídos/duplicados; pode ser apagado.

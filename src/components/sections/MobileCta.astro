@@ -1,0 +1,104 @@
+---
+// Barra fixa de compra no celular (abaixo de 1024px): aparece depois do hero e some perto do CTA
+// final e do rodapé, para não cobrir o fechamento da página. Leva aos modelos (onde se escolhe
+// tamanho e aroma). Sem JS, não aparece.
+import Button from '../ui/Button.astro';
+import { models } from '../../data/content';
+
+const values = models.flatMap((m) =>
+  m.order?.type === 'kit' ? m.order.sizes.map((s) => s.priceValue) : m.priceValue ? [m.priceValue] : [],
+);
+const from = Math.min(...values).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+---
+
+<div class="mobile-cta lg:hidden" data-mobile-cta inert>
+  <div class="container-page flex items-center gap-4 py-3">
+    <p class="flex shrink-0 flex-col" data-mcta-from>
+      <span class="text-label text-muted uppercase">A partir de</span>
+      <span class="text-title text-ink">{from}</span>
+    </p>
+    <p class="flex shrink-0 flex-col" data-mcta-cart hidden>
+      <span class="text-label text-muted uppercase" data-mcta-count>
+        Sacola
+      </span>
+      <span class="text-title text-ink" data-mcta-total></span>
+    </p>
+    <Button href="#modelos" external={false} class="flex-1" data-mcta-models="">
+      Ver modelos
+    </Button>
+    <Button class="flex-1" data-open-cart="" data-mcta-open="" hidden>
+      Ver sacola
+    </Button>
+  </div>
+</div>
+
+<style>
+  .mobile-cta {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 30;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: rgb(255 255 255 / 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--color-line);
+    box-shadow: 0 -16px 32px -24px rgb(42 20 24 / 0.35);
+    transform: translateY(110%);
+    transition: transform 0.4s var(--ease-out-soft);
+  }
+  .mobile-cta.is-visible {
+    transform: none;
+  }
+</style>
+
+<script>
+  import { brl, count, total } from '../../scripts/cart';
+
+  // Com itens na sacola, a barra vira "Sacola · n itens · total" + "Ver sacola".
+  const syncCart = () => {
+    const c = count();
+    const q = <T extends HTMLElement>(s: string) => document.querySelector<T>(s);
+    q('[data-mcta-from]')!.hidden = c > 0;
+    q('[data-mcta-cart]')!.hidden = c === 0;
+    const models = q('[data-mcta-models]');
+    if (models) models.hidden = c > 0;
+    const open = q('[data-mcta-open]');
+    if (open) open.hidden = c === 0;
+    q('[data-mcta-count]')!.textContent = `${c} ${c === 1 ? 'item' : 'itens'} na sacola`;
+    q('[data-mcta-total]')!.textContent = brl(total());
+  };
+  window.addEventListener('cart:change', () => {
+    syncCart();
+    window.dispatchEvent(new Event('mcta:render'));
+  });
+  syncCart();
+
+  // Mostra a barra quando o hero saiu da tela e nenhum bloco de fechamento (CTA final, rodapé)
+  // ou de pedido está visível.
+  const bar = document.querySelector<HTMLElement>('[data-mobile-cta]');
+  const hero = document.getElementById('hero-titulo')?.closest('section');
+  if (bar && hero && 'IntersectionObserver' in window) {
+    const blockers = new Set<Element>();
+    let heroVisible = true;
+    let footerVisible = false;
+    const render = () => {
+      // com itens na sacola, a barra fica sempre à vista (menos sobre o rodapé)
+      const show = count() > 0 ? !footerVisible : !heroVisible && blockers.size === 0;
+      bar.classList.toggle('is-visible', show);
+      bar.inert = !show;
+    };
+    new IntersectionObserver(([e]) => {
+      heroVisible = e.isIntersecting;
+      render();
+    }).observe(hero);
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        e.isIntersecting ? blockers.add(e.target) : blockers.delete(e.target);
+        if (e.target.localName === 'footer') footerVisible = e.isIntersecting;
+      }
+      render();
+    });
+    const finalCta = document.getElementById('cta-final-titulo')?.closest('section');
+    [finalCta, ...document.querySelectorAll('footer, [data-order]')].forEach((el) => el && io.observe(el));
+    window.addEventListener('mcta:render', render);
+  }
+</script>

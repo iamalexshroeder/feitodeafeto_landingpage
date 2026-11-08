@@ -1,6 +1,7 @@
 ---
 // Figma: "Announcement Bar" (1:50) + "Nav" (1:52): fundo branco, logo completo, botão "navbar".
-// O menu fica fixo no topo ao rolar.
+// O menu fica fixo no topo ao rolar — e com ele a sacola, então a quantidade fica sempre à vista.
+// Celular: só o ícone da sacola com a quantidade. Desktop: "Fale com a gente" + "Sacola · n" (com itens).
 import Button from '../ui/Button.astro';
 import { site, whatsappLink } from '../../config/site';
 
@@ -16,23 +17,117 @@ const links = [
   Feitas à mão, sob encomenda<span class="hidden sm:inline"> · Peça direto pelo WhatsApp</span>
 </p>
 <header class="site-nav sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur-md">
-  <nav aria-label="Principal" class="container-page flex items-center justify-between gap-6 py-3">
+  <nav aria-label="Principal" class="container-page flex items-center justify-between gap-6 py-2">
     <a href="/" class="shrink-0">
       <img src="/brand/logo.svg" alt={site.name} width="50" height="40" class="h-10 w-auto" />
     </a>
-    <ul class="hidden items-center gap-10 lg:flex">
-      {
-        links.map((link) => (
+    <div class="flex items-center gap-2 lg:gap-10">
+      <ul class="hidden items-center gap-10 lg:flex">
+        {links.map((link) => (
           <li>
             <a href={link.href} class="text-ink transition-colors hover:text-bordo">
               {link.label}
             </a>
           </li>
-        ))
-      }
-    </ul>
-    <Button href={whatsappLink('Olá! Vim pelo site da Feito de Afeto.')} variant="secondary" size="sm">
-      Fale com a gente
-    </Button>
+        ))}
+      </ul>
+      <div class="flex items-center gap-2">
+        <Button
+          href={whatsappLink('Olá! Vim pelo site da Feito de Afeto.')}
+          variant="soft"
+          size="sm"
+          class="max-lg:hidden"
+        >
+          Fale com a gente
+        </Button>
+        <Button variant="primary" size="sm" data-open-cart="" data-cart-pill="" class="max-lg:hidden!" hidden>
+          Sacola · <span data-cart-count>0</span>
+        </Button>
+        {/* Celular: ícone padrão de carrinho com a quantidade (exceção à regra "botões sem ícone"). */}
+        <button
+          type="button"
+          class="cart-icon relative grid size-11 place-items-center rounded-full bg-rosa text-bordo transition-colors hover:bg-bordo hover:text-white lg:hidden"
+          data-open-cart
+          aria-label="Abrir a sacola, vazia"
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="9" cy="20" r="1.5" fill="currentColor"></circle>
+            <circle cx="18" cy="20" r="1.5" fill="currentColor"></circle>
+            <path
+              d="M2.5 3.5h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1l1.7-6.8H6.3"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+          <span class="cart-badge" data-cart-badge hidden>
+            0
+          </span>
+        </button>
+      </div>
+    </div>
   </nav>
 </header>
+
+<style>
+  .cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--color-bordo);
+    color: var(--color-white);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 0 0 2px var(--color-white);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.is-bump) {
+      animation: bump 0.5s var(--ease-out-soft);
+    }
+    @keyframes bump {
+      35% {
+        transform: scale(1.18);
+      }
+    }
+  }
+</style>
+
+<script>
+  import { count } from '../../scripts/cart';
+  const pill = document.querySelector<HTMLElement>('[data-cart-pill]');
+  const n = document.querySelector<HTMLElement>('[data-cart-count]');
+  const icon = document.querySelector<HTMLElement>('.cart-icon');
+  const badge = document.querySelector<HTMLElement>('[data-cart-badge]');
+  const bump = (el: HTMLElement | null) => {
+    if (!el) return;
+    el.classList.remove('is-bump');
+    void el.offsetWidth;
+    el.classList.add('is-bump');
+  };
+  const render = (animate = false) => {
+    const c = count();
+    const label = c ? `Abrir a sacola, ${c} ${c === 1 ? 'item' : 'itens'}` : 'Abrir a sacola, vazia';
+    if (n) n.textContent = String(c);
+    if (pill) pill.hidden = c === 0;
+    pill?.setAttribute('aria-label', label);
+    icon?.setAttribute('aria-label', label);
+    if (badge) {
+      badge.textContent = c > 99 ? '99+' : String(c);
+      badge.hidden = c === 0;
+    }
+    if (animate && c) {
+      bump(pill);
+      bump(badge);
+    }
+  };
+  window.addEventListener('cart:change', () => render(true));
+  render();
+</script>

@@ -5,93 +5,101 @@
 import Button from '../ui/Button.astro';
 import { candles, aromaPhotos } from '../../data/content';
 import { whatsappLink } from '../../config/site';
-
-const tintVar = {
-  'pimenta-rosa': 'var(--color-tint-pimenta-rosa)',
-  baunilha: 'var(--color-tint-baunilha)',
-  morango: 'var(--color-tint-morango)',
-  fadas: 'var(--color-tint-fadas)',
-  cereja: 'var(--color-tint-cereja)',
-} as const;
 ---
 
 <div class="flex flex-col gap-8" data-carousel>
   <div class="container-page flex items-end justify-between gap-6">
     <p class="max-w-[440px] text-muted">
       <span class="hidden lg:inline">Passe o mouse sobre um aroma para ver as notas.</span>
-      <span class="lg:hidden">Toque em um aroma para ver as notas e arraste para o lado.</span>
+      <span class="lg:hidden">Toque em um aroma</span>
     </p>
     <div class="flex shrink-0 gap-2">
       <button type="button" class="carousel-btn" data-prev aria-label="Aromas anteriores" aria-controls="aromas-track">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 15 7.5 10l5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path
+            d="M12.5 15 7.5 10l5-5"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </button>
       <button type="button" class="carousel-btn" data-next aria-label="Próximos aromas" aria-controls="aromas-track">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 15 5-5-5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path
+            d="m7.5 15 5-5-5-5"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </button>
     </div>
   </div>
 
   <ul id="aromas-track" class="carousel-track" data-track aria-label="Aromas">
-    {
-      candles.map((c, i) => (
-        <li class="carousel-slide" data-reveal style={`--reveal-delay:${i * 90}ms`}>
-          <article class="aroma-card" tabindex="0" aria-labelledby={`aroma-${c.id}`} style={`--tint:${tintVar[c.tint]}`}>
-            <span class="aroma-card__glare" aria-hidden="true" />
-            <div class="aroma-card__inner">
-              <div class="aroma-card__face aroma-card__front">
-                <img
-                  src={aromaPhotos[c.id]}
-                  alt={`Velas ${c.name} acesas sobre os ingredientes do aroma`}
-                  width="640"
-                  height="856"
-                  loading="lazy"
-                  decoding="async"
-                  draggable="false"
-                  class="aroma-card__photo absolute inset-0 size-full object-cover"
-                />
-                <span class="aroma-card__scrim" aria-hidden="true" />
-                <p class="relative text-small text-white lowercase">({c.name})</p>
-                <div class="relative mt-auto flex flex-col gap-1">
-                  <h3 id={`aroma-${c.id}`} class="text-title text-white">
-                    {c.name}
-                  </h3>
-                  <p class="text-small text-rosa">{c.family}</p>
-                </div>
-              </div>
-
-              <div class="aroma-card__face aroma-card__back">
-                <p class="text-title text-white" aria-hidden="true">
+    {candles.map((c, i) => (
+      <li class="carousel-slide" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+        <article class="aroma-card" tabindex="0" aria-labelledby={`aroma-${c.id}`}>
+          <div class="aroma-card__inner">
+            <div class="aroma-card__face aroma-card__front">
+              <img
+                src={aromaPhotos[c.id]}
+                srcset={`${aromaPhotos[c.id].replace('.webp', '-360.webp')} 360w, ${aromaPhotos[c.id]} 640w`}
+                sizes="(min-width: 640px) 282px, 80vw"
+                alt={`Velas ${c.name} acesas sobre os ingredientes do aroma`}
+                width="640"
+                height="856"
+                loading="lazy"
+                decoding="async"
+                draggable="false"
+                class="aroma-card__photo absolute inset-0 size-full object-cover"
+              />
+              <span class="aroma-card__scrim" aria-hidden="true" />
+              <p class="relative text-small text-white lowercase">({c.name})</p>
+              <div class="relative mt-auto flex flex-col gap-1">
+                <h3 id={`aroma-${c.id}`} class="text-title text-white">
                   {c.name}
-                </p>
-                <div class="flex flex-col gap-2">
-                  <p class="text-label text-rosa/80 uppercase">Pirâmide olfativa</p>
-                  <dl class="flex flex-col gap-2">
-                    {[
-                      ['Cabeça', c.notes.top],
-                      ['Corpo', c.notes.heart],
-                      ['Fundo', c.notes.base],
-                    ].map(([label, value]) => (
-                      <div class="border-t border-white/15 pt-2">
-                        <dt class="text-label text-rosa/80 uppercase">{label}</dt>
-                        <dd class="text-small text-white">{value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-                <Button
-                  href={whatsappLink(`Olá! Quero a vela ${c.name}.`)}
-                  variant="ondark"
-                  size="sm"
-                  class="mt-auto w-full"
-                >
-                  Quero esse aroma
-                </Button>
+                </h3>
+                <p class="text-small text-rosa">{c.family}</p>
               </div>
             </div>
-          </article>
-        </li>
-      ))
-    }
+
+            <div class="aroma-card__face aroma-card__back">
+              <p class="text-title text-white" aria-hidden="true">
+                {c.name}
+              </p>
+              <div class="flex flex-col gap-2">
+                <p class="text-label text-rosa/80 uppercase">Pirâmide olfativa</p>
+                <dl class="flex flex-col gap-2">
+                  {[
+                    ['Cabeça', c.notes.top],
+                    ['Corpo', c.notes.heart],
+                    ['Fundo', c.notes.base],
+                  ].map(([label, value]) => (
+                    <div class="border-t border-white/15 pt-2">
+                      <dt class="text-label text-rosa/80 uppercase">{label}</dt>
+                      <dd class="text-small text-white">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+              <Button
+                href={whatsappLink(`Olá! Quero encomendar uma vela ${c.name}. Quais tamanhos vocês têm?`)}
+                data-track-item={c.id}
+                variant="ondark"
+                size="sm"
+                class="mt-auto w-full"
+              >
+                Quero esse aroma
+              </Button>
+            </div>
+          </div>
+        </article>
+      </li>
+    ))}
   </ul>
 </div>
 
@@ -170,6 +178,10 @@ const tintVar = {
     overflow: hidden;
     backface-visibility: hidden;
   }
+  /* Nada da frente vaza no giro (a foto e o véu têm camada própria por causa do zoom). */
+  .aroma-card__face > * {
+    backface-visibility: hidden;
+  }
   .aroma-card__scrim {
     position: absolute;
     inset: 0;
@@ -179,9 +191,7 @@ const tintVar = {
   }
   .aroma-card__back {
     transform: rotateY(180deg);
-    background:
-      radial-gradient(120% 70% at 100% 0%, color-mix(in srgb, var(--tint) 22%, transparent), transparent 60%),
-      var(--color-bordo);
+    background: var(--color-bordo);
     gap: 16px;
     padding-top: 32px;
   }
@@ -198,27 +208,7 @@ const tintVar = {
     transform: rotateY(180deg);
   }
 
-  /* Brilho que segue o cursor (fica por cima das duas faces). */
-  .aroma-card {
-    position: relative;
-  }
-  .aroma-card__glare {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    border-radius: inherit;
-    pointer-events: none;
-    opacity: 0;
-    background: radial-gradient(
-      circle at var(--mx, 50%) var(--my, 30%),
-      rgb(255 255 255 / 0.22),
-      transparent 55%
-    );
-    mix-blend-mode: soft-light;
-    transition: opacity 0.4s;
-  }
-
-  /* Desktop (mouse): o card levanta, inclina seguindo o cursor, a foto aproxima e o brilho aparece.
+  /* Desktop (mouse): o card levanta, inclina seguindo o cursor e a foto aproxima.
      O giro (flip) continua por cima disso. */
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     .aroma-card {
@@ -236,9 +226,6 @@ const tintVar = {
     .aroma-card:hover {
       --lift: -8px;
       box-shadow: 0 32px 48px -24px rgb(42 20 24 / 0.45);
-    }
-    .aroma-card:hover .aroma-card__glare {
-      opacity: 1;
     }
     .aroma-card__photo {
       transition: transform 1.4s var(--ease-out-soft);
@@ -283,8 +270,7 @@ const tintVar = {
       const slide = track.querySelector<HTMLElement>('.carousel-slide');
       return slide ? slide.offsetWidth + 24 : 300;
     };
-    const go = (dir: number) =>
-      track.scrollBy({ left: dir * step(), behavior: reduce.matches ? 'auto' : 'smooth' });
+    const go = (dir: number) => track.scrollBy({ left: dir * step(), behavior: reduce.matches ? 'auto' : 'smooth' });
     prev.addEventListener('click', () => go(-1));
     next.addEventListener('click', () => go(1));
 
@@ -341,23 +327,27 @@ const tintVar = {
       true,
     );
 
-    // Desktop: inclinação 3D e brilho seguindo o cursor (só mouse, sem "reduzir movimento").
+    // Desktop: inclinação 3D seguindo o cursor (só mouse, sem "reduzir movimento").
     const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
     for (const card of track.querySelectorAll<HTMLElement>('.aroma-card')) {
       card.addEventListener('pointermove', (e) => {
-        if (e.pointerType !== 'mouse' || !finePointer.matches || reduce.matches || track.classList.contains('is-dragging')) return;
+        if (
+          e.pointerType !== 'mouse' ||
+          !finePointer.matches ||
+          reduce.matches ||
+          track.classList.contains('is-dragging')
+        )
+          return;
         const r = card.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width;
         const y = (e.clientY - r.top) / r.height;
         card.classList.add('is-tilting');
         card.style.setProperty('--ry', `${((x - 0.5) * 10).toFixed(2)}deg`);
         card.style.setProperty('--rx', `${((0.5 - y) * 8).toFixed(2)}deg`);
-        card.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
-        card.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
       });
       card.addEventListener('pointerleave', () => {
         card.classList.remove('is-tilting');
-        for (const p of ['--rx', '--ry', '--mx', '--my']) card.style.removeProperty(p);
+        for (const p of ['--rx', '--ry']) card.style.removeProperty(p);
       });
     }
 
@@ -368,7 +358,8 @@ const tintVar = {
       if (target.closest('a')) return;
       const card = target.closest<HTMLElement>('.aroma-card');
       if (!card) return;
-      for (const other of track.querySelectorAll('.aroma-card.is-flipped')) if (other !== card) other.classList.remove('is-flipped');
+      for (const other of track.querySelectorAll('.aroma-card.is-flipped'))
+        if (other !== card) other.classList.remove('is-flipped');
       card.classList.toggle('is-flipped');
     });
   }

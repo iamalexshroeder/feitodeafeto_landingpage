@@ -1,15 +1,17 @@
 ---
 // Figma: componente "Button" (1:39), sem ícone. Todos os CTAs de compra levam ao WhatsApp.
 // Variantes: primary (bordô), secondary (contorno), ondark (branco sobre bordô).
-// Grid de 8: 32px × 20px de respiro, 56px de altura (alvo de toque ≥ 44px).
+// Grid de 8: 56px de altura no celular (alvo de toque), 48px no desktop.
 interface Props {
-  href: string;
-  variant?: 'primary' | 'secondary' | 'ondark';
+  /** Sem href, vira <button type="button"> (ações na página, como adicionar à sacola). */
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ondark' | 'soft';
   class?: string;
   /** Link externo (WhatsApp) abre em nova aba. */
   external?: boolean;
   /** sm = variante "navbar-buttom" do Figma (40px de altura). */
   size?: 'md' | 'sm';
+  hidden?: boolean;
   [key: `data-${string}`]: string | undefined;
 }
 
@@ -20,22 +22,41 @@ const styles = {
   // Contorno via sombra interna: não soma à altura (mantém 56px no grid de 8).
   secondary: 'text-bordo shadow-[inset_0_0_0_1.5px_var(--color-bordo)] hover:bg-bordo hover:text-white',
   ondark: 'bg-white text-bordo hover:bg-rosa',
+  // Rosa preenchido (Figma: Menu preenchido): menu e 'Ver a coleção' no celular.
+  soft: 'bg-rosa text-bordo hover:bg-bordo hover:text-white',
 };
 ---
 
-<a
-  href={href}
-  class:list={[
-    'inline-flex items-center justify-center rounded-full px-8 text-body leading-none font-semibold whitespace-nowrap transition-colors duration-200',
-    // No celular, os CTAs ocupam toda a largura disponível (respeitando o padding do container).
-    // O botão "sm" (menu) mantém a largura do conteúdo.
-    size === 'sm' ? 'min-h-10 py-3' : 'min-h-14 py-5 max-sm:w-full',
-    styles[variant],
-    className,
-  ]}
-  {...external ? { target: '_blank', rel: 'noopener' } : {}}
-  {...rest}
->
-  <slot />
-  {external && <span class="sr-only">(abre o WhatsApp)</span>}
-</a>
+{href ? (
+  <a
+    href={href}
+    class:list={[
+      'inline-flex items-center justify-center rounded-full px-8 text-body leading-none font-semibold whitespace-nowrap transition-colors duration-200',
+      // No celular, os CTAs ocupam toda a largura disponível (respeitando o padding do container).
+      // O botão "sm" (menu) mantém a largura do conteúdo.
+      size === 'sm' ? 'min-h-10 py-3' : 'min-h-14 py-5 max-sm:w-full lg:min-h-12 lg:px-6 lg:py-4',
+      styles[variant],
+      className,
+    ]}
+    {...(external ? { target: '_blank', rel: 'noopener' } : {})}
+    {...rest}
+  >
+    <slot />
+    {external && <span class="sr-only">{href.includes('wa.me') ? '(abre o WhatsApp)' : '(abre em nova aba)'}</span>}
+  </a>
+) : (
+  <button
+    type="button"
+    class:list={[
+      'inline-flex items-center justify-center rounded-full px-8 text-body leading-none font-semibold whitespace-nowrap transition-colors duration-200',
+      // No celular, os CTAs ocupam toda a largura disponível (respeitando o padding do container).
+      // O botão "sm" (menu) mantém a largura do conteúdo.
+      size === 'sm' ? 'min-h-10 py-3' : 'min-h-14 py-5 max-sm:w-full lg:min-h-12 lg:px-6 lg:py-4',
+      styles[variant],
+      className,
+    ]}
+    {...rest}
+  >
+    <slot />
+  </button>
+)}

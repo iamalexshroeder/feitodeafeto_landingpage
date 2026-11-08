@@ -4,7 +4,7 @@
 // Compra: escolha do aroma (ou do tamanho + 3 aromas no kit) monta a mensagem pronta do WhatsApp.
 // Sem JS, o botão abre o WhatsApp com a mensagem padrão (sem aroma escolhido).
 import Button from '../ui/Button.astro';
-import CandlePhoto from '../ui/CandlePhoto.astro';
+import AromaSelect from '../ui/AromaSelect.astro';
 import { site, whatsappLink } from '../../config/site';
 import { candles, type Model } from '../../data/content';
 
@@ -21,16 +21,32 @@ const tints = {
   fadas: 'bg-tint-fadas',
   cereja: 'bg-tint-cereja',
 } as const;
-const jarPhoto = candles.find((c) => c.id === 'baunilha')!.photo;
 const headingId = `${model.id}-titulo`;
 const order = model.order;
 const kitSize = order?.type === 'kit' ? order.sizes[0] : undefined;
 const price = kitSize?.price ?? model.price;
 
-// Mensagem padrão (igual à que o script monta quando nenhum aroma foi escolhido).
+// Galeria de aromas (estilo loja): miniaturas clicáveis no banner trocam a foto e escolhem o aroma.
+// Só nos modelos avulsos que têm foto por aroma (100g e 40g); começa no aroma da foto padrão.
+const byAroma = model.media.kind === 'photo' ? model.media.byAroma : undefined;
+// Camadas de foto que trocam com fade: por aroma (100g, 40g) ou por tamanho (kit).
+const variants = model.media.kind === 'photo' ? (model.media.byAroma ?? model.media.bySize ?? {}) : {};
+const gallery =
+  byAroma && order?.type === 'single'
+    ? candles
+        .filter((c) => byAroma[c.name])
+        .map((c) => ({ name: c.name, thumb: byAroma[c.name].src.replace('.webp', '-thumb.webp') }))
+    : [];
+const defaultAroma = gallery.length
+  ? (Object.entries(byAroma!).find(([, v]) => v.src === (model.media as { src: string }).src)?.[0] ?? gallery[0].name)
+  : '';
+
+// Mensagem padrão (igual à que o script monta sem JS ou sem escolha).
 const defaultMessage = kitSize
   ? `Olá! Quero encomendar o kit com 3 velas de ${kitSize.size} (${kitSize.price}). Me ajuda a escolher os aromas?`
-  : `Olá! Quero encomendar a ${model.orderName}. Quais aromas estão disponíveis?`;
+  : defaultAroma
+    ? `Olá! Quero encomendar a ${model.orderName} no aroma ${defaultAroma}.`
+    : `Olá! Quero encomendar a ${model.orderName}. Quais aromas estão disponíveis?`;
 const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
 ---
 
@@ -38,164 +54,235 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
   id={model.id}
   aria-labelledby={headingId}
   class:list={[
-    'container-page grid items-center gap-10 py-10 lg:gap-24 lg:py-12',
+    // Compacto no desktop: cada bloco cabe numa tela de notebook (~680px) sob o menu.
+    'container-page grid items-center gap-10 py-10 lg:gap-24 lg:py-10',
     reverse ? 'lg:grid-cols-[minmax(0,520fr)_minmax(0,600fr)]' : 'lg:grid-cols-[minmax(0,600fr)_minmax(0,520fr)]',
   ]}
 >
-  <div
-    data-reveal="zoom"
-    class:list={[
-      'relative flex aspect-[600/560] items-center justify-center overflow-hidden rounded-[var(--radius-media)]',
-      tints[model.tint],
-      reverse && 'lg:order-2',
-    ]}
-  >
-    {
-      model.media.kind === 'photo' && (
+  <div class:list={['relative', reverse && 'lg:order-2']}>
+    <div
+      data-reveal="zoom"
+      class:list={[
+        'relative flex aspect-[600/560] lg:aspect-[600/512] items-center justify-center overflow-hidden rounded-[var(--radius-media)]',
+        tints[model.tint],
+      ]}
+    >
+      {model.media.kind === 'photo' && (
         <img
           src={model.media.src}
+          srcset={`${model.media.src.replace('.webp', '-640.webp')} 640w, ${model.media.src} ${model.media.width}w`}
+          sizes="(min-width: 1024px) 600px, calc(100vw - 48px)"
           alt={model.media.alt}
           width={model.media.width}
           height={model.media.height}
           loading="lazy"
           decoding="async"
-          class="absolute inset-0 size-full object-cover"
+          class="media-layer is-shown absolute inset-0 size-full object-cover"
+          data-media-default
+          data-aromas={Object.entries(variants)
+            .filter(([, v]) => v.src === (model.media as { src: string }).src)
+            .map(([k]) => k)
+            .join('|')}
         />
-      )
-    }
-    {
-      model.media.kind === 'cutout' && (
-        <img
-          src={model.media.src}
-          alt={model.media.alt}
-          width={model.media.width}
-          height={model.media.height}
-          loading="lazy"
-          decoding="async"
-          class="relative mt-[4%] h-[64%] w-auto drop-shadow-[0_24px_24px_rgb(42_20_24/0.25)]"
-        />
-      )
-    }
-    {
-      model.media.kind === 'jar' && (
-        <CandlePhoto photo={jarPhoto} alt="Vela de 100g em pote de vidro com tampa de madeira" class="mt-[6%] w-[80%]" />
-      )
-    }
-    {
-      model.media.kind === 'placeholder' && (
+      )}
+      {/* Fotos por aroma: carregadas só quando a cliente chega perto do pedido; trocam com fade. */}
+      {model.media.kind === 'photo' &&
+        Object.entries(variants)
+          .filter(([, v]) => v.src !== (model.media as { src: string }).src)
+          .map(([aroma, v]) => (
+            <img
+              data-src={v.src}
+              data-srcset={`${v.src.replace('.webp', '-640.webp')} 640w, ${v.src} ${(model.media as { width: number }).width}w`}
+              sizes="(min-width: 1024px) 600px, calc(100vw - 48px)"
+              alt={v.alt}
+              width={(model.media as { width: number }).width}
+              height={(model.media as { height: number }).height}
+              decoding="async"
+              aria-hidden="true"
+              class="media-layer absolute inset-0 size-full object-cover"
+              data-aromas={aroma}
+            />
+          ))}
+      {model.media.kind === 'placeholder' && (
         <div class="flex max-w-[280px] flex-col items-center gap-4 text-center">
           <img src="/brand/logo.svg" alt="" width="120" height="96" loading="lazy" class="w-28 opacity-60" />
           <p class="text-small text-bordo">{model.media.text}</p>
         </div>
-      )
-    }
+      )}
+    </div>
   </div>
 
-  <div class="flex flex-col items-start gap-6" data-reveal style="--reveal-delay: 120ms">
+  <div class="flex flex-col items-start gap-6 lg:gap-4" data-reveal style="--reveal-delay: 120ms">
     <p class="text-label text-bordo uppercase">{model.label}</p>
-    <h3 id={headingId} class="text-h2 text-ink">{model.name}</h3>
+    <h3 id={headingId} class="text-h2 text-ink">
+      {model.name}
+    </h3>
     <p class="max-w-[504px] text-body-l text-muted">{model.description}</p>
 
-    <ul class="flex flex-wrap gap-2" aria-label="Especificações">
-      {model.specs.map((spec) => <li class="rounded-full bg-rosa-soft px-4 py-2 text-small text-bordo">{spec}</li>)}
-    </ul>
+    {/* No kit, as opções de tamanho já dizem o que os chips diriam: chips só nos modelos avulsos. */}
+    {order?.type !== 'kit' && (
+      <ul class="flex flex-wrap gap-2" aria-label="Especificações">
+        {model.specs.map((spec) => (
+          <li class="rounded-full bg-rosa-soft px-4 py-2 text-small text-bordo">{spec}</li>
+        ))}
+      </ul>
+    )}
 
-    {
-      !order && (
-        <p class="inline-flex min-h-14 items-center rounded-full px-8 font-semibold text-bordo shadow-[inset_0_0_0_1.5px_var(--color-bordo)] max-sm:w-full max-sm:justify-center">
-          {model.status ?? 'Sob consulta'}
-        </p>
-      )
-    }
+    {!order && (
+      <p class="inline-flex min-h-14 items-center rounded-full px-8 lg:min-h-12 lg:px-6 font-semibold text-bordo shadow-[inset_0_0_0_1.5px_var(--color-bordo)] max-sm:w-full max-sm:justify-center">
+        {model.status ?? 'Sob consulta'}
+      </p>
+    )}
 
-    {
-      order && (
-        <div
-          class="flex w-full max-w-[504px] flex-col gap-6"
-          data-order={order.type}
-          data-name={model.orderName}
-          data-phone={site.whatsapp}
-        >
-          {kitSize && order.type === 'kit' && (
-            <fieldset class="flex flex-col gap-2">
-              <legend class="mb-2 text-label text-muted uppercase">Tamanho</legend>
-              <div class="grid grid-cols-2 gap-2">
-                {order.sizes.map((s, i) => (
-                  <label class="relative">
-                    <input
-                      type="radio"
-                      name={`${model.id}-tamanho`}
-                      value={s.id}
-                      checked={i === 0}
-                      data-size={s.size}
-                      data-price={s.price}
-                      data-saving={s.saving}
-                      class="peer sr-only"
-                    />
-                    <span class="flex min-h-14 cursor-pointer items-center justify-center rounded-full bg-white px-4 text-center font-semibold text-ink ring-1 ring-line transition-colors ring-inset peer-checked:bg-bordo peer-checked:text-white peer-checked:ring-bordo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo">
-                      {s.label}
+    {order && (
+      <div
+        class="flex w-full max-w-[504px] flex-col gap-6 lg:gap-4"
+        data-order={order.type}
+        data-name={model.orderName}
+        data-phone={site.whatsapp}
+        data-model={model.id}
+        data-title={model.name}
+        data-unit={model.priceValue}
+      >
+        {kitSize && order.type === 'kit' && (
+          <fieldset class="flex w-full min-w-0 flex-col">
+            <legend class="mb-2 text-label text-muted uppercase">Tamanho</legend>
+            <div class="grid grid-cols-2 gap-2">
+              {order.sizes.map((s, i) => (
+                <label class="relative flex">
+                  <input
+                    type="radio"
+                    name={`${model.id}-tamanho`}
+                    value={s.id}
+                    checked={i === 0}
+                    data-size={s.size}
+                    data-price={s.price}
+                    data-price-value={s.priceValue}
+                    data-thumb={`/img/kit/kit-${s.id}-thumb.webp`}
+                    class="peer sr-only"
+                  />
+                  {/* Opção com o valor de cada tamanho visível (os dois preços lado a lado). */}
+                  <span class="size-opt flex h-full w-full cursor-pointer flex-col rounded-2xl bg-white px-4 py-4 text-ink ring-1 ring-line transition-colors ring-inset peer-checked:bg-bordo peer-checked:text-white peer-checked:ring-bordo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo sm:px-6">
+                    <span class="font-semibold">{s.label}</span>
+                    <span class="flex flex-wrap items-baseline gap-x-2">
+                      <span class="text-title">{s.price}</span>
+                      <span class="size-saving text-small text-bordo">{s.saving}</span>
                     </span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-          )}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
 
+        {/* 100g e 40g: aroma escolhido + miniaturas logo abaixo (estilo loja); clicar troca a foto. Kit: 3 campos. */}
+        {gallery.length > 0 ? (
+          <fieldset class="flex flex-col gap-2">
+            <legend class="mb-2 text-small text-muted">
+              <span class="text-label uppercase">Aroma:</span>{' '}
+              <span class="font-semibold text-ink" data-aroma-name aria-live="polite">
+                {defaultAroma}
+              </span>
+            </legend>
+            <div class="grid w-full grid-cols-5 gap-2 sm:flex sm:w-auto">
+              {gallery.map((g) => (
+                <label class="thumb group relative block cursor-pointer" title={g.name}>
+                  <input
+                    type="radio"
+                    name={`${model.id}-aroma`}
+                    value={g.name}
+                    checked={g.name === defaultAroma}
+                    class="peer sr-only"
+                    data-aroma-radio
+                  />
+                  <img
+                    src={g.thumb}
+                    alt=""
+                    width="160"
+                    height="160"
+                    loading="lazy"
+                    decoding="async"
+                    class="aspect-square w-full rounded-lg object-cover ring-1 ring-line transition-[box-shadow,transform] duration-300 ease-[var(--ease-out-soft)] peer-checked:ring-2 peer-checked:ring-bordo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo sm:size-12 group-hover:-translate-y-0.5 group-hover:scale-[1.06] group-hover:shadow-[0_8px_16px_-8px_rgb(42_20_24/0.4)] group-active:scale-95"
+                  />
+                  <span class="sr-only">{g.name}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ) : (
           <div class="flex flex-col gap-2">
             <p class="text-label text-muted uppercase" id={`${model.id}-aromas`}>
               {slots.length > 1 ? 'Aromas' : 'Aroma'}
             </p>
             <div class:list={['grid gap-2', slots.length > 1 && 'sm:grid-cols-3']}>
               {slots.map((n) => (
-                <select
-                  class="order-select min-h-14 w-full cursor-pointer appearance-none rounded-full bg-white pr-12 pl-6 text-body text-ink ring-1 ring-line ring-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bordo"
-                  aria-label={slots.length > 1 ? `Aroma da vela ${n}` : 'Aroma'}
-                  aria-describedby={`${model.id}-aromas`}
-                >
-                  <option value="">{slots.length > 1 ? `Vela ${n}` : 'Escolha o aroma'}</option>
-                  {candles.map((c) => (
-                    <option value={c.name}>{c.name}</option>
-                  ))}
-                </select>
+                <AromaSelect
+                  label={slots.length > 1 ? `Aroma da vela ${n}` : 'Aroma'}
+                  placeholder={slots.length > 1 ? `Vela ${n}` : 'Escolha o aroma'}
+                  describedBy={`${model.id}-aromas`}
+                />
               ))}
             </div>
           </div>
+        )}
 
-          {/* Compra: no desktop botão à esquerda e valor ao lado (Figma); no celular valor em cima. */}
-          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-            <div class="flex flex-col sm:order-2">
-              <p class="text-label text-muted uppercase">Valor</p>
-              <p class="text-h3 text-ink" data-order-price aria-live="polite">{price}</p>
-              {kitSize && (
-                <p class="text-small text-bordo" data-order-saving>
-                  {kitSize.saving}
-                </p>
-              )}
-            </div>
-            <Button href={whatsappLink(defaultMessage)} class="sm:order-1" data-order-cta="">
-              Quero encomendar
-            </Button>
+        {/* Compra: no desktop botão à esquerda e valor ao lado (Figma); no celular valor em cima. */}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <div class="flex flex-col sm:order-2">
+            <p class="text-label text-muted uppercase">Valor</p>
+            <p class="text-h3 text-ink" data-order-price aria-live="polite">
+              {price}
+            </p>
           </div>
-
-          <p class="text-small text-muted">
-            Entrega em {site.delivery} · Pagamento via {site.payment}
-          </p>
+          <Button class="sm:order-1" data-add-to-cart="">
+            Adicionar à sacola
+          </Button>
         </div>
-      )
-    }
+
+        {/* Quem quer só este item pode pedir direto, sem passar pela sacola. */}
+        <a
+          href={whatsappLink(defaultMessage)}
+          target="_blank"
+          rel="noopener"
+          class="self-start text-small font-semibold text-bordo underline underline-offset-4 hover:text-bordo-dark max-sm:self-center"
+          data-order-cta=""
+          data-track-item={model.id}
+        >
+          Ou peça só este direto pelo WhatsApp<span class="sr-only"> (abre o WhatsApp)</span>
+        </a>
+
+        <p class="text-small text-muted lg:-mt-2">
+          Entrega em {site.delivery} · Pagamento via {site.payment}
+        </p>
+      </div>
+    )}
   </div>
 </article>
 
 <style>
-  /* Seta do select (detalhe de campo, não de botão). */
-  .order-select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%236B1E2E' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 24px center;
+  /* Opção de tamanho escolhida: economia em rosa sobre o bordô (AA). */
+  input:checked + .size-opt .size-saving {
+    color: var(--color-rosa);
+  }
+
+  /* Troca de foto por aroma: fade de 0,6s com um leve assentar (1.03 → 1). Sem movimento com
+     prefers-reduced-motion (a regra global zera as durações). */
+  .media-layer {
+    opacity: 0;
+    transform: scale(1.03);
+    transition:
+      opacity 0.6s var(--ease-out-soft),
+      transform 1.2s var(--ease-out-soft);
+  }
+  .media-layer.is-shown {
+    opacity: 1;
+    transform: none;
   }
 </style>
 
 <script>
+  import { add } from '../../scripts/cart';
+
   // Monta a mensagem do WhatsApp com o modelo, o tamanho (kit) e os aromas escolhidos.
   const list = (items: string[]) =>
     items.length > 1 ? `${items.slice(0, -1).join(', ')} e ${items[items.length - 1]}` : items[0];
@@ -203,18 +290,21 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
   document.querySelectorAll<HTMLElement>('[data-order]').forEach((box) => {
     const cta = box.querySelector<HTMLAnchorElement>('[data-order-cta]');
     const priceEl = box.querySelector<HTMLElement>('[data-order-price]');
-    const savingEl = box.querySelector<HTMLElement>('[data-order-saving]');
     const selects = [...box.querySelectorAll<HTMLSelectElement>('select')];
+    // A galeria de aromas fica no banner (fora do bloco do pedido), no mesmo <article>.
+    const scope = box.closest('article') ?? box;
+    const nameEl = box.querySelector<HTMLElement>('[data-aroma-name]');
     if (!cta) return;
 
     const update = () => {
-      const chosen = selects.map((s) => s.value);
+      const radio = scope.querySelector<HTMLInputElement>('[data-aroma-radio]:checked');
+      const chosen = radio ? [radio.value] : selects.map((s) => s.value);
+      if (nameEl && radio) nameEl.textContent = radio.value;
       let text: string;
       if (box.dataset.order === 'kit') {
         const size = box.querySelector<HTMLInputElement>('input[type=radio]:checked');
-        const { size: grams = '', price = '', saving = '' } = size?.dataset ?? {};
+        const { size: grams = '', price = '' } = size?.dataset ?? {};
         if (priceEl) priceEl.textContent = price;
-        if (savingEl) savingEl.textContent = saving;
         text = `Olá! Quero encomendar o kit com 3 velas de ${grams} (${price}).`;
         text += chosen.some(Boolean)
           ? ` Aromas: ${list(chosen.map((a) => a || 'a escolher'))}.`
@@ -227,7 +317,85 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
       cta.href = `https://wa.me/${box.dataset.phone}?text=${encodeURIComponent(text)}`;
     };
 
-    box.addEventListener('change', update);
+    scope.addEventListener('change', update);
     update();
+
+    // Adicionar à sacola: monta o item com o que está escolhido agora.
+    const addBtn = box.querySelector<HTMLButtonElement>('[data-add-to-cart]');
+    addBtn?.addEventListener('click', () => {
+      const chosen = selects.map((s) => s.value);
+      if (box.dataset.order === 'kit') {
+        const size = box.querySelector<HTMLInputElement>('input[data-size]:checked');
+        const grams = size?.dataset.size ?? '';
+        const aromas = chosen.some(Boolean) ? list(chosen.map((a) => a || 'a escolher')) : 'aromas a combinar';
+        add({
+          key: `kit|${grams}|${chosen.join(',')}`,
+          title: `Kit com 3 velas de ${grams}`,
+          detail: aromas,
+          unit: Number(size?.dataset.priceValue ?? 0),
+          thumb: size?.dataset.thumb ?? '',
+        });
+      } else {
+        const radio = scope.querySelector<HTMLInputElement>('[data-aroma-radio]:checked');
+        const aroma = radio?.value ?? chosen[0] ?? '';
+        const thumb = radio?.parentElement?.querySelector('img')?.getAttribute('src') ?? '';
+        add({
+          key: `${box.dataset.model}|${aroma}`,
+          title: box.dataset.title ?? '',
+          detail: aroma,
+          unit: Number(box.dataset.unit ?? 0),
+          thumb,
+        });
+      }
+      // retorno no próprio botão
+      const label = addBtn.textContent;
+      addBtn.textContent = 'Adicionado à sacola';
+      addBtn.disabled = true;
+      setTimeout(() => {
+        addBtn.textContent = label;
+        addBtn.disabled = false;
+      }, 1400);
+    });
+  });
+
+  // Foto por aroma (100g e 40g): a miniatura escolhida troca a foto com um fade suave. As fotos extras
+  // só carregam quando a cliente chega perto do bloco (passa o mouse, toca ou foca).
+  document.querySelectorAll<HTMLElement>('article').forEach((article) => {
+    const layers = [...article.querySelectorAll<HTMLImageElement>('.media-layer')];
+    const box = article.querySelector<HTMLElement>('[data-order]');
+    if (layers.length < 2 || !box) return;
+    const select = box.querySelector('select');
+    const current = () =>
+      article.querySelector<HTMLInputElement>('[data-aroma-radio]:checked')?.value ??
+      article.querySelector<HTMLInputElement>('input[data-size]:checked')?.value ??
+      select?.value ??
+      '';
+    const base = layers.find((l) => 'mediaDefault' in l.dataset)!;
+
+    const load = (img: HTMLImageElement) => {
+      if (img.dataset.src && !img.src) {
+        if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+        img.src = img.dataset.src;
+      }
+      return img.decode().catch(() => undefined);
+    };
+    const preload = () => layers.forEach(load);
+    for (const ev of ['pointerenter', 'focusin', 'touchstart'])
+      article.addEventListener(ev, preload, { once: true, passive: true });
+
+    let token = 0;
+    const show = async () => {
+      const value = current();
+      const target = layers.find((l) => (l.dataset.aromas ?? '').split('|').includes(value)) ?? base;
+      const mine = ++token;
+      await load(target);
+      if (mine !== token) return; // outra escolha chegou antes de a foto carregar
+      for (const l of layers) {
+        const on = l === target;
+        l.classList.toggle('is-shown', on);
+        l.setAttribute('aria-hidden', String(!on));
+      }
+    };
+    article.addEventListener('change', show);
   });
 </script>

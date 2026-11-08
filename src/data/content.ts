@@ -1,17 +1,9 @@
 // Conteúdo da landing. Fonte: Figma "Feito de Afeto — Landing Page" (frame Desktop 1440, node 1:49).
 // Notas olfativas (cabeça / corpo / fundo): cartões "Pirâmide olfativa" da página Moodboard do Figma.
-// Projeto conceitual: avaliações, números e depoimentos são de exemplo (ver docs/briefing.md).
+// Projeto conceitual: números e depoimentos são de exemplo (ver docs/briefing.md).
 import type { FaqItem } from '../components/JsonLd.astro';
 
 export type Tint = 'pimenta-rosa' | 'baunilha' | 'morango' | 'fadas' | 'cereja';
-
-/** Geometria da foto no Figma (frame "Velas", 9:125), em % da caixa da imagem. */
-export interface CandlePhotoSpec {
-  label: 'pimenta-rosa' | 'baunilha' | 'morango-com-champanhe' | 'perfume-das-fadas' | 'cereja-com-avela'; // = id do aroma
-  labelTop: number;
-  shadowTop: number;
-  shadowLeft: number;
-}
 
 export interface Candle {
   id: string;
@@ -21,9 +13,7 @@ export interface Candle {
   description: string;
   notes: { top: string; heart: string; base: string };
   tint: Tint;
-  photo: CandlePhotoSpec;
 }
-
 
 /** Opção do kit (tamanho das 3 velas). saving = diferença para as 3 avulsas. */
 export interface KitSize {
@@ -31,6 +21,8 @@ export interface KitSize {
   label: string;
   size: string;
   price: string;
+  /** Valor numérico (R$) para o schema Product. */
+  priceValue: number;
   saving: string;
 }
 
@@ -48,12 +40,23 @@ export interface Model {
   description: string;
   specs: string[];
   price?: string;
+  /** Valor numérico (R$) para o schema Product. */
+  priceValue?: number;
   status?: string;
   order?: { type: 'single' } | { type: 'kit'; sizes: KitSize[] };
   media:
-    | { kind: 'photo'; src: string; alt: string; width: number; height: number; numberTone?: 'light' | 'dark' }
-    | { kind: 'cutout'; src: string; alt: string; width: number; height: number }
-    | { kind: 'jar' }
+    /** src = versão grande; a versão de celular é a mesma com sufixo -640 (scripts/build-images.mjs). */
+    | {
+        kind: 'photo';
+        src: string;
+        alt: string;
+        width: number;
+        height: number;
+        /** Foto por aroma (chave = nome do aroma): troca com fade quando a cliente escolhe o aroma. */
+        byAroma?: Record<string, { src: string; alt: string }>;
+        /** Foto por tamanho do kit (chave = id do tamanho): troca com fade quando a cliente escolhe o tamanho. */
+        bySize?: Record<string, { src: string; alt: string }>;
+      }
     | { kind: 'placeholder'; text: string };
   tint: Tint;
 }
@@ -80,34 +83,77 @@ export const models: Model[] = [
       'O nosso formato de sempre: pote de vidro com tampa de madeira, que continua com você depois da última chama.',
     specs: ['100g', '~25h de queima', 'Cera vegetal'],
     price: 'R$ 45,00',
+    priceValue: 45,
     order: { type: 'single' },
     media: {
       kind: 'photo',
-      src: '/img/vela-100g.webp',
-      alt: 'Mão acendendo com um fósforo a vela Baunilha de 100g, apoiada na tampa de madeira',
+      src: '/img/100g/pimenta-rosa.webp',
+      alt: 'Vela de 100g Pimenta Rosa acesa, em pote de vidro, com a tampa de madeira ao lado',
       width: 1200,
       height: 1120,
-      numberTone: 'dark',
+      byAroma: {
+        'Pimenta Rosa': {
+          src: '/img/100g/pimenta-rosa.webp',
+          alt: 'Vela de 100g Pimenta Rosa acesa, em pote de vidro, com a tampa de madeira ao lado',
+        },
+        Baunilha: {
+          src: '/img/100g/baunilha.webp',
+          alt: 'Vela de 100g Baunilha acesa, em pote de vidro, com a tampa de madeira ao lado',
+        },
+        'Morango com Champanhe': {
+          src: '/img/100g/morango-com-champanhe.webp',
+          alt: 'Vela de 100g Morango com Champanhe acesa, em pote de vidro, com a tampa de madeira ao lado',
+        },
+        'Perfume das Fadas': {
+          src: '/img/100g/perfume-das-fadas.webp',
+          alt: 'Vela de 100g Perfume das Fadas acesa, em pote de vidro, com a tampa de madeira ao lado',
+        },
+        'Cereja com Avelã': {
+          src: '/img/100g/cereja-com-avela.webp',
+          alt: 'Vela de 100g Cereja com Avelã acesa, em pote de vidro, com a tampa de madeira ao lado',
+        },
+      },
     },
-    tint: 'baunilha',
+    tint: 'pimenta-rosa',
   },
   {
     id: 'modelo-40g',
     label: 'Mini',
     name: 'Vela de 40g',
     orderName: 'vela de 40g',
-    description:
-      'Do tamanho certo para experimentar um aroma novo, levar na viagem ou presentear sem pesar no bolso.',
+    description: 'Do tamanho certo para experimentar um aroma novo, levar na viagem ou presentear sem pesar no bolso.',
     specs: ['40g', 'Cera vegetal', 'Pote de vidro'],
     price: 'R$ 20,00',
+    priceValue: 20,
     order: { type: 'single' },
     media: {
       kind: 'photo',
-      src: '/img/vela-40g.webp',
-      alt: 'Mãos segurando a vela de 40g Perfume das Fadas, em pote de vidro com rolha de cortiça',
-      width: 1024,
-      height: 956,
-      numberTone: 'dark',
+      src: '/img/40g/cereja-com-avela.webp',
+      alt: 'Vela de 40g Cereja com Avelã acesa, em pote de vidro, com a rolha de cortiça ao lado',
+      width: 1200,
+      height: 1120,
+      byAroma: {
+        'Pimenta Rosa': {
+          src: '/img/40g/pimenta-rosa.webp',
+          alt: 'Vela de 40g Pimenta Rosa acesa, em pote de vidro, com a rolha de cortiça ao lado',
+        },
+        'Cereja com Avelã': {
+          src: '/img/40g/cereja-com-avela.webp',
+          alt: 'Vela de 40g Cereja com Avelã acesa, em pote de vidro, com a rolha de cortiça ao lado',
+        },
+        Baunilha: {
+          src: '/img/40g/baunilha.webp',
+          alt: 'Vela de 40g Baunilha acesa, em pote de vidro, com a rolha de cortiça ao lado',
+        },
+        'Perfume das Fadas': {
+          src: '/img/40g/perfume-das-fadas.webp',
+          alt: 'Vela de 40g Perfume das Fadas acesa, em pote de vidro, com a rolha de cortiça ao lado',
+        },
+        'Morango com Champanhe': {
+          src: '/img/40g/morango-com-champanhe.webp',
+          alt: 'Vela de 40g Morango com Champanhe acesa, em pote de vidro, com a rolha de cortiça ao lado',
+        },
+      },
     },
     tint: 'fadas',
   },
@@ -123,22 +169,46 @@ export const models: Model[] = [
     order: {
       type: 'kit',
       sizes: [
-        { id: '100g', label: '3 de 100g', size: '100g', price: 'R$ 120,00', saving: 'R$ 15 a menos que avulsas' },
-        { id: '40g', label: '3 de 40g', size: '40g', price: 'R$ 55,00', saving: 'R$ 5 a menos que avulsas' },
+        {
+          id: '100g',
+          label: '3 velas de 100g',
+          size: '100g',
+          price: 'R$ 120,00',
+          priceValue: 120,
+          saving: 'Economize R$ 15',
+        },
+        {
+          id: '40g',
+          label: '3 velas de 40g',
+          size: '40g',
+          price: 'R$ 55,00',
+          priceValue: 55,
+          saving: 'Economize R$ 5',
+        },
       ],
     },
     media: {
       kind: 'photo',
-      src: '/img/kit-3-velas.webp',
-      alt: 'Mãos segurando três velas de 100g lado a lado: Morango com Champanhe, Cereja com Avelã e Baunilha',
-      width: 780,
-      height: 728,
+      src: '/img/kit/kit-100g.webp',
+      alt: 'Três velas de 100g acesas: Morango com Champanhe na frente, Baunilha e Cereja com Avelã atrás',
+      width: 1200,
+      height: 1120,
+      bySize: {
+        '100g': {
+          src: '/img/kit/kit-100g.webp',
+          alt: 'Três velas de 100g acesas: Morango com Champanhe na frente, Baunilha e Cereja com Avelã atrás',
+        },
+        '40g': {
+          src: '/img/kit/kit-40g.webp',
+          alt: 'Três velas de 40g acesas: Pimenta Rosa na frente, Baunilha e Perfume das Fadas atrás',
+        },
+      },
     },
-    tint: 'cereja',
+    tint: 'baunilha',
   },
 ];
 
-/** Foto de cada aroma no carrossel (Moodboard do Figma). */
+/** Foto de cada aroma no carrossel (Moodboard do Figma); versão de celular com sufixo -360. */
 export const aromaPhotos: Record<string, string> = {
   'pimenta-rosa': '/img/aromas/pimenta-rosa.webp',
   baunilha: '/img/aromas/baunilha.webp',
@@ -155,9 +225,12 @@ export const candles: Candle[] = [
     name: 'Pimenta Rosa',
     description:
       'Vibrante, com o calor da pimenta rosa abraçado por flores. Para a sala, para receber visitas, para quando a casa precisa de energia.',
-    notes: { top: 'Bergamota, anis e damasco', heart: 'Violeta, lírio do vale e pimenta rosa', base: 'Almíscar, patchouli e baunilha' },
+    notes: {
+      top: 'Bergamota, anis e damasco',
+      heart: 'Violeta, lírio do vale e pimenta rosa',
+      base: 'Almíscar, patchouli e baunilha',
+    },
     tint: 'pimenta-rosa',
-    photo: { label: 'pimenta-rosa', labelTop: 29.25, shadowTop: 58.53, shadowLeft: -8.83 },
   },
   {
     id: 'baunilha',
@@ -167,7 +240,6 @@ export const candles: Candle[] = [
     description: 'O cheiro de bolo saindo do forno na casa de vó. Uma vela para noites de cobertor, chá e livro.',
     notes: { top: 'Anis e pêssego', heart: 'Coco e sândalo', base: 'Almíscar e baunilha' },
     tint: 'baunilha',
-    photo: { label: 'baunilha', labelTop: 30.07, shadowTop: 58.46, shadowLeft: -10.02 },
   },
   {
     id: 'morango-com-champanhe',
@@ -176,9 +248,12 @@ export const candles: Candle[] = [
     name: 'Morango com Champanhe',
     description:
       'Leve, alegre e um pouco borbulhante. Feita para celebrar, seja um aniversário, seja uma terça-feira qualquer.',
-    notes: { top: 'Morango, pêssego, uva e cassis', heart: 'Jasmim, rosa e baunilha', base: 'Âmbar, sândalo e almíscar' },
+    notes: {
+      top: 'Morango, pêssego, uva e cassis',
+      heart: 'Jasmim, rosa e baunilha',
+      base: 'Âmbar, sândalo e almíscar',
+    },
     tint: 'morango',
-    photo: { label: 'morango-com-champanhe', labelTop: 29.32, shadowTop: 58.46, shadowLeft: -8.83 },
   },
   {
     id: 'perfume-das-fadas',
@@ -187,9 +262,12 @@ export const candles: Candle[] = [
     name: 'Perfume das Fadas',
     description:
       'Suave como um fim de tarde. A vela mais delicada da coleção, pensada para o quarto e para os momentos de pausa.',
-    notes: { top: 'Melão, hortelã e framboesa', heart: 'Peônia, jasmim e lírio do vale', base: 'Morango, coco e almíscar' },
+    notes: {
+      top: 'Melão, hortelã e framboesa',
+      heart: 'Peônia, jasmim e lírio do vale',
+      base: 'Morango, coco e almíscar',
+    },
     tint: 'fadas',
-    photo: { label: 'perfume-das-fadas', labelTop: 28.87, shadowTop: 60.25, shadowLeft: -8.83 },
   },
   {
     id: 'cereja-com-avela',
@@ -199,7 +277,6 @@ export const candles: Candle[] = [
     description: 'Doce, profunda e marcante. Uma vela de inverno que transforma qualquer canto da casa em cafeteria.',
     notes: { top: 'Cereja, pêssego e cacau', heart: 'Avelã e lírio do vale', base: 'Baunilha, sândalo e almíscar' },
     tint: 'cereja',
-    photo: { label: 'cereja-com-avela', labelTop: 28.87, shadowTop: 56.82, shadowLeft: -8.83 },
   },
 ];
 
@@ -211,13 +288,21 @@ export const trust = [
 ];
 
 export const steps = [
-  { number: '01', title: 'Você escolhe', text: 'Escolha o aroma aqui na página e chame a gente no WhatsApp com um clique.' },
+  {
+    number: '01',
+    title: 'Você escolhe',
+    text: 'Escolha o aroma aqui na página e chame a gente no WhatsApp com um clique.',
+  },
   {
     number: '02',
     title: 'A gente produz',
     text: 'Cada vela é feita à mão, sob encomenda, com cera vegetal e fragrância selecionada.',
   },
-  { number: '03', title: 'Chega até você', text: 'Embalada com cuidado e pronta para presentear ou acender no mesmo dia.' },
+  {
+    number: '03',
+    title: 'Chega até você',
+    text: 'Embalada com cuidado e pronta para presentear ou acender no mesmo dia.',
+  },
 ];
 
 export const testimonials = [
@@ -268,12 +353,10 @@ export const faq: FaqItem[] = [
   },
   {
     question: 'Qual o prazo de produção?',
-    answer:
-      'As velas são feitas sob encomenda e ficam prontas em poucos dias. Confirmamos o prazo no atendimento.',
+    answer: 'As velas são feitas sob encomenda e ficam prontas em poucos dias. Confirmamos o prazo no atendimento.',
   },
   {
     question: 'Posso reaproveitar o pote?',
-    answer:
-      'Pode e deve. Depois de limpar a cera restante, o pote de vidro com tampa de madeira vira porta-objetos.',
+    answer: 'Pode e deve. Depois de limpar a cera restante, o pote de vidro com tampa de madeira vira porta-objetos.',
   },
 ];

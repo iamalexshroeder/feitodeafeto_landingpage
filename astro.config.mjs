@@ -9,7 +9,8 @@ const site = process.env.SITE_URL ?? 'https://feitodeafeto.com.br';
 export default defineConfig({
   site,
   trailingSlash: 'never',
-  build: { format: 'file' },
+  // CSS embutido no HTML: página única, evita a requisição que bloqueia a renderização.
+  build: { format: 'file', inlineStylesheets: 'always' },
   integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
   vite: { plugins: [tailwindcss()] },
 });

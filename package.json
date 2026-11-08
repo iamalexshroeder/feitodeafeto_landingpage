@@ -8,11 +8,15 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "validate": "node scripts/validate-seo.mjs",
+    "contrast": "node scripts/check-contrast.mjs",
+    "verify": "npm run check && npm run build && npm run validate && npm run contrast",
+    "assets": "npm run brand && npm run images && npm run hero",
     "brand": "node scripts/build-brand-assets.mjs",
     "images": "node scripts/build-images.mjs",
-    "hero": "node scripts/build-hero.mjs",
-    "contrast": "node scripts/check-contrast.mjs"
+    "hero": "node scripts/build-hero.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -20,5 +24,17 @@
     "@tailwindcss/vite": "^4.3.5",
     "astro": "^7.4.7",
     "tailwindcss": "^4.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.2",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3"
+  },
+  "description": "Landing page da Feito de Afeto — velas aromáticas artesanais (Astro + Tailwind).",
+  "engines": {
+    "node": ">=22"
   }
 }

@@ -1,6 +1,6 @@
 ---
 import SEO from '../components/SEO.astro';
-import JsonLd, { type FaqItem } from '../components/JsonLd.astro';
+import JsonLd, { type FaqItem, type ProductItem } from '../components/JsonLd.astro';
 import { site } from '../config/site';
 import '../styles/global.css';
 
@@ -9,14 +9,10 @@ interface Props {
   description?: string;
   noindex?: boolean;
   faq?: FaqItem[];
+  products?: ProductItem[];
 }
 
-const {
-  title = site.defaultTitle,
-  description = site.defaultDescription,
-  noindex,
-  faq,
-} = Astro.props;
+const { title = site.defaultTitle, description = site.defaultDescription, noindex, faq, products } = Astro.props;
 ---
 
 <!doctype html>
@@ -46,7 +42,9 @@ const {
         const show = (el) => el.classList.add('is-visible');
         if (!('IntersectionObserver' in window)) return items.forEach(show);
         // O que já está na tela ao carregar aparece direto, sem esperar o observer.
-        const pending = items.filter((el) => (el.getBoundingClientRect().top < innerHeight ? (show(el), false) : true));
+        const pending = items.filter((el) =>
+          el.getBoundingClientRect().top < innerHeight ? (el.classList.add('is-instant'), show(el), false) : true,
+        );
         const io = new IntersectionObserver(
           (entries) =>
             entries.forEach((e) => {
@@ -59,12 +57,30 @@ const {
         );
         pending.forEach((el) => io.observe(el));
       });
+
+      // Métrica de conversão: cada clique em link do WhatsApp vira um evento "whatsapp_click" no
+      // dataLayer (GTM/GA4) e no Plausible, se algum estiver instalado. Nenhum script de terceiro aqui.
+      window.dataLayer = window.dataLayer || [];
+      document.addEventListener('click', (e) => {
+        const link = e.target instanceof Element && e.target.closest('a[href^="https://wa.me/"]');
+        if (!link) return;
+        const where = link.closest('[id]');
+        const data = {
+          location: where ? where.id : 'pagina',
+          item: link.dataset.trackItem || '',
+          label: link.textContent.replace('(abre o WhatsApp)', '').trim(),
+        };
+        window.dataLayer.push({ event: 'whatsapp_click', ...data });
+        if (typeof window.plausible === 'function') window.plausible('WhatsApp', { props: data });
+      });
     </script>
     <link rel="sitemap" href="/sitemap-index.xml" />
-    {!noindex && <JsonLd title={title} description={description} faq={faq} />}
+    {!noindex && <JsonLd title={title} description={description} faq={faq} products={products} />}
   </head>
   <body>
-    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <a href="#conteudo" class="skip-link">
+      Pular para o conteúdo
+    </a>
     <slot name="header" />
     <main id="conteudo">
       <slot />

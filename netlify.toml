@@ -1,0 +1,35 @@
+# Deploy na Netlify: site estático gerado pelo Astro em dist/.
+# Variáveis (painel da Netlify): SITE_URL e, quando for indexar, PUBLIC_INDEXABLE=true.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Segurança básica para todas as páginas.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Arquivos com hash no nome (CSS/JS/fontes do build): cache de 1 ano.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Imagens e marca: 30 dias (os nomes não têm hash; ao trocar uma foto, o cache expira sozinho).
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"

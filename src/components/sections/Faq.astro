@@ -6,10 +6,12 @@ import { whatsappLink } from '../../config/site';
 ---
 
 <section id="duvidas" aria-labelledby="duvidas-titulo" class="bg-white">
-  <div class="container-page grid gap-12 py-20 lg:grid-cols-[416px_minmax(0,1fr)] lg:gap-24 lg:py-[120px]">
+  <div class="container-page grid gap-12 py-20 lg:grid-cols-[416px_minmax(0,1fr)] lg:gap-24 lg:py-24">
     <div class="flex flex-col items-start gap-6" data-reveal>
       <p class="text-label text-bordo uppercase">Dúvidas</p>
-      <h2 id="duvidas-titulo" class="text-h2 text-ink">Perguntas frequentes</h2>
+      <h2 id="duvidas-titulo" class="text-h2 text-ink">
+        Perguntas frequentes
+      </h2>
       <p class="max-w-[384px] text-body-l text-muted">Não achou o que procurava? Chama a gente.</p>
       <Button href={whatsappLink('Olá! Tenho uma dúvida sobre as velas.')} variant="secondary">
         Tirar dúvida no WhatsApp
@@ -17,22 +19,20 @@ import { whatsappLink } from '../../config/site';
     </div>
 
     <div class="flex flex-col" data-reveal style="--reveal-delay: 120ms">
-      {
-        faq.map((item, i) => (
-          <details class="group border-b border-line py-8" open={i === 0}>
-            <summary class="flex cursor-pointer list-none items-start justify-between gap-6 [&::-webkit-details-marker]:hidden">
-              <span class="text-body-l font-semibold text-ink">{item.question}</span>
-              <span
-                class="text-h3 leading-none text-bordo transition-transform duration-200 group-open:rotate-45"
-                aria-hidden="true"
-              >
-                +
-              </span>
-            </summary>
-            <p class="mt-2 max-w-[600px] text-muted">{item.answer}</p>
-          </details>
-        ))
-      }
+      {faq.map((item, i) => (
+        <details class="group border-b border-line py-8" open={i === 0}>
+          <summary class="flex cursor-pointer list-none items-start justify-between gap-6 [&::-webkit-details-marker]:hidden">
+            <span class="text-body-l font-semibold text-ink">{item.question}</span>
+            <span
+              class="text-h3 leading-none text-bordo transition-transform duration-200 group-open:rotate-45"
+              aria-hidden="true"
+            >
+              +
+            </span>
+          </summary>
+          <p class="mt-2 max-w-[600px] text-muted">{item.answer}</p>
+        </details>
+      ))}
     </div>
   </div>
 </section>

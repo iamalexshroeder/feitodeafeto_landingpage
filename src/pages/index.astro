@@ -1,5 +1,5 @@
 ---
-// Landing page — implementação do Figma "Feito de Afeto — Landing Page" (Desktop 1440, node 1:49).
+// Landing page — Figma "Feito de Afeto — Landing Page" (Desktop 1440, node 1:49; Mobile 390, node 47:37).
 import Base from '../layouts/Base.astro';
 import SiteHeader from '../components/sections/SiteHeader.astro';
 import Hero from '../components/sections/Hero.astro';
@@ -11,10 +11,19 @@ import Testimonials from '../components/sections/Testimonials.astro';
 import Faq from '../components/sections/Faq.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 import SiteFooter from '../components/sections/SiteFooter.astro';
-import { faq } from '../data/content';
+import MobileCta from '../components/sections/MobileCta.astro';
+import CartDrawer from '../components/cart/CartDrawer.astro';
+import { faq, models } from '../data/content';
+
+// Produtos com preço viram Product/Offer no JSON-LD (o modelo "em breve" fica de fora).
+const products = models.flatMap((m) => {
+  if (!m.order || m.media.kind !== 'photo') return [];
+  const prices = m.order.type === 'kit' ? m.order.sizes.map((s) => s.priceValue) : [m.priceValue ?? 0];
+  return [{ id: m.id, name: m.name, description: m.description, image: m.media.src, prices }];
+});
 ---
 
-<Base faq={faq}>
+<Base faq={faq} products={products}>
   <SiteHeader slot="header" />
   <Hero />
   <TrustStrip />
@@ -24,5 +33,7 @@ import { faq } from '../data/content';
   <Testimonials />
   <Faq />
   <FinalCta />
+  <MobileCta />
+  <CartDrawer />
   <SiteFooter slot="footer" />
 </Base>

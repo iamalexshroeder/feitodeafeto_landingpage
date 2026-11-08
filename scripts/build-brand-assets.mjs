@@ -22,7 +22,6 @@ const paths = [...svg.matchAll(/<path d="([^"]+)" fill="(#[0-9A-Fa-f]{6})"\/>/g)
 const yMin = (d) => Math.min(...[...d.matchAll(/-?\d+\.?\d*/g)].map((m) => +m[0]).filter((_, i) => i % 2));
 const isTagline = (p) => yMin(p.d) > 930;
 const FULL = { x: 200, y: 296, w: 882, h: 702 };
-const WORDMARK = { x: 200, y: 296, w: 882, h: 578 };
 const F_LETTER = paths.find((p) => p.fill === INK && p.d.startsWith('M') && yMin(p.d) < 310);
 
 function logoSvg(box, { tagline = true, color = INK, id = 'm' } = {}) {

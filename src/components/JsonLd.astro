@@ -6,13 +6,23 @@ export interface FaqItem {
   answer: string;
 }
 
+/** Produto à venda: um preço = Offer; vários (kit) = AggregateOffer. Preços em R$. */
+export interface ProductItem {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  prices: number[];
+}
+
 interface Props {
   title: string;
   description: string;
   faq?: FaqItem[];
+  products?: ProductItem[];
 }
 
-const { title, description, faq = [] } = Astro.props;
+const { title, description, faq = [], products = [] } = Astro.props;
 const base = new URL('/', Astro.site).href;
 const pageUrl = canonicalUrl(Astro.url.pathname, Astro.site);
 
@@ -47,6 +57,37 @@ const graph: Record<string, unknown>[] = [
   },
 ];
 
+// Feito sob encomenda, entregue na área atendida.
+const offerBase = {
+  priceCurrency: 'BRL',
+  availability: 'https://schema.org/MadeToOrder',
+  seller: { '@id': `${base}#organization` },
+  areaServed: site.areaServed.map((name) => ({ '@type': 'City', name })),
+};
+for (const p of products) {
+  const low = Math.min(...p.prices);
+  const high = Math.max(...p.prices);
+  graph.push({
+    '@type': 'Product',
+    '@id': `${pageUrl}#${p.id}`,
+    name: p.name,
+    description: p.description,
+    image: new URL(p.image, Astro.site).href,
+    brand: { '@id': `${base}#organization` },
+    material: 'Cera vegetal',
+    offers:
+      p.prices.length > 1
+        ? {
+            '@type': 'AggregateOffer',
+            ...offerBase,
+            lowPrice: low.toFixed(2),
+            highPrice: high.toFixed(2),
+            offerCount: p.prices.length,
+          }
+        : { '@type': 'Offer', ...offerBase, price: low.toFixed(2), url: `${pageUrl}#${p.id}` },
+  });
+}
+
 if (faq.length) {
   graph.push({
     '@type': 'FAQPage',
@@ -59,10 +100,7 @@ if (faq.length) {
   });
 }
 
-const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(
-  /</g,
-  '\\u003c',
-);
+const json = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 ---
 
 <script type="application/ld+json" is:inline set:html={json} />

@@ -18,7 +18,11 @@ for (const file of pages) {
   console.log(`\n${file}`);
 
   const title = attr(html, /<title>([^<]*)<\/title>/);
-  check(!!title && title.length >= 50 && title.length <= 60, 'title 50–60 caracteres', `${title?.length ?? 0}: "${title}"`);
+  check(
+    !!title && title.length >= 50 && title.length <= 60,
+    'title 50–60 caracteres',
+    `${title?.length ?? 0}: "${title}"`,
+  );
 
   const desc = attr(html, /<meta name="description" content="([^"]*)"/);
   check(!!desc && desc.length >= 140 && desc.length <= 160, 'description 140–160 caracteres', `${desc?.length ?? 0}`);
@@ -27,7 +31,11 @@ for (const file of pages) {
   check(/<meta name="viewport"/.test(html), 'meta viewport');
 
   const canonical = attr(html, /<link rel="canonical" href="([^"]*)"/);
-  check(!!canonical && /^https:\/\//.test(canonical) && !/(\.html|\/index)$/.test(canonical), 'canonical absoluto https, sem index/.html', canonical);
+  check(
+    !!canonical && /^https:\/\//.test(canonical) && !/(\.html|\/index)$/.test(canonical),
+    'canonical absoluto https, sem index/.html',
+    canonical,
+  );
   const ldUrl = attr(html, /"@type":"WebPage","@id":"[^"]*","url":"([^"]*)"/);
   check(!ldUrl || ldUrl === canonical, 'URL do WebPage (JSON-LD) = canonical', ldUrl);
 
@@ -54,7 +62,11 @@ for (const file of pages) {
   try {
     const data = JSON.parse(ld ?? '');
     const types = data['@graph'].map((n) => n['@type']);
-    check(['Organization', 'WebSite', 'WebPage'].every((t) => types.includes(t)), 'JSON-LD Organization + WebSite + WebPage', types.join(', '));
+    check(
+      ['Organization', 'WebSite', 'WebPage'].every((t) => types.includes(t)),
+      'JSON-LD Organization + WebSite + WebPage',
+      types.join(', '),
+    );
     const faq = data['@graph'].find((n) => n['@type'] === 'FAQPage');
     if (faq) {
       const visible = faq.mainEntity.every((q) => html.includes(q.name));

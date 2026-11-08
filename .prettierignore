@@ -1,0 +1,11 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+public/
+assets/
+.claude/
+.agents/
+.skills-arquivadas/
+skills-lock.json
+*.md

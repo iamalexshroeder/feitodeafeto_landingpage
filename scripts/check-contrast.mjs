@@ -10,8 +10,11 @@ const c = {
   ink: '#2a1418',
   muted: '#7a6266',
   white: '#ffffff',
-  // Parede do hero: média da metade esquerda de public/img/hero-banner.webp (sem véu, como no Figma).
-  'hero-parede': '#c9a582',
+  // Hero desktop (sem véu, como no Figma): pior ponto (5% mais escuro) da parede atrás de cada texto,
+  // medido em public/img/hero-banner.webp.
+  'hero-label': '#d7bea4',
+  'hero-titulo': '#ccac8e',
+  'hero-texto': '#d2b598',
 };
 
 function hex(h) {
@@ -21,7 +24,16 @@ function hex(h) {
 function mix(top, bottom, alpha) {
   const a = hex(top);
   const b = hex(bottom);
-  return '#' + a.map((v, i) => Math.round(v * alpha + b[i] * (1 - alpha)).toString(16).padStart(2, '0')).join('');
+  return (
+    '#' +
+    a
+      .map((v, i) =>
+        Math.round(v * alpha + b[i] * (1 - alpha))
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+  );
 }
 function lum(h) {
   const [r, g, b] = hex(h).map((v) => {
@@ -40,9 +52,14 @@ const pairs = [
   ['ink', 'creme', 4.5, 'texto corrido'],
   ['ink', 'white', 4.5, 'notas, FAQ, cards'],
   ['ink', 'rosa', 4.5, 'CTA final'],
-  ['bordo-dark', 'hero-parede', 4.5, 'título e texto do hero'],
-  ['ink', 'hero-parede', 4.5, 'prova social do hero'],
-  ['bordo', 'hero-parede', 4.5, 'label e estrelas do hero (12px)'],
+  ['bordo', 'hero-label', 4.5, 'label do hero (desktop)'],
+  ['bordo', 'hero-titulo', 3, 'título do hero (desktop, texto grande)'],
+  ['ink', 'hero-texto', 4.5, 'texto do hero (desktop)'],
+  ['bordo-dark', 'rosa', 4.5, 'texto da faixa de ajuda (celular)'],
+  ['bordo-dark', 'white', 4.5, 'título da faixa de ajuda (desktop)'],
+  ['ink', 'rosa-soft', 4.5, 'texto do CTA final (celular)'],
+  ['rosa', 'bordo-dark', 4.5, 'título e label de Como fazemos (desktop)'],
+  ['bordo-dark', 'creme', 4.5, 'título e texto do hero (celular)'],
   ['muted', 'creme', 4.5, 'textos de apoio'],
   ['muted', 'white', 4.5, 'notas (rótulos), FAQ'],
   ['muted', 'rosa-soft', 4.5, 'Como fazemos'],
@@ -57,7 +74,7 @@ const pairs = [
 ];
 c['rosa/80 sobre bordo'] = mix(c.rosa, c.bordo, 0.8);
 c['rosa/70 sobre bordo-dark'] = mix(c.rosa, c['bordo-dark'], 0.7);
-pairs.push(['rosa/80 sobre bordo', 'bordo', 4.5, 'nota de exemplo (fundadora)']);
+pairs.push(['rosa/80 sobre bordo', 'bordo', 4.5, 'labels do verso do card de aroma']);
 pairs.push(['rosa/70 sobre bordo-dark', 'bordo-dark', 4.5, 'rodapé (opacidade 70%)']);
 
 let fail = 0;

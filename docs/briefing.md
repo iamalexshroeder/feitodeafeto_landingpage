@@ -62,7 +62,7 @@ Quanto tempo a vela dura? · Por que cera vegetal? · Como faço o pedido? · Qu
 
 ## 10. Contato (fictício)
 
-- **WhatsApp:** (13) 99999-0000 — número de exemplo.
+- **WhatsApp:** (13) 99163-9726.
 - **Instagram:** @feitodeafeto_velas.
 - **Entrega:** Santos e região (detalhes combinados no WhatsApp).
 - **Pagamento:** só Pix, por enquanto.

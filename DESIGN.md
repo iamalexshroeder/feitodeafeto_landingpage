@@ -20,14 +20,16 @@ colors:
   tint-fadas: "#E9DFF0"
   tint-cereja: "#EBD6CF"
   logo: "#61162C"         # cor própria do logo (assets/); não usar na interface
+  estrela: "#FFD900"      # só as estrelas decorativas do hero no celular; nunca em texto
 typography:
   fontFamily: Inter (variável, self-hosted via @fontsource-variable/inter)
   # Grid de 8: tamanho/entrelinha em múltiplos de 8. Títulos com letter-spacing -3px.
-  display: { size/line: 72/72, tablet: 56/56, mobile: 40/40, weight: 600, letterSpacing: -3px }
-  h2:      { size/line: 48/56, tablet: 40/48, mobile: 32/40, weight: 600, letterSpacing: -3px }
-  h3:      { size/line: 32/40, mobile: 24/32, weight: 600, letterSpacing: -1.5px }   # preços, números
-  title:   { size/line: 24/32, weight: 600, letterSpacing: -0.5px }                   # títulos de passo
-  body-l:  { size/line: 20/32, mobile: 18/32, weight: 400 }
+  # Desktop no padrão de sites de produto consolidados (Apple/Shopify): 56 · 40 · 28 · 20 · 18 · 16 · 14 · 12.
+  display: { size/line: 56/64, tablet: 48/56, mobile: 40/40, weight: 600, letterSpacing: -3px }
+  h2:      { size/line: 40/48, tablet: 36/40, mobile: 32/40, weight: 600, letterSpacing: -3px }
+  h3:      { size/line: 28/32, mobile: 24/32, weight: 600, letterSpacing: -1.5px }   # preços, números
+  title:   { size/line: 20/24, mobile: 24/32, weight: 600, letterSpacing: -0.5px }   # títulos de card/passo
+  body-l:  { size/line: 18/32, weight: 400 }
   body:    { size/line: 16/24, weight: 400 }
   small:   { size/line: 14/24, weight: 400 }
   label:   { size/line: 12/16, weight: 600, letterSpacing: 0.1em, textTransform: uppercase }
@@ -72,7 +74,8 @@ Uma família só (Inter). Hierarquia por tamanho e peso, nunca por cor extra. La
 
 ## Layout
 
-- Container de 1200px; seções alternam fundo (creme → branco → rosa-soft) para marcar ritmo.
+- Container de 1200px. **Desktop** (Figma): página branca com seções alternando branco e creme — coleção, título dos modelos, Flor de Cera, 40g, faixa de ajuda, Quem faz, Dúvidas e CTA em branco; benefícios, 100g, kit e depoimentos em creme; Como fazemos em bordô-escuro. Painéis (faixa de ajuda, Quem faz, CTA) em creme sobre o branco. **Celular:** fundo creme, Como fazemos e CTA em rosa suave, Dúvidas em branco.
+- Menu no desktop: logo à esquerda; links e "Fale com a gente" juntos à direita.
 - Velas: grade 600/520 com 96px de espaço, imagem e texto **alternando de lado**. A faixa CTA entra entre a 3ª e a 4ª vela.
 - Hero: coluna de texto de 707px; a imagem passa 73px da grade à direita no desktop (como no Figma).
 - Mobile: tudo empilha em uma coluna; imagem da vela antes do texto; links do menu somem e fica só o botão.
@@ -91,17 +94,17 @@ Uma família só (Inter). Hierarquia por tamanho e peso, nunca por cor extra. La
 - **Acessibilidade**: todo par texto/fundo em WCAG AA — `npm run contrast` confere os 18 pares usados. No hero, texto só em ink/bordô sobre o véu creme (o muted não passa sobre a parede).
 - **Grid de 8**: espaçamentos, raios, alturas e entrelinhas em múltiplos de 8 (4 só em detalhes). Classes Tailwind de passo ímpar (`gap-1.5`, `py-3.5`…) não são usadas.
 - **Títulos** (display e h2): letter-spacing **-3px**.
-- **Botões**: só texto, sem ícone nem emoji; 56px de altura. **No celular ocupam toda a largura disponível** (respeitando o padding do container ou do painel); dentro de cards (verso do aroma) ocupam a largura do card. Exceção: o botão do menu.
+- **Botões**: só texto, sem ícone nem emoji (exceção: o ícone de sacola no menu do celular, com a quantidade); 56px de altura no celular e 48px no desktop. **No celular ocupam toda a largura disponível** (respeitando o padding do container ou do painel); dentro de cards (verso do aroma) ocupam a largura do card. Exceção: o botão do menu.
 - **Cards lado a lado têm a mesma altura** (depoimentos, passos): o grid estica todos e o rodapé do card (assinatura) fica alinhado embaixo.
 - **Efeitos ao rolar**: `data-reveal` (sobe 24px + fade, 0.8s) e `data-reveal="zoom"` nas imagens; atraso em cascata via `--reveal-delay`. Menu fixo ganha sombra ao rolar. Hero: a cena assenta (escala 1.04 → 1). Nada acima da dobra depende de JS; tudo desliga com `prefers-reduced-motion`.
 
 ## Hero
 
-Fundo: "hero-banner 1" no **recorte usado no frame da landing** (1:63), gerado por `npm run hero`. Desktop: imagem de ponta a ponta com a vela Baunilha à direita; título e texto em **bordô-escuro direto sobre a parede** (sem véu), label/estrelas em bordô — todos AA (`npm run contrast`). Mobile: **sem imagem** — só o texto e os botões (a imagem nem é baixada abaixo de 1024px).
+Fundo: "hero-banner 1" no **recorte usado no frame da landing** (1:63), gerado por `npm run hero`, com o **degradê bordô do Figma** por cima (90% até 27% da largura, some em 88%). Desktop: título em **branco**, label e prova social em **rosa**, texto em **rosa suave** e "Ver a coleção" em contorno branco — todos AA graças ao degradê (`npm run contrast` mede o pior ponto atrás de cada texto). Mobile: **sem imagem** — texto em bordô-escuro sobre o creme, botões e, sobre "Mais de 100 velas vendidas", 5 estrelas decorativas (`--color-estrela` #FFD900, só ilustração). A imagem nem é baixada abaixo de 1024px.
 
 ## Navbar e logo
 
-Nav branca (fixa ao rolar), logo completo (`/brand/logo.svg`, 40px de altura) e botão "navbar" (contorno, 40px). Rodapé com o logo completo em rosa (`/brand/logo-rosa.svg`). O logo vem do arquivo da marca — usar sempre os SVGs de `public/brand/` (gerados por `npm run brand`).
+Nav branca (fixa ao rolar), **56px de altura** (logo de 40 + 8 em cima e embaixo), logo completo (`/brand/logo.svg`, 40px de altura) e botão "navbar" (contorno, 40px). Rodapé com o logo completo em rosa (`/brand/logo-rosa.svg`). O logo vem do arquivo da marca — usar sempre os SVGs de `public/brand/` (gerados por `npm run brand`).
 
 ## Abertura da página
 
@@ -109,19 +112,29 @@ A página esmaece de leve ao abrir (opacidade 0 → 1 em 0.7s, uma vez). Desliga
 
 ## Carrossel de aromas
 
-Referência: cards da LP Ecolab (Moodboard). Cards 3:4 (282px no desktop, 4 visíveis + o começo do 5º), raio 24, rolagem horizontal com encaixe, setas (48px, contorno bordô) e arrastar com o mouse. **Frente:** foto do Moodboard (vela 100g + 40g acesas sobre os ingredientes), "(nome)" em minúsculas no topo e nome + família embaixo, sobre degradê escuro. **Verso** (hover em mouse, foco no teclado, toque no celular): bordô com um brilho do tint do aroma no canto, pirâmide olfativa e botão "Quero esse aroma" (On Dark, 40px). Giro 3D de 0.7s; com `prefers-reduced-motion`, troca por esmaecimento.
+Referência: cards da LP Ecolab (Moodboard). Cards 3:4 (282px no desktop, 4 visíveis + o começo do 5º), raio 24, rolagem horizontal com encaixe, setas (48px, contorno bordô) e arrastar com o mouse. **Frente:** foto do Moodboard (vela 100g + 40g acesas sobre os ingredientes), "(nome)" em minúsculas no topo e nome + família embaixo, sobre degradê escuro. **Verso** (hover em mouse, foco no teclado, toque no celular): bordô liso, pirâmide olfativa e botão "Quero esse aroma" (On Dark, 40px). Giro 3D de 0.7s; com `prefers-reduced-motion`, troca por esmaecimento.
 
-Animações extras (só desktop com mouse, desligam com `prefers-reduced-motion`): entrada em cascata (90ms entre cards); no hover o card levanta 8px com sombra, inclina até ~5° seguindo o cursor, a foto aproxima (1.08) e um brilho suave acompanha o cursor. No Figma: componente "Card Aroma" (Componentes) com propriedades **Aroma** (5) × **Lado** (Frente/Verso); hover na frente troca para o verso do mesmo aroma (Smart Animate), e o verso tem a sombra de "levantar".
+Animações extras (só desktop com mouse, desligam com `prefers-reduced-motion`): entrada em cascata (90ms entre cards); no hover o card levanta 8px com sombra, inclina até ~5° seguindo o cursor, a foto aproxima (1.08) . No Figma: componente "Card Aroma" (Componentes) com propriedades **Aroma** (5) × **Lado** (Frente/Verso); hover na frente troca para o verso do mesmo aroma (Smart Animate), e o verso tem a sombra de "levantar".
 
 ## Modelos
 
-Quatro blocos no layout dos antigos blocos de vela, sem número na imagem: **Vela Flor de Cera** (placeholder até ter foto; pílula de contorno "Disponível em breve", sem link), **Vela de 100g** (foto da Baunilha sendo acesa, R$ 45,00), **Vela de 40g** (pote com rolha nas mãos, R$ 20,00) e **Kit com 3 velas** (três potes de 100g nas mãos; 3 de 100g R$ 120,00 ou 3 de 40g R$ 55,00, com a economia em relação às avulsas). Preços vêm do Figma/dona; não inventar valores.
+Quatro blocos no layout dos antigos blocos de vela, sem número na imagem: **Vela Flor de Cera** (placeholder até ter foto; pílula de contorno "Disponível em breve", sem link), **Vela de 100g** (uma foto por aroma, mesmo estúdio; começa em Pimenta Rosa e troca com fade ao escolher o aroma; R$ 45,00), **Vela de 40g** (uma foto por aroma, mesma base: só o rótulo muda, como na 100g; R$ 20,00) e **Kit com 3 velas** (foto com 3 velas — uma na frente, duas atrás — que troca com o tamanho escolhido; 3 de 100g R$ 120,00 ou 3 de 40g R$ 55,00, com a economia em relação às avulsas). Preços vêm do Figma/dona; não inventar valores.
+
+**Tamanho no desktop:** cada bloco de modelo cabe numa tela de notebook (~680px) sob o menu — imagem 600×512, 16px de respiro vertical, 16px entre os itens; no kit, sem chips (as opções de tamanho já dizem isso) e cada opção com preço e economia na mesma linha.
+
+**Galeria de aromas (100g e 40g):** como em loja online — "Aroma: <nome>" e, logo abaixo, 5 miniaturas (uma por aroma), na coluna de texto; clicar troca a foto (fade de 0,6s), o nome do aroma ao lado e a mensagem do WhatsApp. A escolhida ganha anel bordô. Começa no aroma da foto padrão. Nesses modelos não há campo de aroma; o kit continua com os 3 campos.
 
 **Pedido** (em cada modelo à venda): select "Aroma" (pílula branca 56px, anel `line`, seta bordô); no kit, seletor de tamanho (2 pílulas, a escolhida em bordô) + 3 selects de aroma. A escolha monta a mensagem do WhatsApp; sem JS, o botão abre a mensagem padrão. Embaixo: botão "Quero encomendar" + "VALOR"/preço ao lado (no celular: valor em cima, botão em largura total) e a linha "Entrega em Santos e região · Pagamento via Pix". Os seletores ainda não estão no Figma.
 
-## Pilha da coleção
+## Sacola (carrinho)
 
-Os 5 blocos de vela e a faixa "Não sabe qual escolher?" param sob o menu e o próximo desliza por cima (sticky + 8px de degrau). O bloco coberto encolhe até 94% e escurece 12% (`--p`, calculado ao rolar). Liga só a partir de 1024px **e** se cada bloco couber na tela; senão, rolagem normal. Com `prefers-reduced-motion`, empilha sem encolher/escurecer.
+Em cada modelo e no kit, o botão principal é **"Adicionar à sacola"** (com o aroma/tamanho escolhidos); embaixo, o link "Ou peça só este direto pelo WhatsApp". Ao adicionar: o botão mostra "Adicionado à sacola", aparece um aviso escuro com "Ver sacola" e o menu ganha o botão **"Sacola · n"** (só texto; no celular ele ocupa o lugar do "Fale com a gente"). A barra fixa do celular vira "Sacola · n itens / total" + "Ver sacola".
+
+O painel abre à direita (pouco menos da metade da tela no desktop; tela inteira no celular), com os itens e o resumo em formato de **ticket** (papel branco, data, logo, linhas tracejadas e serrilhado embaixo). Tem **3 passos** (Sacola → Entrega → Enviar): itens com −/+ e remover; nome, cidade (Santos e região), bairro e observações (salvos no aparelho); resumo, **próximos passos** (enviar → confirmar aromas, prazo e entrega → pagar via Pix → entregar) e "Enviar pedido pelo WhatsApp" com a mensagem pronta. Total sempre "sem a entrega". Sem servidor nem pagamento online. Métricas: `add_to_cart`, `begin_checkout`, `send_order` no dataLayer.
+
+## Modelos ao rolar
+
+Os blocos de modelo e a faixa "Não sabe qual escolher?" só esmaecem ao entrar na tela (`data-reveal`: sobe 24px + fade, 0,8s). Sem efeito de pilha.
 
 ## Do's and Don'ts
 
