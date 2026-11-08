@@ -111,9 +111,13 @@ A página esmaece de leve ao abrir (opacidade 0 → 1 em 0.7s, uma vez). Desliga
 
 Referência: cards da LP Ecolab (Moodboard). Cards 3:4 (282px no desktop, 4 visíveis + o começo do 5º), raio 24, rolagem horizontal com encaixe, setas (48px, contorno bordô) e arrastar com o mouse. **Frente:** foto do Moodboard (vela 100g + 40g acesas sobre os ingredientes), "(nome)" em minúsculas no topo e nome + família embaixo, sobre degradê escuro. **Verso** (hover em mouse, foco no teclado, toque no celular): bordô com um brilho do tint do aroma no canto, pirâmide olfativa e botão "Quero esse aroma" (On Dark, 40px). Giro 3D de 0.7s; com `prefers-reduced-motion`, troca por esmaecimento.
 
+Animações extras (só desktop com mouse, desligam com `prefers-reduced-motion`): entrada em cascata (90ms entre cards); no hover o card levanta 8px com sombra, inclina até ~5° seguindo o cursor, a foto aproxima (1.08) e um brilho suave acompanha o cursor. No Figma: componente "Card Aroma" (Componentes) com propriedades **Aroma** (5) × **Lado** (Frente/Verso); hover na frente troca para o verso do mesmo aroma (Smart Animate), e o verso tem a sombra de "levantar".
+
 ## Modelos
 
-Três blocos no layout dos antigos blocos de vela: **100g com flor de cera** (placeholder até ter foto), **100g** (pote de estúdio) e **40g** (recorte da foto da Cereja do Moodboard). Preço ausente → "Valor sob consulta" (não inventar valores).
+Três blocos no layout dos antigos blocos de vela: **100g com flor de cera** (placeholder até ter foto), **100g** (pote de estúdio) e **40g** (recorte da foto da Cereja do Moodboard). Preço ausente → "Sob consulta" (não inventar valores).
+
+**Barra de compra** (em cada modelo): pílula branca com contorno `line` (anel interno, não soma altura), 72px = botão de 56 + 8 de respiro. Botão à esquerda; à direita, "VALOR" (label muted) sobre o preço (H3 ink). No celular vira um card (raio 24, padding 16): valor em cima, botão em largura total embaixo.
 
 ## Pilha da coleção
 

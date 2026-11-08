@@ -85,15 +85,25 @@ const number = String(index + 1).padStart(2, '0');
       {model.specs.map((spec) => <li class="rounded-full bg-rosa-soft px-4 py-2 text-small text-bordo">{spec}</li>)}
     </ul>
 
-    <div class="flex w-full flex-col items-start gap-6">
-      {
-        model.price ? (
-          <p class="text-h3 text-ink">{model.price}</p>
-        ) : (
-          <p class="text-title text-muted">Valor sob consulta</p>
-        )
-      }
-      <Button href={whatsappLink(`Olá! Quero a vela de ${model.name}. Quais aromas estão disponíveis?`)}>
+    {/* Barra de compra: botão à esquerda, valor à direita, numa pílula branca (72px = 56 + 2×8).
+        No celular empilha: valor em cima, botão em largura total embaixo. */}
+    <div
+      class="flex w-full max-w-[504px] flex-col gap-4 rounded-3xl bg-white p-4 ring-1 ring-line ring-inset sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:rounded-full sm:p-2 sm:pr-8"
+    >
+      <div class="flex flex-col sm:order-2 sm:items-end sm:text-right">
+        <p class="text-label text-muted uppercase">Valor</p>
+        {
+          model.price ? (
+            <p class="text-h3 text-ink">{model.price}</p>
+          ) : (
+            <p class="text-title text-ink">Sob consulta</p>
+          )
+        }
+      </div>
+      <Button
+        href={whatsappLink(`Olá! Quero a vela de ${model.name}. Quais aromas estão disponíveis?`)}
+        class="sm:order-1"
+      >
         {model.cta}
       </Button>
     </div>

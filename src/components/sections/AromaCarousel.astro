@@ -33,9 +33,10 @@ const tintVar = {
 
   <ul id="aromas-track" class="carousel-track" data-track aria-label="Aromas">
     {
-      candles.map((c) => (
-        <li class="carousel-slide">
+      candles.map((c, i) => (
+        <li class="carousel-slide" data-reveal style={`--reveal-delay:${i * 90}ms`}>
           <article class="aroma-card" tabindex="0" aria-labelledby={`aroma-${c.id}`} style={`--tint:${tintVar[c.tint]}`}>
+            <span class="aroma-card__glare" aria-hidden="true" />
             <div class="aroma-card__inner">
               <div class="aroma-card__face aroma-card__front">
                 <img
@@ -46,7 +47,7 @@ const tintVar = {
                   loading="lazy"
                   decoding="async"
                   draggable="false"
-                  class="absolute inset-0 size-full object-cover"
+                  class="aroma-card__photo absolute inset-0 size-full object-cover"
                 />
                 <span class="aroma-card__scrim" aria-hidden="true" />
                 <p class="relative text-small text-white lowercase">({c.name})</p>
@@ -126,7 +127,9 @@ const tintVar = {
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: var(--edge);
-    padding: 8px var(--edge) 16px;
+    /* folga em cima/embaixo para o card levantar e a sombra não ser cortada */
+    padding: 16px var(--edge) 40px;
+    margin-block: -8px -24px;
     scrollbar-width: none;
     cursor: grab;
   }
@@ -193,6 +196,56 @@ const tintVar = {
   .aroma-card:has(:focus-visible) .aroma-card__inner,
   .aroma-card.is-flipped .aroma-card__inner {
     transform: rotateY(180deg);
+  }
+
+  /* Brilho que segue o cursor (fica por cima das duas faces). */
+  .aroma-card {
+    position: relative;
+  }
+  .aroma-card__glare {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      circle at var(--mx, 50%) var(--my, 30%),
+      rgb(255 255 255 / 0.22),
+      transparent 55%
+    );
+    mix-blend-mode: soft-light;
+    transition: opacity 0.4s;
+  }
+
+  /* Desktop (mouse): o card levanta, inclina seguindo o cursor, a foto aproxima e o brilho aparece.
+     O giro (flip) continua por cima disso. */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .aroma-card {
+      transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
+      transition:
+        transform 0.6s var(--ease-out-soft),
+        box-shadow 0.6s var(--ease-out-soft);
+      will-change: transform;
+    }
+    .aroma-card.is-tilting {
+      transition:
+        transform 0.15s linear,
+        box-shadow 0.6s var(--ease-out-soft);
+    }
+    .aroma-card:hover {
+      --lift: -8px;
+      box-shadow: 0 32px 48px -24px rgb(42 20 24 / 0.45);
+    }
+    .aroma-card:hover .aroma-card__glare {
+      opacity: 1;
+    }
+    .aroma-card__photo {
+      transition: transform 1.4s var(--ease-out-soft);
+    }
+    .aroma-card:hover .aroma-card__photo {
+      transform: scale(1.08);
+    }
   }
 
   /* Sem movimento: troca por esmaecimento, sem girar. */
@@ -287,6 +340,26 @@ const tintVar = {
       },
       true,
     );
+
+    // Desktop: inclinação 3D e brilho seguindo o cursor (só mouse, sem "reduzir movimento").
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+    for (const card of track.querySelectorAll<HTMLElement>('.aroma-card')) {
+      card.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse' || !finePointer.matches || reduce.matches || track.classList.contains('is-dragging')) return;
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;
+        const y = (e.clientY - r.top) / r.height;
+        card.classList.add('is-tilting');
+        card.style.setProperty('--ry', `${((x - 0.5) * 10).toFixed(2)}deg`);
+        card.style.setProperty('--rx', `${((0.5 - y) * 8).toFixed(2)}deg`);
+        card.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+        card.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
+      });
+      card.addEventListener('pointerleave', () => {
+        card.classList.remove('is-tilting');
+        for (const p of ['--rx', '--ry', '--mx', '--my']) card.style.removeProperty(p);
+      });
+    }
 
     // Toque: vira o card (exceto ao tocar no botão do verso).
     track.addEventListener('click', (e) => {
