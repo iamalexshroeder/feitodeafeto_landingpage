@@ -9,8 +9,10 @@ Landing page da marca Feito de Afeto, construída a partir do design no Figma (v
 | Arquivo | Papel | Status |
 |---|---|---|
 | `PRODUCT.md` | Produto, público, objetivo, tom de voz (gerado pelo `/impeccable init` a partir do briefing) | pendente |
-| `DESIGN.md` | Identidade visual: tokens, tipografia, componentes, do's & don'ts | pendente — extrair do Figma |
-| `docs/briefing.md` | Briefing (fictício) da marca | pronto |
+| `DESIGN.md` | Identidade visual: tokens, tipografia, componentes, do's & don'ts — extraído do Figma | pronto |
+| `docs/briefing.md` | Briefing (fictício) da marca; o **conteúdo segue o Figma** | pronto |
+
+**Figma (fonte da verdade visual e de conteúdo):** https://www.figma.com/design/LTGkf5XlUZs3OcGsCbFeLG — frame "Feito de Afeto — Landing (Desktop 1440)", node `1:49`. Cada componente em `src/components/sections/` cita o node de origem. Assets exportados ficam em `assets/figma/` e são otimizados para `public/img/` com `npm run images`.
 | `docs/requisitos-tecnicos.md` | SEO (title, description, semântica, JSON-LD, canonical, indexação), performance e responsividade | **obrigatório** |
 
 ## Definição de pronto
@@ -55,12 +57,22 @@ Estrutura:
 - `src/components/JsonLd.astro` — `@graph` Organization + WebSite + WebPage (+ FAQPage).
 - `src/layouts/Base.astro` — `<html lang>`, skip link, `<main>` único.
 - `src/pages/robots.txt.ts` — libera ou bloqueia conforme `PUBLIC_INDEXABLE`; sitemap via `@astrojs/sitemap`.
-- `src/styles/global.css` — tokens provisórios (branco, rosa, bordô) até o DESIGN.md.
+- `src/styles/global.css` — tokens do Figma (cores, tints, estilos de texto fluidos, `container-page`) e fonte Inter self-hosted.
+- `src/components/ui/` — `Button` (primary/secondary/ondark, sempre WhatsApp) e `CandlePhoto` (foto do pote + rótulo do aroma + sombra; geometria por vela em `content.ts`, vinda do frame "Velas" 9:125 do Figma).
+- `src/components/sections/` — uma seção do Figma por arquivo.
 
 Comandos:
 - `npm run dev` — servidor local
 - `npm run build` — build de produção em `dist/`
 - `npm run validate` — checa title, description, canonical, robots, OG, h1, headings, alt, JSON-LD, robots.txt, sitemap e 404 no `dist/`
+- `npm run contrast` — contraste WCAG AA de todos os pares de cor usados
+- `npm run images` / `npm run hero` — otimizam as imagens do Figma e montam o hero (cena + vela real)
+
+**Regras fixas (ver DESIGN.md › Regras do projeto):** paleta do DESIGN.md, contraste AA, grid de 8, títulos com -3px, botões sem ícone/emoji, efeitos leves com `prefers-reduced-motion`.
+
+**Fluxo de trabalho:** a dona do projeto edita direto o frame da landing no Figma (página "Landing Page", node `1:49`). A cada pedido "repassar alterações": ler `get_metadata` do frame, comparar com o código e aplicar o que mudou — mantendo as regras fixas abaixo quando o Figma divergir (ex.: botões ficam com 56px no grid de 8). Quando uma mudança aparece só em um item repetido (ex.: só na Vela 01), aplicar em todos e avisar.
+
+**Figma:** páginas "Landing Page", "Componentes" e "Moodboard". O Moodboard é referência visual e **fonte de informação** (notas olfativas = cartões "Pirâmide olfativa"); as fotos de lá são de referência — não usar produtos de outras marcas.
 
 Variáveis de ambiente: `SITE_URL` (domínio canônico) e `PUBLIC_INDEXABLE=true` (só quando for indexar).
 

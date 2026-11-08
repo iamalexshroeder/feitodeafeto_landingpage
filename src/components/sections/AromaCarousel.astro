@@ -1,0 +1,302 @@
+---
+// Carrossel de aromas — referência: cards da LP Ecolab (Moodboard › Lp's).
+// Frente: foto do Moodboard com os ingredientes. Verso (hover / foco / toque): bordô com o tom
+// da vela, pirâmide olfativa e CTA. Arraste com o mouse, use as setas ou o teclado.
+import Button from '../ui/Button.astro';
+import { candles, aromaPhotos } from '../../data/content';
+import { whatsappLink } from '../../config/site';
+
+const tintVar = {
+  'pimenta-rosa': 'var(--color-tint-pimenta-rosa)',
+  baunilha: 'var(--color-tint-baunilha)',
+  morango: 'var(--color-tint-morango)',
+  fadas: 'var(--color-tint-fadas)',
+  cereja: 'var(--color-tint-cereja)',
+} as const;
+---
+
+<div class="flex flex-col gap-8" data-carousel>
+  <div class="container-page flex items-end justify-between gap-6">
+    <p class="max-w-[440px] text-muted">
+      <span class="hidden lg:inline">Passe o mouse sobre um aroma para ver as notas.</span>
+      <span class="lg:hidden">Toque em um aroma para ver as notas e arraste para o lado.</span>
+    </p>
+    <div class="flex shrink-0 gap-2">
+      <button type="button" class="carousel-btn" data-prev aria-label="Aromas anteriores" aria-controls="aromas-track">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 15 7.5 10l5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button type="button" class="carousel-btn" data-next aria-label="Próximos aromas" aria-controls="aromas-track">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 15 5-5-5-5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <ul id="aromas-track" class="carousel-track" data-track aria-label="Aromas">
+    {
+      candles.map((c) => (
+        <li class="carousel-slide">
+          <article class="aroma-card" tabindex="0" aria-labelledby={`aroma-${c.id}`} style={`--tint:${tintVar[c.tint]}`}>
+            <div class="aroma-card__inner">
+              <div class="aroma-card__face aroma-card__front">
+                <img
+                  src={aromaPhotos[c.id]}
+                  alt={`Velas ${c.name} acesas sobre os ingredientes do aroma`}
+                  width="640"
+                  height="856"
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                  class="absolute inset-0 size-full object-cover"
+                />
+                <span class="aroma-card__scrim" aria-hidden="true" />
+                <p class="relative text-small text-white lowercase">({c.name})</p>
+                <div class="relative mt-auto flex flex-col gap-1">
+                  <h3 id={`aroma-${c.id}`} class="text-title text-white">
+                    {c.name}
+                  </h3>
+                  <p class="text-small text-rosa">{c.family}</p>
+                </div>
+              </div>
+
+              <div class="aroma-card__face aroma-card__back">
+                <p class="text-title text-white" aria-hidden="true">
+                  {c.name}
+                </p>
+                <div class="flex flex-col gap-2">
+                  <p class="text-label text-rosa/80 uppercase">Pirâmide olfativa</p>
+                  <dl class="flex flex-col gap-2">
+                    {[
+                      ['Cabeça', c.notes.top],
+                      ['Corpo', c.notes.heart],
+                      ['Fundo', c.notes.base],
+                    ].map(([label, value]) => (
+                      <div class="border-t border-white/15 pt-2">
+                        <dt class="text-label text-rosa/80 uppercase">{label}</dt>
+                        <dd class="text-small text-white">{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+                <Button
+                  href={whatsappLink(`Olá! Quero a vela ${c.name}.`)}
+                  variant="ondark"
+                  size="sm"
+                  class="mt-auto w-full"
+                >
+                  Quero esse aroma
+                </Button>
+              </div>
+            </div>
+          </article>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .carousel-btn {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    color: var(--color-bordo);
+    box-shadow: inset 0 0 0 1.5px var(--color-bordo);
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      opacity 0.2s;
+  }
+  .carousel-btn:hover:not(:disabled) {
+    background: var(--color-bordo);
+    color: var(--color-white);
+  }
+  .carousel-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* Trilho: rola na horizontal, encaixa por card e começa alinhado ao container. */
+  .carousel-track {
+    --edge: max(var(--gutter), calc((100vw - 1200px) / 2));
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--edge);
+    padding: 8px var(--edge) 16px;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+  .carousel-track::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-track.is-dragging {
+    cursor: grabbing;
+    scroll-snap-type: none;
+    user-select: none;
+  }
+  .carousel-slide {
+    flex: 0 0 min(80vw, 282px); /* 4 cards inteiros + o começo do 5º em 1200px */
+    scroll-snap-align: start;
+  }
+
+  /* Card que vira (frente → verso) */
+  .aroma-card {
+    display: block;
+    aspect-ratio: 5 / 7; /* 282 × 395: cabe o verso inteiro com o botão */
+    perspective: 1200px;
+    border-radius: var(--radius-card);
+  }
+  .aroma-card__inner {
+    position: relative;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.7s var(--ease-out-soft);
+  }
+  .aroma-card__face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    backface-visibility: hidden;
+  }
+  .aroma-card__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, rgb(42 20 24 / 0.55), transparent 28%),
+      linear-gradient(to top, rgb(42 20 24 / 0.85), transparent 45%);
+  }
+  .aroma-card__back {
+    transform: rotateY(180deg);
+    background:
+      radial-gradient(120% 70% at 100% 0%, color-mix(in srgb, var(--tint) 22%, transparent), transparent 60%),
+      var(--color-bordo);
+    gap: 16px;
+    padding-top: 32px;
+  }
+  @media (hover: hover) {
+    .aroma-card:hover .aroma-card__inner {
+      transform: rotateY(180deg);
+    }
+  }
+  /* Teclado: vira com foco visível (no card ou no botão do verso). Toque: classe .is-flipped,
+     alternada a cada toque — foco por clique/toque não prende o card virado. */
+  .aroma-card:focus-visible .aroma-card__inner,
+  .aroma-card:has(:focus-visible) .aroma-card__inner,
+  .aroma-card.is-flipped .aroma-card__inner {
+    transform: rotateY(180deg);
+  }
+
+  /* Sem movimento: troca por esmaecimento, sem girar. */
+  @media (prefers-reduced-motion: reduce) {
+    .aroma-card__inner,
+    .aroma-card:hover .aroma-card__inner,
+    .aroma-card:focus-visible .aroma-card__inner,
+    .aroma-card:has(:focus-visible) .aroma-card__inner,
+    .aroma-card.is-flipped .aroma-card__inner {
+      transform: none;
+    }
+    .aroma-card__back {
+      transform: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .aroma-card:hover .aroma-card__back,
+    .aroma-card:focus-visible .aroma-card__back,
+    .aroma-card:has(:focus-visible) .aroma-card__back,
+    .aroma-card.is-flipped .aroma-card__back {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  // Setas, arrastar com o mouse e "toque para virar" no celular.
+  for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+    const step = () => {
+      const slide = track.querySelector<HTMLElement>('.carousel-slide');
+      return slide ? slide.offsetWidth + 24 : 300;
+    };
+    const go = (dir: number) =>
+      track.scrollBy({ left: dir * step(), behavior: reduce.matches ? 'auto' : 'smooth' });
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+
+    const sync = () => {
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+    };
+    track.addEventListener('scroll', sync, { passive: true });
+    addEventListener('resize', sync);
+    sync();
+
+    // Arrastar com o mouse (toque já rola nativamente).
+    let startX = 0;
+    let startScroll = 0;
+    let dragged = false;
+    let pointerType = 'mouse';
+    track.addEventListener('pointerdown', (e) => {
+      pointerType = e.pointerType;
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      startX = e.clientX;
+      startScroll = track.scrollLeft;
+      dragged = false;
+      const move = (ev: PointerEvent) => {
+        const dx = ev.clientX - startX;
+        if (!dragged && Math.abs(dx) > 6) {
+          dragged = true;
+          track.classList.add('is-dragging');
+        }
+        if (dragged) track.scrollLeft = startScroll - dx;
+      };
+      const up = () => {
+        removeEventListener('pointermove', move);
+        removeEventListener('pointerup', up);
+        if (dragged) {
+          track.classList.remove('is-dragging');
+          // devolve o encaixe no card mais próximo
+          const s = step();
+          track.scrollTo({ left: Math.round(track.scrollLeft / s) * s, behavior: 'smooth' });
+        }
+      };
+      addEventListener('pointermove', move);
+      addEventListener('pointerup', up);
+    });
+    // Depois de arrastar, o clique não abre links nem vira card.
+    track.addEventListener(
+      'click',
+      (e) => {
+        if (dragged) {
+          e.preventDefault();
+          e.stopPropagation();
+          dragged = false;
+        }
+      },
+      true,
+    );
+
+    // Toque: vira o card (exceto ao tocar no botão do verso).
+    track.addEventListener('click', (e) => {
+      if (pointerType === 'mouse') return;
+      const target = e.target as HTMLElement;
+      if (target.closest('a')) return;
+      const card = target.closest<HTMLElement>('.aroma-card');
+      if (!card) return;
+      for (const other of track.querySelectorAll('.aroma-card.is-flipped')) if (other !== card) other.classList.remove('is-flipped');
+      card.classList.toggle('is-flipped');
+    });
+  }
+</script>

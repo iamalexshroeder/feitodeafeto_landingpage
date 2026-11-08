@@ -29,6 +29,37 @@ const {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      imagesrcset="/img/hero-banner-960.webp 960w, /img/hero-banner.webp 1440w"
+      imagesizes="100vw"
+      media="(min-width: 64rem)"
+      fetchpriority="high"
+    />
+    <script is:inline>
+      // Efeitos ao rolar: marca o <html> e revela [data-reveal] ao entrar na tela.
+      document.documentElement.classList.add('js');
+      addEventListener('DOMContentLoaded', () => {
+        const items = [...document.querySelectorAll('[data-reveal]')];
+        const show = (el) => el.classList.add('is-visible');
+        if (!('IntersectionObserver' in window)) return items.forEach(show);
+        // O que já está na tela ao carregar aparece direto, sem esperar o observer.
+        const pending = items.filter((el) => (el.getBoundingClientRect().top < innerHeight ? (show(el), false) : true));
+        const io = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }),
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
+        );
+        pending.forEach((el) => io.observe(el));
+      });
+    </script>
     <link rel="sitemap" href="/sitemap-index.xml" />
     {!noindex && <JsonLd title={title} description={description} faq={faq} />}
   </head>

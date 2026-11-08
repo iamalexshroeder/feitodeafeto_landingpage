@@ -1,0 +1,101 @@
+---
+// Bloco de modelo (formato) — mesmo layout dos antigos blocos de vela (Figma "Candle 01…05"):
+// imagem numa caixa colorida + texto, alternando de lado.
+import Button from '../ui/Button.astro';
+import CandlePhoto from '../ui/CandlePhoto.astro';
+import { whatsappLink } from '../../config/site';
+import { candles, type Model } from '../../data/content';
+
+interface Props {
+  model: Model;
+  index: number;
+  reverse?: boolean;
+}
+const { model, index, reverse = false } = Astro.props;
+
+const tints = {
+  'pimenta-rosa': 'bg-tint-pimenta-rosa',
+  baunilha: 'bg-tint-baunilha',
+  morango: 'bg-tint-morango',
+  fadas: 'bg-tint-fadas',
+  cereja: 'bg-tint-cereja',
+} as const;
+const jarPhoto = candles.find((c) => c.id === 'baunilha')!.photo;
+const headingId = `${model.id}-titulo`;
+const number = String(index + 1).padStart(2, '0');
+---
+
+<article
+  id={model.id}
+  aria-labelledby={headingId}
+  class:list={[
+    'container-page grid items-center gap-10 py-10 lg:gap-24 lg:py-12',
+    reverse ? 'lg:grid-cols-[minmax(0,520fr)_minmax(0,600fr)]' : 'lg:grid-cols-[minmax(0,600fr)_minmax(0,520fr)]',
+  ]}
+>
+  <div
+    data-reveal="zoom"
+    class:list={[
+      'relative flex aspect-[600/560] items-center justify-center overflow-hidden rounded-[var(--radius-media)]',
+      tints[model.tint],
+      reverse && 'lg:order-2',
+    ]}
+  >
+    {
+      model.media.kind === 'photo' && (
+        <img
+          src={model.media.src}
+          alt={model.media.alt}
+          width="1070"
+          height="1000"
+          loading="lazy"
+          decoding="async"
+          class="absolute inset-0 size-full object-cover"
+        />
+      )
+    }
+    {
+      model.media.kind === 'jar' && (
+        <CandlePhoto photo={jarPhoto} alt="Vela de 100g em pote de vidro com tampa de madeira" class="mt-[6%] w-[80%]" />
+      )
+    }
+    {
+      model.media.kind === 'placeholder' && (
+        <div class="flex max-w-[280px] flex-col items-center gap-4 text-center">
+          <img src="/brand/logo.svg" alt="" width="120" height="96" loading="lazy" class="w-28 opacity-60" />
+          <p class="text-small text-bordo">{model.media.text}</p>
+        </div>
+      )
+    }
+    <span
+      class:list={[
+        'absolute top-6 left-8 text-[clamp(4rem,2rem+5vw,6rem)] leading-none font-semibold tracking-[-3px]',
+        model.media.kind === 'photo' ? 'text-white opacity-40' : 'text-bordo opacity-[0.18]',
+      ]}
+      aria-hidden="true">{number}</span
+    >
+  </div>
+
+  <div class="flex flex-col items-start gap-6" data-reveal style="--reveal-delay: 120ms">
+    <p class="text-label text-bordo uppercase">{model.label}</p>
+    <h3 id={headingId} class="text-h2 text-ink">{model.name}</h3>
+    <p class="max-w-[504px] text-body-l text-muted">{model.description}</p>
+
+    <ul class="flex flex-wrap gap-2" aria-label="Especificações">
+      {model.specs.map((spec) => <li class="rounded-full bg-rosa-soft px-4 py-2 text-small text-bordo">{spec}</li>)}
+    </ul>
+
+    <div class="flex w-full flex-col items-start gap-6">
+      {
+        model.price ? (
+          <p class="text-h3 text-ink">{model.price}</p>
+        ) : (
+          <p class="text-title text-muted">Valor sob consulta</p>
+        )
+      }
+      <Button href={whatsappLink(`Olá! Quero a vela de ${model.name}. Quais aromas estão disponíveis?`)}>
+        {model.cta}
+      </Button>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,39 @@
+---
+// Figma: componente "Button" (1:39), sem ícone. Todos os CTAs de compra levam ao WhatsApp.
+// Variantes: primary (bordô), secondary (contorno), ondark (branco sobre bordô).
+// Grid de 8: 32px × 20px de respiro, 56px de altura (alvo de toque ≥ 44px).
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'ondark';
+  class?: string;
+  /** Link externo (WhatsApp) abre em nova aba. */
+  external?: boolean;
+  /** sm = variante "navbar-buttom" do Figma (40px de altura). */
+  size?: 'md' | 'sm';
+}
+
+const { href, variant = 'primary', class: className = '', external = true, size = 'md' } = Astro.props;
+
+const styles = {
+  primary: 'bg-bordo text-white hover:bg-bordo-dark',
+  // Contorno via sombra interna: não soma à altura (mantém 56px no grid de 8).
+  secondary: 'text-bordo shadow-[inset_0_0_0_1.5px_var(--color-bordo)] hover:bg-bordo hover:text-white',
+  ondark: 'bg-white text-bordo hover:bg-rosa',
+};
+---
+
+<a
+  href={href}
+  class:list={[
+    'inline-flex items-center justify-center rounded-full px-8 text-body leading-none font-semibold whitespace-nowrap transition-colors duration-200',
+    // No celular, os CTAs ocupam toda a largura disponível (respeitando o padding do container).
+    // O botão "sm" (menu) mantém a largura do conteúdo.
+    size === 'sm' ? 'min-h-10 py-3' : 'min-h-14 py-5 max-sm:w-full',
+    styles[variant],
+    className,
+  ]}
+  {...external ? { target: '_blank', rel: 'noopener' } : {}}
+>
+  <slot />
+  {external && <span class="sr-only">(abre o WhatsApp)</span>}
+</a>

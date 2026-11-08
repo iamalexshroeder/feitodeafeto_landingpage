@@ -1,0 +1,38 @@
+---
+// Seção "Quem faz" — referência: faixa da fundadora da LP Cellea (Moodboard › Lp's).
+// Texto, nome e foto de exemplo: substituir pelos reais da dona.
+import Button from '../ui/Button.astro';
+import { whatsappLink } from '../../config/site';
+---
+
+<section id="quem-faz" aria-labelledby="quem-faz-titulo" class="container-page py-16 lg:py-24">
+  <div class="grid overflow-hidden rounded-[var(--radius-panel)] bg-bordo lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <figure class="relative flex min-h-[320px] flex-col items-center justify-center gap-6 bg-rosa p-10" data-reveal="zoom">
+      <img src="/brand/logo.svg" alt="" width="176" height="140" loading="lazy" class="w-44" />
+      <figcaption class="max-w-[240px] text-center text-small text-bordo">
+        Espaço para a foto da fundadora no ateliê
+      </figcaption>
+    </figure>
+
+    <div class="flex flex-col items-start gap-8 px-8 py-12 md:px-16 lg:py-20" data-reveal style="--reveal-delay: 120ms">
+      <p class="text-label text-rosa uppercase">Quem faz</p>
+      <blockquote>
+        <h2 id="quem-faz-titulo" class="text-h2 text-white">
+          “Comecei fazendo velas para presentear quem eu amo. Cada pote que sai daqui ainda é feito assim.”
+        </h2>
+      </blockquote>
+      <p class="max-w-[560px] text-body-l text-rosa">
+        Eu derreto, perfumo e despejo cada vela à mão, em pequenos lotes. Escolho os aromas pensando em momentos: a
+        sala cheia de visitas, o banho depois do trabalho, o livro no domingo.
+      </p>
+      <div class="flex flex-col gap-1">
+        <p class="text-title text-white">Marina</p>
+        <p class="text-small text-rosa">Fundadora e artesã da Feito de Afeto</p>
+      </div>
+      <Button href={whatsappLink('Olá, Marina! Vim pelo site e queria conversar sobre as velas.')} variant="ondark">
+        Fale com a Marina
+      </Button>
+      <p class="text-small text-rosa/80">Texto, nome e foto de exemplo. Substituir pelos da fundadora.</p>
+    </div>
+  </div>
+</section>

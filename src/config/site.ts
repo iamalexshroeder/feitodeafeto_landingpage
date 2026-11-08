@@ -5,10 +5,10 @@ export const site = {
   tagline: 'Feito à mão, feito com afeto.',
   locale: 'pt_BR',
   lang: 'pt-BR',
-  themeColor: '#61162C',
+  themeColor: '#6B1E2E',
   defaultTitle: 'Velas Aromáticas Artesanais em Santos | Feito de Afeto',
   defaultDescription:
-    'Velas aromáticas feitas à mão com cera vegetal em Santos. Fragrâncias autorais, kits presente e lembrancinhas. Peça pelo WhatsApp e receba em casa.',
+    'Velas aromáticas feitas à mão com cera vegetal, em pote de vidro com tampa de madeira. Cinco aromas autorais, sob encomenda. Peça direto pelo WhatsApp.',
   ogImage: '/og-image.png',
   // Raster quadrado para o schema; os SVGs do logo ficam em /brand. Gerados por `npm run brand`.
   logo: '/brand/logo-512.png',

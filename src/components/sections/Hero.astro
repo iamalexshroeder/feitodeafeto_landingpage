@@ -1,0 +1,42 @@
+---
+// Figma: "Hero" (1:63). Fundo: "hero-banner 1" no recorte do Figma (scripts/build-hero.mjs).
+// Desktop: imagem de ponta a ponta, texto e CTAs sobrepostos à esquerda, em bordô-escuro direto
+// sobre a parede (contraste AA conferido em npm run contrast). Mobile: só o texto, sem imagem.
+import Button from '../ui/Button.astro';
+import { whatsappLink } from '../../config/site';
+---
+
+<section aria-labelledby="hero-titulo" class="relative isolate overflow-hidden bg-creme lg:min-h-[704px]">
+  {/* Só no desktop (≥1024px). No celular o hero é só texto: a imagem fica fora do layout e não baixa
+      nada (abaixo de 1024px o src é um GIF vazio embutido). */}
+  <picture class="hidden lg:absolute lg:inset-0 lg:-z-10 lg:block">
+    <source media="(min-width: 64rem)" srcset="/img/hero-banner-960.webp 960w, /img/hero-banner.webp 1440w" sizes="100vw" />
+    <img
+      src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+      alt="Vela Baunilha da Feito de Afeto sobre a mesa de cabeceira, ao lado de um abajur aceso"
+      width="1440"
+      height="701"
+      fetchpriority="high"
+      class="hero-media size-full object-cover object-[75%_center]"
+    />
+  </picture>
+
+  <div class="container-page flex flex-col py-16 lg:min-h-[704px] lg:justify-center lg:py-[72px]">
+    <div class="flex max-w-[708px] flex-col items-start gap-8">
+      <p class="text-label text-bordo uppercase">Velas aromáticas artesanais</p>
+      <h1 id="hero-titulo" class="text-display text-bordo-dark">Velas feitas à mão para perfumar seus momentos de afeto.</h1>
+      <p class="max-w-[544px] text-body-l text-bordo-dark">
+        Cera vegetal, aromas marcantes e um pote de vidro que continua com você depois da última chama. São cinco aromas,
+        cada um com a sua história.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <Button href={whatsappLink('Olá! Quero escolher a minha vela.')}>Escolher minha vela</Button>
+        <Button href="#colecao" variant="secondary" external={false}>Ver a coleção</Button>
+      </div>
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-ink">
+        <span class="font-semibold text-bordo" aria-hidden="true">★★★★★</span>
+        <span><span class="sr-only">Avaliação </span>4,9 de 5 · mais de 300 velas entregues.</span>
+      </p>
+    </div>
+  </div>
+</section>

@@ -69,6 +69,10 @@ mkdirSync('public/brand', { recursive: true });
 writeFileSync('public/brand/logo.svg', logoSvg(FULL));
 writeFileSync('public/brand/logo-wordmark.svg', logoSvg(WORDMARK, { tagline: false }));
 writeFileSync('public/brand/logo-wordmark-branco.svg', logoSvg(WORDMARK, { tagline: false, color: '#FFFFFF' }));
+// Logo completo em rosa (color/rosa), para o rodapé bordô-escuro.
+writeFileSync('public/brand/logo-rosa.svg', logoSvg(FULL, { color: '#F6DDE1' }));
+// Rosa do Figma (color/rosa), só o nome.
+writeFileSync('public/brand/logo-wordmark-rosa.svg', logoSvg(WORDMARK, { tagline: false, color: '#F6DDE1' }));
 writeFileSync('public/favicon.svg', faviconSvg());
 
 await Promise.all([

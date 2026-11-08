@@ -1,0 +1,16 @@
+---
+// Figma: "CTA Final" (2:159).
+import Button from '../ui/Button.astro';
+import { whatsappLink } from '../../config/site';
+---
+
+<section aria-labelledby="cta-final-titulo" class="container-page py-16 lg:py-24">
+  <div
+    class="flex flex-col items-center gap-6 rounded-[var(--radius-panel)] bg-rosa px-6 py-16 text-center md:px-20 lg:py-24"
+    data-reveal="zoom"
+  >
+    <h2 id="cta-final-titulo" class="max-w-[824px] text-h2 text-bordo">Leve um pouco de afeto para casa.</h2>
+    <p class="max-w-[640px] text-body-l text-ink">Escolha o seu aroma e fale com a gente. Respondemos rapidinho.</p>
+    <Button href={whatsappLink('Olá! Quero fazer um pedido.')}>Pedir pelo WhatsApp</Button>
+  </div>
+</section>

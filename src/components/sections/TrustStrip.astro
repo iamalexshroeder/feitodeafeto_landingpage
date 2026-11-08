@@ -1,0 +1,17 @@
+---
+// Figma: "Trust Strip" (1:92).
+import { trust } from '../../data/content';
+---
+
+<section aria-label="Por que escolher a Feito de Afeto" class="border-y border-line bg-white">
+  <ul class="container-page grid grid-cols-1 gap-6 py-10 sm:grid-cols-2 lg:flex lg:justify-between">
+    {
+      trust.map((item) => (
+        <li class="flex flex-col gap-2 text-center" data-reveal>
+          <p class="font-semibold text-ink">{item.title}</p>
+          <p class="text-muted">{item.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

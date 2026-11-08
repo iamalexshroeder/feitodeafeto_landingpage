@@ -1,0 +1,39 @@
+---
+// Figma: "Depoimentos" (2:94). Textos de exemplo, sinalizados na própria página.
+import { testimonials } from '../../data/content';
+---
+
+<section
+  id="depoimentos"
+  aria-labelledby="depoimentos-titulo"
+  class="container-page flex flex-col items-center gap-14 py-20 lg:py-[120px]"
+>
+  <div class="flex flex-col items-center gap-4 text-center" data-reveal>
+    <p class="text-label text-bordo uppercase">Depoimentos</p>
+    <h2 id="depoimentos-titulo" class="max-w-[760px] text-h2 text-ink">Quem acende, volta.</h2>
+    <p class="max-w-[600px] text-small text-muted">Textos de exemplo. Substituir pelos depoimentos reais das clientes.</p>
+  </div>
+  <!-- Cards com a mesma altura: a assinatura fica sempre alinhada no rodapé do card. -->
+  <ul class="grid w-full gap-6 md:grid-cols-3">
+    {
+      testimonials.map((t, i) => (
+        <li class="flex" data-reveal style={`--reveal-delay: ${i * 100}ms`}>
+          <figure class="flex w-full flex-col gap-6 rounded-[var(--radius-card)] border border-line bg-white px-8 py-10">
+            <p class="font-semibold text-bordo">
+              <span aria-hidden="true">★★★★★</span>
+              <span class="sr-only">5 de 5 estrelas</span>
+            </p>
+            <blockquote class="text-body-l text-ink">“{t.quote}”</blockquote>
+            <figcaption class="mt-auto flex items-center gap-4">
+              <img src="/img/avatar.svg" alt="" width="40" height="40" class="size-10" loading="lazy" />
+              <span class="flex flex-col">
+                <span class="font-semibold text-ink">{t.author}</span>
+                <span class="text-small text-muted">{t.detail}</span>
+              </span>
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>
