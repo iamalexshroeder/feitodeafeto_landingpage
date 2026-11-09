@@ -21,7 +21,7 @@ import { testimonials } from '../../data/content';
   <ul class="grid w-full gap-6 md:grid-cols-3">
     {testimonials.map((t, i) => (
       <li class="flex" data-reveal style={`--reveal-delay: ${i * 100}ms`}>
-        <figure class="flex w-full flex-col gap-6 rounded-[var(--radius-card)] border border-line bg-white px-8 py-10">
+        <figure class="flex w-full flex-col gap-6 rounded-[var(--radius-card)] border border-line bg-white px-8 py-10 lg:gap-5 lg:py-9">
           {/* Celular (Figma 49:87): autoria, estrelas e depois o texto. Desktop: texto em cima, autoria no rodapé. */}
           <blockquote class="text-body-l text-ink max-lg:order-3">“{t.quote}”</blockquote>
           <p class="stars max-lg:order-2 lg:hidden" aria-hidden="true">

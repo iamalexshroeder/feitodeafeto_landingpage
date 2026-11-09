@@ -253,7 +253,9 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
         </a>
 
         <p class="-mt-4 text-small text-muted max-sm:text-center">
-          Entrega em {site.delivery} · Pagamento via {site.payment}
+          {/* Separador como no Figma: "|" no celular, "·" no desktop. */}
+          Entrega em {site.delivery} <span class="lg:hidden">|</span>
+          <span class="max-lg:hidden">·</span> Pagamento via {site.payment}
         </p>
       </div>
     )}
