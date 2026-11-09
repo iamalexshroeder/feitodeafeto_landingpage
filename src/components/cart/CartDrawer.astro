@@ -23,7 +23,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
   </div>
   <button
     type="button"
-    class="ml-auto flex-none text-small font-semibold text-bordo underline underline-offset-4"
+    class="ml-auto flex-none text-small font-semibold text-bordo transition-colors hover:text-bordo-dark"
     data-open-cart
   >
     Ver sacola (<span data-cart-toast-count>0</span>)
@@ -61,7 +61,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
               <p class="text-label uppercase text-bordo">Seu pedido</p>
               <p class="text-small text-muted" data-ticket-date></p>
             </div>
-            <div class="ticket-slices" data-ticket-thumbs aria-hidden="true"></div>
+            <img src="/brand/logo.svg" alt="" width="50" height="40" class="h-10 w-auto" />
           </div>
           <hr class="ticket__rule" />
           <ul class="flex flex-col divide-y divide-dashed divide-line" data-cart-list></ul>
@@ -194,7 +194,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
                 <p class="text-label uppercase text-bordo">Resumo do pedido</p>
                 <p class="text-small text-muted" data-ticket-date></p>
               </div>
-              <div class="ticket-slices" data-ticket-thumbs aria-hidden="true"></div>
+              <img src="/brand/logo.svg" alt="" width="50" height="40" class="h-10 w-auto" />
             </div>
             <hr class="ticket__rule" />
             <ul class="flex flex-col gap-3 text-small text-ink" data-cart-summary></ul>
@@ -393,8 +393,10 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
   .cart__link {
     color: var(--color-bordo);
     font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 4px;
+    transition: color 0.2s;
+  }
+  .cart__link:hover {
+    color: var(--color-bordo-dark);
   }
   .cart__field {
     display: flex;
@@ -433,44 +435,13 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     font-size: 12px;
     font-weight: 600;
   }
-  /* Mini card "fatiado": uma fatia por item (até 4), com a foto de cada um; "+n" na última se houver mais. */
-  .ticket-slices {
-    display: flex;
-    flex: none;
-    gap: 2px;
-    width: 128px;
-    height: 72px;
-    overflow: hidden;
-    border-radius: 12px;
-    background: var(--color-white);
-    box-shadow: 0 0 0 1px var(--color-line);
-  }
-  .ticket-slices > * {
-    position: relative;
-    flex: 1;
-    min-width: 0;
-  }
-  .ticket-slices img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .ticket-slices b {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    background: rgb(42 20 24 / 0.55);
-    color: var(--color-white);
-    font-size: 12px;
-  }
   .cart__error {
-    color: var(--color-bordo);
+    color: var(--color-erro);
     font-size: var(--text-small);
     font-weight: 600;
   }
   .cart__field [aria-invalid='true'] {
-    box-shadow: inset 0 0 0 1.5px var(--color-bordo);
+    box-shadow: inset 0 0 0 2px var(--color-erro);
   }
   /* Seletor de quantidade: pílula com − e + em círculos, número no meio. */
   .cart__qty {
@@ -581,20 +552,6 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     let step = 0;
     let lastChanged = '';
 
-    // mini card fatiado no topo dos tickets
-    const renderThumbs = () => {
-      const items = getItems();
-      const shown = items.slice(0, 4);
-      const extra = items.length - shown.length;
-      const html = shown
-        .map(
-          (i, n) =>
-            `<span><img src="${i.thumb}" alt="" width="64" height="72" />${extra > 0 && n === shown.length - 1 ? `<b>+${extra}</b>` : ''}</span>`,
-        )
-        .join('');
-      dialog.querySelectorAll<HTMLElement>('[data-ticket-thumbs]').forEach((el) => (el.innerHTML = html));
-    };
-
     const renderList = () => {
       const items = getItems();
       list.replaceChildren(
@@ -634,7 +591,6 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       dialog.querySelector<HTMLElement>('[data-ticket]')!.hidden = items.length === 0;
       footer.hidden = items.length === 0;
       totalEl.textContent = brl(total());
-      renderThumbs();
       // devolve o foco ao botão clicado depois de redesenhar a lista
       if (lastChanged) {
         const row = [...list.children].find((li) => li.querySelector('output')?.classList.contains('is-pop'));

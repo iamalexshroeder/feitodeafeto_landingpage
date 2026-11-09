@@ -5,13 +5,18 @@ import Button from '../components/ui/Button.astro';
 
 <Base title="Página não encontrada | Feito de Afeto" description="Esta página não existe." noindex>
   <section aria-labelledby="erro-titulo" class="container-page flex flex-col items-start gap-6 py-24">
-    <p class="text-label uppercase text-bordo">Erro 404</p>
+    <p class="text-label uppercase text-erro">Erro 404</p>
     <h1 id="erro-titulo" class="text-h2 text-ink">
       Página não encontrada
     </h1>
     <p class="text-body-l text-muted">O endereço que você procurou não existe ou mudou de lugar.</p>
-    <Button href="/" variant="secondary" external={false}>
-      Voltar para o início
-    </Button>
+    <div class="flex flex-wrap gap-4 max-sm:w-full">
+      <Button href="/#modelos" external={false}>
+        Ver as velas
+      </Button>
+      <Button href="/" variant="secondary" external={false}>
+        Voltar para o início
+      </Button>
+    </div>
   </section>
 </Base>

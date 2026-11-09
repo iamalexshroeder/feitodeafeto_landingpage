@@ -4,7 +4,6 @@
 // parede clara — contraste AA conferido em npm run contrast. Mobile: sem imagem; texto em bordô-escuro
 // sobre o creme, "Ver a coleção" em rosa e estrelas sobre a prova social.
 import Button from '../ui/Button.astro';
-import { whatsappLink } from '../../config/site';
 ---
 
 <section aria-labelledby="hero-titulo" class="relative isolate overflow-hidden bg-creme lg:min-h-[640px]">
@@ -37,7 +36,7 @@ import { whatsappLink } from '../../config/site';
         <span class="max-lg:hidden">São cinco aromas, cada um com a sua história.</span>
       </p>
       <div class="flex flex-wrap gap-4">
-        <Button href={whatsappLink('Olá! Quero escolher a minha vela.')} class="lg:bg-bordo-dark lg:hover:bg-bordo">
+        <Button href="#modelos" external={false} class="lg:bg-bordo-dark lg:hover:bg-bordo">
           Escolher minha vela
         </Button>
         <Button

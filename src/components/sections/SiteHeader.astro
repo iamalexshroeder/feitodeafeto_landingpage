@@ -1,7 +1,8 @@
 ---
 // Figma: "Announcement Bar" (1:50) + "Nav" (1:52): fundo branco, logo completo, botão "navbar".
 // O menu fica fixo no topo ao rolar — e com ele a sacola, então a quantidade fica sempre à vista.
-// Celular: só o ícone da sacola com a quantidade. Desktop: "Fale com a gente" + "Sacola · n" (com itens).
+// Celular: ícone da sacola no menu, com a quantidade. Desktop: "Fale com a gente" no menu e a sacola
+// flutuante no canto inferior direito (sempre à vista, com a quantidade).
 import Button from '../ui/Button.astro';
 import { site, whatsappLink } from '../../config/site';
 
@@ -14,7 +15,9 @@ const links = [
 ---
 
 <p class="bg-bordo px-6 py-3 text-center text-label uppercase text-rosa">
-  Feitas à mão, sob encomenda<span class="hidden sm:inline"> · Peça direto pelo WhatsApp</span>
+  <span class="shimmer">
+    Feitas à mão, sob encomenda<span class="hidden sm:inline"> · Peça direto pelo WhatsApp</span>
+  </span>
 </p>
 <header class="site-nav sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur-md">
   <nav aria-label="Principal" class="container-page flex items-center justify-between gap-6 py-2">
@@ -39,9 +42,6 @@ const links = [
           class="max-lg:hidden"
         >
           Fale com a gente
-        </Button>
-        <Button variant="primary" size="sm" data-open-cart="" data-cart-pill="" class="max-lg:hidden!" hidden>
-          Sacola · <span data-cart-count>0</span>
         </Button>
         {/* Celular: ícone padrão de carrinho com a quantidade (exceção à regra "botões sem ícone"). */}
         <button
@@ -70,7 +70,57 @@ const links = [
   </nav>
 </header>
 
+{/* Desktop: sacola flutuante no canto inferior direito, com a quantidade (mesmo ícone do celular). */}
+<button
+  type="button"
+  class="cart-icon cart-fab fixed right-8 bottom-8 z-40 grid size-14 place-items-center rounded-full bg-bordo text-white transition-colors hover:bg-bordo-dark max-lg:hidden"
+  data-open-cart
+  aria-label="Abrir a sacola, vazia"
+>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="9" cy="20" r="1.5" fill="currentColor"></circle>
+    <circle cx="18" cy="20" r="1.5" fill="currentColor"></circle>
+    <path
+      d="M2.5 3.5h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1l1.7-6.8H6.3"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    ></path>
+  </svg>
+  <span class="cart-badge cart-badge--fab" data-cart-badge hidden>
+    0
+  </span>
+</button>
+
 <style>
+  /* Faixa do topo: brilho contínuo (rosa-bebê → branco → rosa-bebê) passando pelo texto.
+     Os dois tons passam AA sobre o bordô. Sem movimento, fica no rosa. */
+  @media (prefers-reduced-motion: no-preference) {
+    .shimmer {
+      background: linear-gradient(
+          100deg,
+          var(--color-rosa) 0%,
+          var(--color-rosa) 35%,
+          var(--color-white) 50%,
+          var(--color-rosa) 65%,
+          var(--color-rosa) 100%
+        )
+        0 0 / 250% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 4.5s linear infinite;
+    }
+    @keyframes shimmer {
+      from {
+        background-position: 100% 0;
+      }
+      to {
+        background-position: 0 0;
+      }
+    }
+  }
   .cart-badge {
     position: absolute;
     top: -4px;
@@ -88,6 +138,14 @@ const links = [
     line-height: 1;
     box-shadow: 0 0 0 2px var(--color-white);
   }
+  .cart-fab {
+    box-shadow: 0 16px 32px -12px rgb(42 20 24 / 0.45);
+  }
+  /* No botão bordô, o número fica em rosa com texto bordô para destacar. */
+  .cart-badge--fab {
+    background: var(--color-rosa);
+    color: var(--color-bordo);
+  }
   @media (prefers-reduced-motion: no-preference) {
     :global(.is-bump) {
       animation: bump 0.5s var(--ease-out-soft);
@@ -102,12 +160,10 @@ const links = [
 
 <script>
   import { count } from '../../scripts/cart';
-  const pill = document.querySelector<HTMLElement>('[data-cart-pill]');
-  const n = document.querySelector<HTMLElement>('[data-cart-count]');
-  const icon = document.querySelector<HTMLElement>('.cart-icon');
-  const badge = document.querySelector<HTMLElement>('[data-cart-badge]');
-  const bump = (el: HTMLElement | null) => {
-    if (!el) return;
+  // Celular: ícone no menu. Desktop: botão flutuante. Os dois mostram a quantidade.
+  const icons = document.querySelectorAll<HTMLElement>('.cart-icon');
+  const badges = document.querySelectorAll<HTMLElement>('[data-cart-badge]');
+  const bump = (el: HTMLElement) => {
     el.classList.remove('is-bump');
     void el.offsetWidth;
     el.classList.add('is-bump');
@@ -115,18 +171,12 @@ const links = [
   const render = (animate = false) => {
     const c = count();
     const label = c ? `Abrir a sacola, ${c} ${c === 1 ? 'item' : 'itens'}` : 'Abrir a sacola, vazia';
-    if (n) n.textContent = String(c);
-    if (pill) pill.hidden = c === 0;
-    pill?.setAttribute('aria-label', label);
-    icon?.setAttribute('aria-label', label);
-    if (badge) {
-      badge.textContent = c > 99 ? '99+' : String(c);
-      badge.hidden = c === 0;
-    }
-    if (animate && c) {
-      bump(pill);
-      bump(badge);
-    }
+    icons.forEach((el) => el.setAttribute('aria-label', label));
+    badges.forEach((el) => {
+      el.textContent = c > 99 ? '99+' : String(c);
+      el.hidden = c === 0;
+      if (animate && c) bump(el);
+    });
   };
   window.addEventListener('cart:change', () => render(true));
   render();

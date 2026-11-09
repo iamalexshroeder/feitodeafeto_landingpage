@@ -58,7 +58,10 @@ import { whatsappLink } from '../../config/site';
                 class="aroma-card__photo absolute inset-0 size-full object-cover"
               />
               <span class="aroma-card__scrim" aria-hidden="true" />
-              <p class="relative text-small text-white lowercase">({c.name})</p>
+              <p class="relative text-small text-white" aria-hidden="true">
+                <span class="hint-touch">Toque para ver detalhes</span>
+                <span class="hint-mouse">Veja os detalhes</span>
+              </p>
               <div class="relative mt-auto flex flex-col gap-1">
                 <h3 id={`aroma-${c.id}`} class="text-title text-white">
                   {c.name}
@@ -104,6 +107,18 @@ import { whatsappLink } from '../../config/site';
 </div>
 
 <style>
+  /* Dica no topo do card: "toque" no celular, "passe o mouse" com mouse. */
+  .hint-mouse {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hint-touch {
+      display: none;
+    }
+    .hint-mouse {
+      display: inline;
+    }
+  }
   .carousel-btn {
     display: grid;
     place-items: center;
@@ -194,6 +209,17 @@ import { whatsappLink } from '../../config/site';
     background: var(--color-bordo);
     gap: 16px;
     padding-top: 32px;
+  }
+  /* Toque: giro mais curto e já preparado na GPU, para o verso aparecer na hora. */
+  @media (hover: none) {
+    .aroma-card {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .aroma-card__inner {
+      transition-duration: 0.45s;
+      will-change: transform;
+    }
   }
   @media (hover: hover) {
     .aroma-card:hover .aroma-card__inner {
@@ -352,15 +378,37 @@ import { whatsappLink } from '../../config/site';
     }
 
     // Toque: vira o card (exceto ao tocar no botão do verso).
-    track.addEventListener('click', (e) => {
-      if (pointerType === 'mouse') return;
-      const target = e.target as HTMLElement;
-      if (target.closest('a')) return;
+    const flip = (target: HTMLElement) => {
+      if (target.closest('a')) return false;
       const card = target.closest<HTMLElement>('.aroma-card');
-      if (!card) return;
+      if (!card) return false;
       for (const other of track.querySelectorAll('.aroma-card.is-flipped'))
         if (other !== card) other.classList.remove('is-flipped');
       card.classList.toggle('is-flipped');
+      return true;
+    };
+    // Vira já ao soltar o dedo (pointerup), sem esperar o "click" do navegador. Se o dedo andou
+    // (rolagem do carrossel), o navegador manda pointercancel e o toque não conta.
+    let tap: { x: number; y: number } | null = null;
+    let tappedAt = 0;
+    track.addEventListener(
+      'pointerdown',
+      (e) => {
+        tap = e.pointerType === 'mouse' ? null : { x: e.clientX, y: e.clientY };
+      },
+      { passive: true },
+    );
+    track.addEventListener('pointercancel', () => (tap = null), { passive: true });
+    track.addEventListener('pointerup', (e) => {
+      if (!tap || e.pointerType === 'mouse') return;
+      const moved = Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 10;
+      tap = null;
+      if (!moved && flip(e.target as HTMLElement)) tappedAt = performance.now();
+    });
+    // Leitores de tela e outros cliques sem pointerup: o "click" ainda vira (sem duplicar o toque).
+    track.addEventListener('click', (e) => {
+      if (pointerType === 'mouse' || performance.now() - tappedAt < 600) return;
+      flip(e.target as HTMLElement);
     });
   }
 </script>

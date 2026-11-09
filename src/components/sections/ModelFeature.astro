@@ -55,7 +55,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
   aria-labelledby={headingId}
   class:list={[
     // Compacto no desktop: cada bloco cabe numa tela de notebook (~680px) sob o menu.
-    'container-page grid items-center gap-10 py-10 lg:gap-24 lg:py-10',
+    'container-page grid items-center gap-10 py-10 lg:gap-24 lg:py-18',
     reverse ? 'lg:grid-cols-[minmax(0,520fr)_minmax(0,600fr)]' : 'lg:grid-cols-[minmax(0,600fr)_minmax(0,520fr)]',
   ]}
 >
@@ -112,7 +112,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
     </div>
   </div>
 
-  <div class="flex flex-col items-start gap-6 lg:gap-4" data-reveal style="--reveal-delay: 120ms">
+  <div class="flex flex-col items-start gap-6" data-reveal style="--reveal-delay: 120ms">
     <p class="text-label uppercase text-bordo">{model.label}</p>
     <h3 id={headingId} class="text-h2 text-ink">
       {model.name}
@@ -162,11 +162,13 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
                     class="peer sr-only"
                   />
                   {/* */}
-                  <span class="size-opt flex h-full w-full cursor-pointer flex-col rounded-2xl bg-white px-4 py-4 text-ink ring-1 ring-line transition-colors ring-inset peer-checked:bg-bordo peer-checked:text-white peer-checked:ring-bordo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo sm:px-6">
+                  <span class="size-opt flex h-full min-h-26 w-full cursor-pointer flex-col justify-center gap-2 rounded-2xl bg-white px-4 py-4 text-ink ring-1 ring-line transition-colors ring-inset peer-checked:bg-bordo peer-checked:text-white peer-checked:ring-bordo peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bordo sm:px-6">
                     {/* Hierarquia fixa nas duas opções: tamanho → preço → economia (sempre na própria linha). */}
                     <span class="text-label uppercase">{s.label}</span>
-                    <span class="text-title">{s.price}</span>
-                    <span class="size-saving text-small text-bordo">{s.saving}</span>
+                    <span class="flex flex-col">
+                      <span class="size-price">{s.price}</span>
+                      <span class="size-saving text-small text-bordo">{s.saving}</span>
+                    </span>
                   </span>
                 </label>
               ))}
@@ -243,7 +245,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
           href={whatsappLink(defaultMessage)}
           target="_blank"
           rel="noopener"
-          class="self-start text-small font-semibold text-bordo underline underline-offset-4 hover:text-bordo-dark max-sm:self-center"
+          class="self-start text-small font-semibold text-bordo hover:text-bordo-dark max-sm:self-center"
           data-order-cta=""
           data-track-item={model.id}
         >
@@ -259,6 +261,13 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
 </article>
 
 <style>
+  /* Preço da opção do kit: 20/24 em todas as larguras (Figma), mesmo no celular, onde o title sobe para 24. */
+  .size-price {
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
   /* Opção de tamanho escolhida: economia em rosa sobre o bordô (AA). */
   input:checked + .size-opt .size-saving {
     color: var(--color-rosa);

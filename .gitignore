@@ -8,3 +8,9 @@ dist/
 .DS_Store
 Thumbs.db
 assets/_remover/
+
+# Ferramentas de IA e rascunhos (ficam só na máquina, fora do repositório)
+.agents/
+.claude/
+skills-lock.json
+docs/figma-alteracoes/

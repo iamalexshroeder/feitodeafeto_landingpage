@@ -10,6 +10,7 @@ const c = {
   ink: '#2a1418',
   muted: '#7a6266',
   white: '#ffffff',
+  erro: '#d50000',
   'wood-dark': '#8e6a4c',
   whatsapp: '#37ce65',
   // Hero desktop (sem véu, como no Figma): pior ponto (5% mais escuro) da parede atrás de cada texto,
@@ -73,6 +74,8 @@ const pairs = [
   ['white', 'bordo-dark', 4.5, 'hover do botão'],
   ['rosa', 'bordo', 4.5, 'textos sobre bordô'],
   ['rosa', 'bordo-dark', 4.5, 'rodapé'],
+  ['erro', 'white', 4.5, 'mensagens de erro nos campos da sacola'],
+  ['erro', 'creme', 4.5, 'mensagens de erro sobre o creme'],
   ['wood-dark', 'creme', 4.5, 'título "Vidro + tampa" nos benefícios'],
 ];
 // Exceções aprovadas pela dona do projeto (aparecem como aviso, não reprovam).
