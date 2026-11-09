@@ -22,8 +22,12 @@ import { testimonials } from '../../data/content';
     {testimonials.map((t, i) => (
       <li class="flex" data-reveal style={`--reveal-delay: ${i * 100}ms`}>
         <figure class="flex w-full flex-col gap-6 rounded-[var(--radius-card)] border border-line bg-white px-8 py-10">
-          <blockquote class="text-body-l text-ink">“{t.quote}”</blockquote>
-          <figcaption class="mt-auto flex items-center gap-4">
+          {/* Celular (Figma 49:87): autoria, estrelas e depois o texto. Desktop: texto em cima, autoria no rodapé. */}
+          <blockquote class="text-body-l text-ink max-lg:order-3">“{t.quote}”</blockquote>
+          <p class="stars max-lg:order-2 lg:hidden" aria-hidden="true">
+            ★★★★★
+          </p>
+          <figcaption class="flex items-center gap-4 max-lg:order-1 lg:mt-auto">
             <img src="/img/avatar.svg" alt="" width="40" height="40" class="size-10" loading="lazy" />
             <span class="flex flex-col">
               <span class="font-semibold text-ink">{t.author}</span>
@@ -35,3 +39,13 @@ import { testimonials } from '../../data/content';
     ))}
   </ul>
 </section>
+
+<style>
+  /* Estrelas decorativas do card no celular (Figma), como as do hero; só ilustração. */
+  .stars {
+    color: var(--color-estrela);
+    font-size: 22px;
+    line-height: 22px;
+    letter-spacing: 2px;
+  }
+</style>

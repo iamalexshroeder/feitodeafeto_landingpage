@@ -29,8 +29,11 @@ const products = models.flatMap((m) => {
   <TrustStrip />
   <Collection />
   <Founder />
-  <HowWeMake />
-  <Testimonials />
+  {/* Desktop (Figma 1:49): Depoimentos antes de Como fazemos. Celular (47:37): Como fazemos primeiro. */}
+  <div class="flex flex-col lg:[&>#depoimentos]:-order-1">
+    <HowWeMake />
+    <Testimonials />
+  </div>
   <Faq />
   <FinalCta />
   <MobileCta />

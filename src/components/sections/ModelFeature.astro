@@ -113,7 +113,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
   </div>
 
   <div class="flex flex-col items-start gap-6" data-reveal style="--reveal-delay: 120ms">
-    <p class="text-label uppercase text-bordo">{model.label}</p>
+    <p class="text-label uppercase text-bordo max-lg:-mb-4">{model.label}</p>
     <h3 id={headingId} class="text-h2 text-ink">
       {model.name}
     </h3>
@@ -136,7 +136,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
 
     {order && (
       <div
-        class="flex w-full max-w-[504px] flex-col gap-6 lg:gap-4"
+        class="flex w-full max-w-[504px] flex-col gap-6"
         data-order={order.type}
         data-name={model.orderName}
         data-phone={site.whatsapp}
@@ -245,14 +245,14 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
           href={whatsappLink(defaultMessage)}
           target="_blank"
           rel="noopener"
-          class="self-start text-small font-semibold text-bordo hover:text-bordo-dark max-sm:self-center"
+          class="self-start text-small font-semibold text-bordo hover:text-bordo-dark max-lg:-mt-4 max-sm:self-center"
           data-order-cta=""
           data-track-item={model.id}
         >
           Ou peça só este direto pelo WhatsApp<span class="sr-only"> (abre o WhatsApp)</span>
         </a>
 
-        <p class="text-small text-muted lg:-mt-2">
+        <p class="-mt-4 text-small text-muted max-sm:text-center">
           Entrega em {site.delivery} · Pagamento via {site.payment}
         </p>
       </div>
