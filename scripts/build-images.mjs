@@ -7,6 +7,7 @@
 //   assets/produto/kit/kit-<tamanho>.png     → public/img/kit/kit-<tamanho>{-640,}.webp (kit, por tamanho)
 //   assets/produto/floral/<aroma>.png        → public/img/floral/<aroma>{-640,-thumb,}.webp (vela floral de 100g)
 //   assets/fundadora/giovaneli.png           → public/img/fundadora{-400,}.webp      (Quem faz)
+//   assets/clientes/<nome>.png              → public/img/clientes/<nome>.webp (foto do depoimento, 120 × 120)
 //   assets/ui/avatar.svg                     → public/img/avatar.svg
 //
 // <aroma> = id do aroma em src/data/content.ts. As larguras batem com o `srcset` dos componentes:
@@ -77,6 +78,17 @@ await variants(`${SRC}/fundadora/giovaneli.png`, `${OUT}/fundadora`, {
   small: { w: 400, h: 711 },
   quality: 80,
 });
+// Depoimentos: foto de cada cliente num círculo de 40px (3x = 120), com o mesmo recorte do Figma.
+mkdirSync(`${OUT}/clientes`, { recursive: true });
+const CLIENTES = {
+  'jadhe-nunes': null, // quadrada, inteira
+  edimur: { left: 127, top: 482, width: 477, height: 477 }, // recorte do Figma (192:119)
+  'julia-pereira': { left: 0, top: 430, width: 739, height: 739 }, // centro da foto em pé
+};
+for (const [id, crop] of Object.entries(CLIENTES)) {
+  const img = crop ? sharp(`${SRC}/clientes/${id}.png`).extract(crop) : sharp(`${SRC}/clientes/${id}.png`);
+  await img.resize(120, 120, { fit: 'cover' }).webp({ quality: 80 }).toFile(`${OUT}/clientes/${id}.webp`);
+}
 // Kit: 3 velas (1 na frente, 2 atrás), uma imagem por tamanho; montadas a partir das fotos por aroma.
 mkdirSync(`${OUT}/kit`, { recursive: true });
 for (const id of ['kit-100g', 'kit-40g']) {

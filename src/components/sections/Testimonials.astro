@@ -28,7 +28,15 @@ import { testimonials } from '../../data/content';
             ★★★★★
           </p>
           <figcaption class="flex items-center gap-4 max-lg:order-1 lg:mt-auto">
-            <img src="/img/avatar.svg" alt="" width="40" height="40" class="size-10" loading="lazy" />
+            <img
+              src={t.photo ?? '/img/avatar.svg'}
+              alt=""
+              width="40"
+              height="40"
+              class="size-10 rounded-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
             <span class="flex flex-col">
               <span class="font-semibold text-ink">{t.author}</span>
               <span class="text-small text-muted">{t.detail}</span>

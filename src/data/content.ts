@@ -342,16 +342,19 @@ export const testimonials = [
     quote:
       'Comprei a de Baunilha para mim e voltei para pegar mais duas de presente. O cheiro fica no quarto mesmo apagada.',
     author: 'Jadhe Nunes',
+    photo: '/img/clientes/jadhe-nunes.webp',
     detail: 'Comprou Baunilha',
   },
   {
     quote: 'Atendimento pelo WhatsApp super rápido. Me ajudaram a escolher e acertaram em cheio.',
     author: 'Edimur',
+    photo: '/img/clientes/edimur.webp',
     detail: 'Comprou Morango com Champanhe',
   },
   {
     quote: 'A Pimenta Rosa virou a vela oficial da minha sala. E o pote eu reaproveitei.',
     author: 'Julia Pereira',
+    photo: '/img/clientes/julia-pereira.webp',
     detail: 'Comprou Pimenta Rosa',
   },
 ];
