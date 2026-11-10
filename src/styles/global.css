@@ -41,8 +41,8 @@
 
   /* Escala de texto no grid de 8 (valores de desktop; mobile em @layer base abaixo). */
   /* Escala de desktop (≥1024px), no padrão de sites de produto consolidados. */
-  --text-display: 3.5rem; /* 56 / 64 */
-  --text-display--line-height: 1.1428;
+  --text-display: 4rem; /* 64 / 64 (hero desktop, Figma) */
+  --text-display--line-height: 1;
   --text-display--letter-spacing: -3px;
   --text-display--font-weight: 600;
 

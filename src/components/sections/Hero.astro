@@ -1,69 +1,73 @@
 ---
 // Figma: "Hero" (desktop 1:63, mobile 47:44).
 // Desktop: foto de ponta a ponta, sem véu (Figma), com título e label em bordô e texto em tinta sobre a
-// parede clara — contraste AA conferido em npm run contrast. Mobile: sem imagem; texto em bordô-escuro
-// sobre o creme, "Ver a coleção" em rosa e estrelas sobre a prova social.
+// parede clara — contraste AA conferido em npm run contrast.
+// Celular (referência: hero mobile da Alma Beauty): a foto fica no topo com a vela inteira no centro, a base
+// esmaece para o escuro e os textos começam por cima dela — texto claro, botão creme e botão translúcido.
 import Button from '../ui/Button.astro';
 ---
 
-<section aria-labelledby="hero-titulo" class="relative isolate overflow-hidden bg-creme lg:min-h-[640px]">
-  {/* Só no desktop (≥1024px). No celular o hero é só texto: a imagem fica fora do layout e não baixa
-      nada (abaixo de 1024px o src é um GIF vazio embutido). */}
-  <picture class="hidden lg:absolute lg:inset-0 lg:-z-10 lg:block">
-    <source
-      media="(min-width: 64rem)"
-      srcset="/img/hero-banner-960.webp 960w, /img/hero-banner.webp 1440w"
-      sizes="100vw"
-    />
-    <img
-      src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-      alt="Vela Baunilha da Feito de Afeto sobre a mesa de cabeceira, ao lado de um abajur aceso"
-      width="1440"
-      height="701"
-      fetchpriority="high"
-      class="hero-media size-full object-cover object-[75%_center]"
-    />
-  </picture>
+<section
+  aria-labelledby="hero-titulo"
+  class="relative isolate flex flex-col overflow-hidden bg-ink lg:block lg:min-h-[640px] lg:bg-creme"
+>
+  {/* Uma imagem só: cada tamanho baixa só a sua versão. */}
+  <div class="relative aspect-[390/400] w-full md:aspect-[16/10] lg:absolute lg:inset-0 lg:-z-10 lg:aspect-auto">
+    <picture>
+      <source
+        media="(min-width: 64rem)"
+        srcset="/img/hero-banner-960.webp 960w, /img/hero-banner.webp 1440w"
+        sizes="100vw"
+      />
+      <source srcset="/img/hero-banner-mobile-520.webp 520w, /img/hero-banner-mobile.webp 780w" sizes="100vw" />
+      <img
+        src="/img/hero-banner-mobile.webp"
+        alt="Vela Pimenta Rosa da Feito de Afeto acesa sobre a mesa de cabeceira, ao lado de um abajur"
+        width="780"
+        height="800"
+        fetchpriority="high"
+        class="hero-media absolute inset-0 size-full object-cover lg:object-[75%_center]"
+      />
+    </picture>
+    {/* Véu do celular: a foto esmaece para o escuro na base, onde os textos começam (AA). */}
+    <span class="hero-veil pointer-events-none absolute inset-0 lg:hidden" aria-hidden="true"></span>
+  </div>
 
-  <div class="container-page flex flex-col py-16 lg:min-h-[640px] lg:justify-center lg:py-[72px]">
+  <div class="container-page relative -mt-24 flex flex-col pb-10 lg:mt-0 lg:min-h-[640px] lg:justify-center lg:py-[72px]">
     <div class="flex max-w-[708px] flex-col items-start gap-8">
-      <p class="text-label uppercase text-bordo">Velas aromáticas artesanais</p>
-      <h1 id="hero-titulo" class="text-display text-bordo-dark lg:text-bordo">
-        Velas feitas à mão para perfumar seus momentos de afeto.
+      <p class="text-label uppercase text-rosa lg:text-bordo-dark">Velas aromáticas artesanais</p>
+      <h1 id="hero-titulo" class="text-display text-white lg:text-bordo">
+        Velas feitas à mão para perfumar seus momentos de afeto
       </h1>
-      <p class="max-w-[544px] text-body-l text-bordo-dark lg:text-ink">
+      <p class="max-w-[544px] text-body-l text-rosa max-lg:-mt-5 lg:text-ink">
         Cera vegetal, aromas marcantes e um pote de vidro que continua com você depois da última chama.{' '}
         <span class="max-lg:hidden">São cinco aromas, cada um com a sua história.</span>
       </p>
-      <div class="flex flex-wrap gap-4">
-        <Button href="#modelos" external={false} class="lg:bg-bordo-dark lg:hover:bg-bordo">
+      <div class="flex w-full flex-wrap gap-4 max-lg:flex-col sm:w-auto">
+        <Button href="#modelos" external={false} class="max-lg:bg-creme max-lg:text-bordo max-lg:hover:bg-white">
           Escolher minha vela
         </Button>
         <Button
           href="#colecao"
           variant="soft"
           external={false}
-          class="lg:bg-white lg:hover:bg-rosa lg:hover:text-bordo"
+          class="max-lg:bg-white/15 max-lg:text-white max-lg:backdrop-blur-sm max-lg:hover:bg-white/25 max-lg:hover:text-white lg:bg-creme lg:hover:bg-rosa lg:hover:text-bordo"
         >
           Ver a coleção
         </Button>
-      </div>
-      <div class="flex flex-col gap-1 max-lg:w-full max-lg:items-center max-lg:text-center lg:hidden">
-        <p class="hero-stars" aria-hidden="true">
-          ★★★★★
-        </p>
-        <p class="text-ink">Mais de 100 velas vendidas.</p>
       </div>
     </div>
   </div>
 </section>
 
 <style>
-  /* Estrelas decorativas do mobile (Figma "Prova social"); cor só de ilustração, sem texto. */
-  .hero-stars {
-    color: var(--color-estrela);
-    font-size: 16px;
-    line-height: 16px;
-    letter-spacing: 4px;
+  .hero-veil {
+    background: linear-gradient(
+      to bottom,
+      rgb(42 20 24 / 0) 30%,
+      rgb(42 20 24 / 0.55) 55%,
+      rgb(42 20 24 / 0.9) 72%,
+      rgb(42 20 24) 92%
+    );
   }
 </style>

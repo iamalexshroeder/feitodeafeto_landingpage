@@ -5,6 +5,8 @@
 //   assets/produto/100g/<aroma>.png          → public/img/100g/<aroma>{-640,}.webp     (modelo 100g, por aroma)
 //   assets/produto/40g/<aroma>.png           → public/img/40g/<aroma>{-640,}.webp      (modelo 40g, por aroma)
 //   assets/produto/kit/kit-<tamanho>.png     → public/img/kit/kit-<tamanho>{-640,}.webp (kit, por tamanho)
+//   assets/produto/floral/<aroma>.png        → public/img/floral/<aroma>{-640,-thumb,}.webp (vela floral de 100g)
+//   assets/fundadora/giovaneli.png           → public/img/fundadora{-400,}.webp      (Quem faz)
 //   assets/ui/avatar.svg                     → public/img/avatar.svg
 //
 // <aroma> = id do aroma em src/data/content.ts. As larguras batem com o `srcset` dos componentes:
@@ -54,6 +56,27 @@ for (const id of AROMAS) {
     quality: 80,
   });
 }
+// Vela floral de 100g: uma foto por aroma. Pimenta Rosa é a foto do Figma (196:179); as demais são ela com o
+// rótulo de cada aroma no lugar (tirado da foto 100g do aroma, alinhado e com a luz corrigida).
+mkdirSync(`${OUT}/floral`, { recursive: true });
+for (const id of AROMAS) {
+  await variants(`${SRC}/produto/floral/${id}.png`, `${OUT}/floral/${id}`, {
+    large: { w: 1200, h: 1120 },
+    small: { w: 640, h: 597 },
+    quality: 80,
+  });
+  await sharp(`${SRC}/produto/floral/${id}.png`)
+    .resize(160, 160, { fit: 'cover' })
+    .webp({ quality: 78 })
+    .toFile(`${OUT}/floral/${id}-thumb.webp`);
+}
+// Quem faz: foto da fundadora (Figma 192:111, 941 × 1672). Desktop: coluna de 343 × 609 (2x = 686);
+// celular: 343 × 369 com recorte no topo (object-position no CSS).
+await variants(`${SRC}/fundadora/giovaneli.png`, `${OUT}/fundadora`, {
+  large: { w: 686, h: 1218 },
+  small: { w: 400, h: 711 },
+  quality: 80,
+});
 // Kit: 3 velas (1 na frente, 2 atrás), uma imagem por tamanho; montadas a partir das fotos por aroma.
 mkdirSync(`${OUT}/kit`, { recursive: true });
 for (const id of ['kit-100g', 'kit-40g']) {
@@ -75,7 +98,10 @@ for (const size of ['100g', '40g']) {
 }
 
 for (const id of ['kit-100g', 'kit-40g']) {
-  await sharp(`${SRC}/produto/kit/${id}.png`).resize(160, 160, { fit: 'cover' }).webp({ quality: 78 }).toFile(`${OUT}/kit/${id}-thumb.webp`);
+  await sharp(`${SRC}/produto/kit/${id}.png`)
+    .resize(160, 160, { fit: 'cover' })
+    .webp({ quality: 78 })
+    .toFile(`${OUT}/kit/${id}-thumb.webp`);
 }
 
 copyFileSync(`${SRC}/ui/avatar.svg`, `${OUT}/avatar.svg`);

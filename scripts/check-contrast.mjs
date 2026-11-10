@@ -15,9 +15,11 @@ const c = {
   whatsapp: '#37ce65',
   // Hero desktop (sem véu, como no Figma): pior ponto (5% mais escuro) da parede atrás de cada texto,
   // medido em public/img/hero-banner.webp.
-  'hero-label': '#d7bea4',
-  'hero-titulo': '#ccac8e',
-  'hero-texto': '#d2b598',
+  'hero-label': '#dbb596',
+  'hero-titulo': '#d8ab88',
+  'hero-texto': '#d6ad8f',
+  // Hero celular: ponto mais claro (foto + véu escuro) na área dos textos, medido em hero-banner-mobile.webp.
+  'hero-veu': '#371d1b',
 };
 
 function hex(h) {
@@ -55,14 +57,14 @@ const pairs = [
   ['ink', 'creme', 4.5, 'texto corrido'],
   ['ink', 'white', 4.5, 'notas, FAQ, cards'],
   ['ink', 'rosa', 4.5, 'CTA final'],
-  ['bordo', 'hero-label', 4.5, 'label do hero (desktop)'],
+  ['bordo-dark', 'hero-label', 4.5, 'label do hero (desktop)'],
   ['bordo', 'hero-titulo', 3, 'título do hero (desktop, texto grande)'],
   ['ink', 'hero-texto', 4.5, 'texto do hero (desktop)'],
   ['bordo-dark', 'rosa', 4.5, 'texto da faixa de ajuda (celular)'],
   ['bordo-dark', 'white', 4.5, 'título da faixa de ajuda (desktop)'],
   ['ink', 'rosa-soft', 4.5, 'texto do CTA final (celular)'],
   ['rosa', 'bordo-dark', 4.5, 'título e label de Como fazemos (desktop)'],
-  ['bordo-dark', 'creme', 4.5, 'título e texto do hero (celular)'],
+  ['bordo-dark', 'creme', 4.5, 'faixa de ajuda e textos escuros sobre o creme'],
   ['muted', 'creme', 4.5, 'textos de apoio'],
   ['muted', 'white', 4.5, 'notas (rótulos), FAQ'],
   ['muted', 'rosa-soft', 4.5, 'Como fazemos'],
@@ -74,6 +76,8 @@ const pairs = [
   ['white', 'bordo-dark', 4.5, 'hover do botão'],
   ['rosa', 'bordo', 4.5, 'textos sobre bordô'],
   ['rosa', 'bordo-dark', 4.5, 'rodapé'],
+  ['rosa', 'hero-veu', 4.5, 'label e texto do hero (celular, sobre o véu)'],
+  ['white', 'hero-veu', 4.5, 'título do hero (celular, sobre o véu)'],
   ['erro', 'white', 4.5, 'mensagens de erro nos campos da sacola'],
   ['erro', 'creme', 4.5, 'mensagens de erro sobre o creme'],
   ['wood-dark', 'creme', 4.5, 'título "Vidro + tampa" nos benefícios'],
@@ -93,7 +97,13 @@ for (const [fg, bg, min, where] of pairs) {
   console.log(`${ok ? '  ok  ' : '  FAIL'} ${r.toFixed(2).padStart(5)}:1  ${fg} / ${bg}  — ${where}`);
 }
 for (const [fg, bg, min, where] of exceptions) {
-  console.log(`  aviso ${ratio(c[fg], c[bg]).toFixed(2).padStart(5)}:1  ${fg} / ${bg}  — ${where} (exceção aprovada, mínimo ${min})`);
+  console.log(
+    `  aviso ${ratio(c[fg], c[bg]).toFixed(2).padStart(5)}:1  ${fg} / ${bg}  — ${where} (exceção aprovada, mínimo ${min})`,
+  );
 }
-console.log(fail ? `\n${fail} par(es) abaixo de AA.` : `\nTodos os pares passam em WCAG AA (fora ${exceptions.length} exceção aprovada, acima).`);
+console.log(
+  fail
+    ? `\n${fail} par(es) abaixo de AA.`
+    : `\nTodos os pares passam em WCAG AA (fora ${exceptions.length} exceção aprovada, acima).`,
+);
 process.exit(fail ? 1 : 0);

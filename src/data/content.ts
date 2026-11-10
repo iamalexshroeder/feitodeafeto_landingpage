@@ -53,7 +53,7 @@ export interface Model {
         width: number;
         height: number;
         /** Foto por aroma (chave = nome do aroma): troca com fade quando a cliente escolhe o aroma. */
-        byAroma?: Record<string, { src: string; alt: string }>;
+        byAroma?: Record<string, { src: string; alt: string; thumb?: string }>;
         /** Foto por tamanho do kit (chave = id do tamanho): troca com fade quando a cliente escolhe o tamanho. */
         bySize?: Record<string, { src: string; alt: string }>;
       }
@@ -62,6 +62,49 @@ export interface Model {
 }
 
 export const models: Model[] = [
+  {
+    id: 'modelo-100g-floral',
+    label: 'Clássica',
+    name: 'Vela floral de 100g',
+    orderName: 'vela floral de 100g',
+    description:
+      'O nosso formato de sempre: pote de vidro com tampa de madeira, que continua com você depois da última chama.',
+    specs: ['100g', '~25h de queima', 'Cera vegetal'],
+    price: 'R$ 55,00',
+    priceValue: 55,
+    order: { type: 'single' },
+    media: {
+      kind: 'photo',
+      src: '/img/floral/pimenta-rosa.webp',
+      alt: 'Vela floral de 100g Pimenta Rosa acesa, com flores de cera vermelhas sobre a vela, em pote de vidro com a tampa de madeira ao lado',
+      width: 1200,
+      height: 1120,
+      // Uma foto por aroma: a mesma vela floral com o rótulo de cada aroma.
+      byAroma: {
+        'Pimenta Rosa': {
+          src: '/img/floral/pimenta-rosa.webp',
+          alt: 'Vela floral de 100g Pimenta Rosa acesa, com flores de cera vermelhas sobre a vela, em pote de vidro com a tampa de madeira ao lado',
+        },
+        Baunilha: {
+          src: '/img/floral/baunilha.webp',
+          alt: 'Vela floral de 100g Baunilha acesa, com flores de cera vermelhas sobre a vela, em pote de vidro com a tampa de madeira ao lado',
+        },
+        'Morango com Champanhe': {
+          src: '/img/floral/morango-com-champanhe.webp',
+          alt: 'Vela floral de 100g Morango com Champanhe acesa, com flores de cera vermelhas sobre a vela, em pote de vidro com a tampa de madeira ao lado',
+        },
+        'Perfume das Fadas': {
+          src: '/img/floral/perfume-das-fadas.webp',
+          alt: 'Vela floral de 100g Perfume das Fadas acesa, com flores de cera vermelhas sobre a vela, em pote de vidro com a tampa de madeira ao lado',
+        },
+        'Cereja com Avelã': {
+          src: '/img/floral/cereja-com-avela.webp',
+          alt: 'Vela floral de 100g Cereja com Avelã acesa, com flores de cera vermelhas sobre a vela, em pote de vidro com a tampa de madeira ao lado',
+        },
+      },
+    },
+    tint: 'pimenta-rosa',
+  },
   {
     id: 'modelo-100g',
     label: 'Clássica',
@@ -153,7 +196,7 @@ export const models: Model[] = [
     description:
       'Monte o seu trio com os aromas que quiser, iguais ou diferentes. Um para cada canto da casa, ou três presentes resolvidos de uma vez.',
     specs: ['3 velas', 'Aromas à sua escolha', 'Todas do mesmo tamanho'],
-    price: 'R$ 120,00',
+    price: 'R$ 125,00',
     order: {
       type: 'kit',
       sizes: [
@@ -161,9 +204,9 @@ export const models: Model[] = [
           id: '100g',
           label: '3 velas de 100g',
           size: '100g',
-          price: 'R$ 120,00',
-          priceValue: 120,
-          saving: 'Economize R$ 15',
+          price: 'R$ 125,00',
+          priceValue: 125,
+          saving: 'Economize R$ 10',
         },
         {
           id: '40g',
@@ -278,17 +321,17 @@ export const trust = [
 
 export const steps = [
   {
-    number: '01',
+    icon: 'escolha',
     title: 'Você escolhe',
     text: 'Escolha o aroma aqui na página e chame a gente no WhatsApp com um clique.',
   },
   {
-    number: '02',
+    icon: 'maos',
     title: 'A gente produz',
     text: 'Cada vela é feita à mão, sob encomenda, com cera vegetal e aroma selecionado.',
   },
   {
-    number: '03',
+    icon: 'entrega',
     title: 'Chega até você',
     text: 'Embalada com cuidado e pronta para presentear ou acender no mesmo dia.',
   },
@@ -298,18 +341,18 @@ export const testimonials = [
   {
     quote:
       'Comprei a de Baunilha para mim e voltei para pegar mais duas de presente. O cheiro fica no quarto mesmo apagada.',
-    author: 'Cliente 1',
+    author: 'Jadhe Nunes',
     detail: 'Comprou Baunilha',
   },
   {
-    quote: 'A Pimenta Rosa virou a vela oficial da minha sala. E o pote eu reaproveitei para guardar pincéis.',
-    author: 'Cliente 2',
-    detail: 'Comprou Pimenta Rosa',
+    quote: 'Atendimento pelo WhatsApp super rápido. Me ajudaram a escolher e acertaram em cheio.',
+    author: 'Edimur',
+    detail: 'Comprou Morango com Champanhe',
   },
   {
-    quote: 'Atendimento pelo WhatsApp super rápido. Me ajudaram a escolher e acertaram em cheio.',
-    author: 'Cliente 3',
-    detail: 'Comprou Morango com Champanhe',
+    quote: 'A Pimenta Rosa virou a vela oficial da minha sala. E o pote eu reaproveitei.',
+    author: 'Julia Pereira',
+    detail: 'Comprou Pimenta Rosa',
   },
 ];
 
@@ -338,7 +381,7 @@ export const faq: FaqItem[] = [
   {
     question: 'Como funciona o kit com 3 velas?',
     answer:
-      'Você escolhe o tamanho (3 de 100g por R$ 120,00 ou 3 de 40g por R$ 55,00) e os três aromas, iguais ou diferentes. Sai mais em conta que comprar as velas avulsas.',
+      'Você escolhe o tamanho (3 de 100g por R$ 125,00 ou 3 de 40g por R$ 55,00) e os três aromas, iguais ou diferentes. Sai mais em conta que comprar as velas avulsas.',
   },
   {
     question: 'Qual o prazo de produção?',

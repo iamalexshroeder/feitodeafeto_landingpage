@@ -17,7 +17,7 @@
 
 Modelos (Figma): **100 g** (~25 h, pote de vidro + tampa de madeira) **R$ 45,00** · **40 g** (pote com rolha) **R$ 20,00** · **100 g com flor de cera** *em breve*. Todas de cera vegetal.
 
-**Kit com 3 velas** (aromas à escolha, todas do mesmo tamanho): 3 × 100 g **R$ 120,00** (R$ 15 a menos que avulsas) · 3 × 40 g **R$ 55,00** (R$ 5 a menos).
+**Kit com 3 velas** (aromas à escolha, todas do mesmo tamanho): 3 × 100 g **R$ 125,00** (R$ 10 a menos que avulsas) · 3 × 40 g **R$ 55,00** (R$ 5 a menos).
 
 Notas: cartões "Pirâmide olfativa" da página Moodboard do Figma.
 

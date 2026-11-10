@@ -2,7 +2,7 @@
 
 Landing page da marca Feito de Afeto, construída a partir do design no Figma (via Figma MCP).
 
-> **Status:** projeto **conceitual de portfólio**. A marca (velas aromáticas artesanais em Santos/SP), produtos, preços, depoimentos e contatos são **fictícios** e estão definidos em `docs/briefing.md` — usar só o que está lá, sem inventar claims novos. Página publicada com `noindex` e aviso "Projeto conceitual" no rodapé.
+> **Status:** projeto **conceitual de portfólio**. A marca (velas aromáticas artesanais em Santos/SP), produtos, preços, depoimentos e contatos são **fictícios** e estão definidos em `docs/briefing.md` — usar só o que está lá, sem inventar claims novos. Página publicada com `noindex`. O rodapé traz "Feito de Afeto 2026 - Todos os direitos reservados." (decisão da dona, no lugar do antigo aviso "Projeto conceitual").
 
 ## Arquivos de contexto
 
@@ -95,10 +95,12 @@ Nomes em minúsculas, com hífen, sem espaços. `<aroma>` = id do aroma em `src/
 | Fonte (`assets/`) | O que é | Vira (`public/`) |
 |---|---|---|
 | `marca/logo.svg`, `logo-fundo-*.png` | logo original | `brand/*`, favicons, OG (`npm run brand`) |
-| `hero/hero-banner.jpg` | foto do hero (Figma) | `img/hero-banner*.webp` (`npm run hero`) |
+| `hero/hero-banner.png` | foto do hero (Figma 180:111, vela Pimenta Rosa) | `img/hero-banner{-960,}.webp` (desktop) e `img/hero-banner-mobile{-520,}.webp` (banner do celular, vela no centro) (`npm run hero`) |
 | `aromas/<aroma>.jpg` | fotos do Moodboard | `img/aromas/<aroma>{-360,}.webp` |
 | `produto/100g/<aroma>.png` | fotos do modelo 100g por aroma: Pimenta Rosa é a foto do Figma; as outras são ela com a arte do rótulo (`rotulos/100g`) aplicada | `img/100g/<aroma>{-640,}.webp` |
 | `produto/40g/<aroma>.png` | fotos do modelo 40g por aroma: base Cereja com Avelã (Figma) com o rótulo 40g de cada aroma aplicado; originais em `produto/40g/fotos-originais/` | `img/40g/<aroma>{-640,-thumb,}.webp` |
+| `produto/floral/<aroma>.png` | vela floral de 100g por aroma: Pimenta Rosa é a foto do Figma; as outras são ela com o rótulo do aroma (tirado de `produto/100g`, alinhado e com a luz corrigida) | `img/floral/<aroma>{-640,-thumb,}.webp` |
+| `fundadora/giovaneli.png` | foto da fundadora (Figma 192:111) | `img/fundadora{-400,}.webp` |
 | `produto/kit/kit-<tamanho>.png` | kit com 3 velas (1 na frente, 2 atrás), por tamanho | `img/kit/kit-<tamanho>{-640,}.webp` |
 | `produto/pote-100g.png`, `produto/vela-40g-perfume-das-fadas.png` | potes recortados (alternativas) | — |
 | `rotulos/` | rótulos (arte) | — (referência) |

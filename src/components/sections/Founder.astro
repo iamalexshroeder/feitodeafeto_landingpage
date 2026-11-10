@@ -1,30 +1,27 @@
 ---
 // Seção "Quem faz" — referência: faixa da fundadora da LP Cellea (Moodboard › Lp's).
-// Desktop sem o botão "Falar com a Giovaneli" (Figma 15:53). Celular: painel bordô com texto claro (Figma 48:139). Desktop: bloco bordô com o logo à esquerda e
-// painel claro com texto bordô à direita (Figma 15:53). A foto da fundadora ainda é um espaço reservado.
+// Foto da fundadora (Figma 192:111 / 192:113). Desktop (15:53): painel creme com a foto à esquerda
+// (343 de 1200) e o texto em bordô à direita, sem botão. Celular (48:139): foto no topo e painel bordô
+// com a citação, a assinatura e "Falar com a Giovaneli" (sem o parágrafo, como no Figma).
 import Button from '../ui/Button.astro';
 import { whatsappLink } from '../../config/site';
 ---
 
 <section id="quem-faz" aria-labelledby="quem-faz-titulo" class="lg:bg-white">
-  <div class="container-page py-16 lg:py-24">
-    <div class="grid overflow-hidden rounded-[var(--radius-panel)] bg-bordo lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:bg-creme">
-      <figure
-        class="relative flex min-h-[320px] flex-col items-center justify-center gap-6 bg-rosa p-10 lg:bg-bordo"
-        data-reveal="zoom"
-      >
-        <img src="/brand/logo.svg" alt="" width="176" height="140" loading="lazy" class="w-44 lg:hidden" />
+  <div class="container-page pt-10 pb-16 lg:py-24">
+    <div class="grid overflow-hidden rounded-[var(--radius-panel)] bg-bordo lg:grid-cols-[minmax(0,343fr)_minmax(0,857fr)] lg:bg-creme">
+      <figure class="relative aspect-[343/369] lg:aspect-auto lg:min-h-[608px]" data-reveal="zoom">
         <img
-          src="/brand/logo-rosa.svg"
-          alt=""
-          width="220"
-          height="175"
+          src="/img/fundadora.webp"
+          srcset="/img/fundadora-400.webp 400w, /img/fundadora.webp 686w"
+          sizes="(min-width: 64rem) 343px, 100vw"
+          alt="Giovaneli Schroeder, fundadora e artesã da Feito de Afeto"
+          width="686"
+          height="1218"
           loading="lazy"
-          class="hidden w-[220px] opacity-20 lg:block"
+          decoding="async"
+          class="absolute inset-0 size-full object-cover object-[50%_15%] lg:object-center"
         />
-        <figcaption class="max-w-[240px] text-center text-small text-bordo lg:sr-only">
-          Espaço para a foto da fundadora no ateliê
-        </figcaption>
       </figure>
 
       <div
@@ -38,12 +35,12 @@ import { whatsappLink } from '../../config/site';
             “Comecei fazendo velas para presentear quem eu amo. Cada pote que sai daqui ainda é feito assim.”
           </h2>
         </blockquote>
-        <p class="max-w-[560px] text-body-l text-rosa lg:text-bordo">
+        <p class="max-w-[560px] text-body-l text-bordo max-lg:hidden">
           Eu derreto, perfumo e despejo cada vela à mão, em pequenos lotes. Escolho os aromas pensando em momentos: a
           sala cheia de visitas, o banho depois do trabalho, o livro no domingo.
         </p>
         <div class="flex flex-col gap-1">
-          <p class="text-title text-white lg:text-bordo">Giovaneli Schroeder</p>
+          <p class="text-title text-white lg:text-muted">Giovaneli Schroeder</p>
           <p class="text-small text-rosa lg:text-bordo">Fundadora e artesã da Feito de Afeto</p>
         </div>
         <Button

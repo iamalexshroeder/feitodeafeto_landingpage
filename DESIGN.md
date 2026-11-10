@@ -104,7 +104,7 @@ Uma família só (Inter). Hierarquia por tamanho e peso, nunca por cor extra. La
 
 ## Hero
 
-Fundo: "hero-banner 1" no **recorte usado no frame da landing** (1:63), gerado por `npm run hero`, com o **degradê bordô do Figma** por cima (90% até 27% da largura, some em 88%). Desktop: título em **branco**, label e prova social em **rosa**, texto em **rosa suave** e "Ver a coleção" em contorno branco — todos AA graças ao degradê (`npm run contrast` mede o pior ponto atrás de cada texto). Mobile: **sem imagem** — texto em bordô-escuro sobre o creme, botões e, sobre "Mais de 100 velas vendidas", 5 estrelas decorativas (`--color-estrela` #FFD900, só ilustração). A imagem nem é baixada abaixo de 1024px.
+Fundo: foto do Figma (180:111, vela Pimenta Rosa na mesa de cabeceira) preenchendo o hero, gerada por `npm run hero`. **Desktop:** título 64/64 em bordô (sem ponto final), label em bordô-escuro, texto em tinta, "Escolher minha vela" bordô e "Ver a coleção" creme — AA sobre a parede (`npm run contrast` mede o pior ponto atrás de cada texto). **Celular:** a mesma foto vira um **banner no topo** (390 × 360, recorte com a vela no centro; 16:10 no tablet) e os textos ficam embaixo, sobre o creme: label e título em bordô, texto em cinza, botões em largura total. Uma `<picture>` só: cada tamanho baixa só a sua versão.
 
 ## Navbar e logo
 
@@ -122,7 +122,7 @@ Animações (desligam com `prefers-reduced-motion`, que deixa só o esmaecimento
 
 ## Modelos
 
-Três blocos no layout dos antigos blocos de vela, sem número na imagem (a Flor de Cera saiu: só entra o que dá para comprar): **Vela de 100g** (uma foto por aroma, mesmo estúdio; começa em Pimenta Rosa e troca com fade ao escolher o aroma; R$ 45,00), **Vela de 40g** (uma foto por aroma, mesma base: só o rótulo muda, como na 100g; R$ 20,00) e **Kit com 3 velas** (foto com 3 velas — uma na frente, duas atrás — que troca com o tamanho escolhido; 3 de 100g R$ 120,00 ou 3 de 40g R$ 55,00, com a economia em relação às avulsas). Preços vêm do Figma/dona; não inventar valores.
+Quatro blocos, alternando o lado da foto (subtítulo: "Escolha o tamanho, o aroma e monte o seu pedido. Todas feitas à mão, sob encomenda."): **Vela floral de 100g** (flores de cera vermelhas sobre a vela; uma foto por aroma, mesma vela com o rótulo de cada aroma; R$ 55,00), **Vela de 100g** (uma foto por aroma, mesmo estúdio; começa em Pimenta Rosa e troca com fade ao escolher o aroma; R$ 45,00), **Vela de 40g** (uma foto por aroma, mesma base: só o rótulo muda, como na 100g; R$ 20,00) e **Kit com 3 velas** (foto com 3 velas — uma na frente, duas atrás — que troca com o tamanho escolhido; 3 de 100g R$ 125,00 ou 3 de 40g R$ 55,00, com a economia em relação às avulsas). Preços vêm do Figma/dona; não inventar valores.
 
 **Tamanho no desktop:** cada bloco de modelo cabe numa tela de notebook (~680px) sob o menu — imagem 600×512, 16px de respiro vertical, 16px entre os itens; no kit, sem chips (as opções de tamanho já dizem isso) e cada opção com preço e economia na mesma linha.
 
@@ -158,4 +158,4 @@ Breakpoints Tailwind: `sm` 640, `md` 768, `lg` 1024, `xl` 1280. Grades de 2 colu
 - As 5 velas usam a mesma foto de pote com rótulos trocados; fotos individuais (ou da vela acesa) dariam mais variedade.
 - O Figma não posiciona as fotos dentro dos blocos da coleção (lá ainda há o placeholder); o tamanho de 80% da caixa foi decisão de implementação.
 - Frame mobile (390, iPhone 13) no Figma: node 47:37. No celular a faixa de benefícios não aparece.
-- "Mais de 100 velas vendidas" (Figma) e os depoimentos são de exemplo até haver dados reais.
+- Os depoimentos (Jadhe Nunes, Edimur, Julia Pereira) são de exemplo até haver dados reais.

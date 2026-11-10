@@ -35,8 +35,16 @@ const gallery =
   byAroma && order?.type === 'single'
     ? candles
         .filter((c) => byAroma[c.name])
-        .map((c) => ({ name: c.name, thumb: byAroma[c.name].src.replace('.webp', '-thumb.webp') }))
+        .map((c) => ({
+          name: c.name,
+          thumb: byAroma[c.name].thumb ?? byAroma[c.name].src.replace('.webp', '-thumb.webp'),
+        }))
     : [];
+// Modelo com uma foto só (vela floral): a sacola mostra a miniatura dessa foto, não a do aroma.
+const cartThumb =
+  byAroma && new Set(Object.values(byAroma).map((v) => v.src)).size === 1
+    ? Object.values(byAroma)[0].src.replace('.webp', '-thumb.webp')
+    : undefined;
 const defaultAroma = gallery.length
   ? (Object.entries(byAroma!).find(([, v]) => v.src === (model.media as { src: string }).src)?.[0] ?? gallery[0].name)
   : '';
@@ -143,6 +151,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
         data-model={model.id}
         data-title={model.name}
         data-unit={model.priceValue}
+        data-cart-thumb={cartThumb}
       >
         {kitSize && order.type === 'kit' && (
           <fieldset class="flex w-full min-w-0 flex-col">
@@ -348,7 +357,7 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
       } else {
         const radio = scope.querySelector<HTMLInputElement>('[data-aroma-radio]:checked');
         const aroma = radio?.value ?? chosen[0] ?? '';
-        const thumb = radio?.parentElement?.querySelector('img')?.getAttribute('src') ?? '';
+        const thumb = box.dataset.cartThumb || (radio?.parentElement?.querySelector('img')?.getAttribute('src') ?? '');
         add({
           key: `${box.dataset.model}|${aroma}`,
           title: box.dataset.title ?? '',
