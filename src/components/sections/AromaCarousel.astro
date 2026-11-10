@@ -1,7 +1,8 @@
 ---
 // Carrossel de aromas — referência: cards da LP Ecolab (Moodboard › Lp's).
-// Frente: foto do Moodboard com os ingredientes. Verso (hover / foco / toque): bordô com o tom
-// da vela, pirâmide olfativa e CTA. Arraste com o mouse, use as setas ou o teclado.
+// Foto do Moodboard com os ingredientes. Ao passar o mouse, focar ou tocar, o card cresce um pouco e
+// as informações (pirâmide olfativa e CTA) sobem por cima, num painel bordô. Sem giro.
+// Arraste com o mouse, use as setas ou o teclado.
 import Button from '../ui/Button.astro';
 import { candles, aromaPhotos } from '../../data/content';
 import { whatsappLink } from '../../config/site';
@@ -70,7 +71,7 @@ import { whatsappLink } from '../../config/site';
               </div>
             </div>
 
-            <div class="aroma-card__face aroma-card__back">
+            <div class="aroma-card__face aroma-card__info">
               <p class="text-title text-white" aria-hidden="true">
                 {c.name}
               </p>
@@ -94,7 +95,7 @@ import { whatsappLink } from '../../config/site';
                 data-track-item={c.id}
                 variant="ondark"
                 size="sm"
-                class="mt-auto w-full"
+                class="w-full"
               >
                 Quero esse aroma
               </Button>
@@ -169,18 +170,23 @@ import { whatsappLink } from '../../config/site';
     scroll-snap-align: start;
   }
 
-  /* Card que vira (frente → verso) */
+  /* Card: foto com nome; ao abrir (hover/foco/toque) cresce 3% e as informações sobem por cima. */
   .aroma-card {
+    position: relative;
     display: block;
-    aspect-ratio: 5 / 7; /* 282 × 395: cabe o verso inteiro com o botão */
-    perspective: 1200px;
+    aspect-ratio: 5 / 7; /* 282 × 395: cabe a pirâmide inteira com o botão */
     border-radius: var(--radius-card);
+    transition:
+      transform 0.5s var(--ease-out-soft),
+      box-shadow 0.5s var(--ease-out-soft);
   }
   .aroma-card__inner {
     position: relative;
     height: 100%;
-    transform-style: preserve-3d;
-    transition: transform 0.7s var(--ease-out-soft);
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    /* corrige o canto arredondado com overflow + transform no Safari */
+    isolation: isolate;
   }
   .aroma-card__face {
     position: absolute;
@@ -189,13 +195,6 @@ import { whatsappLink } from '../../config/site';
     flex-direction: column;
     gap: 16px;
     padding: 24px;
-    border-radius: var(--radius-card);
-    overflow: hidden;
-    backface-visibility: hidden;
-  }
-  /* Nada da frente vaza no giro (a foto e o véu têm camada própria por causa do zoom). */
-  .aroma-card__face > * {
-    backface-visibility: hidden;
   }
   .aroma-card__scrim {
     position: absolute;
@@ -204,88 +203,95 @@ import { whatsappLink } from '../../config/site';
       linear-gradient(to bottom, rgb(42 20 24 / 0.55), transparent 28%),
       linear-gradient(to top, rgb(42 20 24 / 0.85), transparent 45%);
   }
-  .aroma-card__back {
-    transform: rotateY(180deg);
-    background: var(--color-bordo);
-    gap: 16px;
-    padding-top: 32px;
+  .aroma-card__front > :not(.aroma-card__photo):not(.aroma-card__scrim) {
+    transition: opacity 0.3s;
   }
-  /* Toque: giro mais curto e já preparado na GPU, para o verso aparecer na hora. */
+  .aroma-card__photo {
+    transition: transform 1.2s var(--ease-out-soft);
+  }
+  /* Painel de informações: bordô sólido onde há texto (AA), esmaecendo para a foto no topo. */
+  .aroma-card__info {
+    justify-content: flex-end;
+    background: linear-gradient(to top, var(--color-bordo) 0%, var(--color-bordo) 88%, rgb(107 30 46 / 0) 100%);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out-soft);
+  }
+  .aroma-card__info > * {
+    transform: translateY(16px);
+    transition: transform 0.45s var(--ease-out-soft);
+  }
+
+  /* Aberto: mouse (hover), teclado (foco visível) ou toque (.is-open, alternado a cada toque). */
+  @media (hover: hover) {
+    .aroma-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 32px 48px -24px rgb(42 20 24 / 0.45);
+      z-index: 1;
+    }
+    .aroma-card:hover .aroma-card__info {
+      opacity: 1;
+    }
+    .aroma-card:hover .aroma-card__info > * {
+      transform: none;
+    }
+    .aroma-card:hover .aroma-card__front > :not(.aroma-card__photo):not(.aroma-card__scrim) {
+      opacity: 0;
+    }
+    .aroma-card:hover .aroma-card__photo {
+      transform: scale(1.06);
+    }
+  }
+  .aroma-card:focus-visible,
+  .aroma-card:has(:focus-visible),
+  .aroma-card.is-open {
+    transform: scale(1.03);
+    box-shadow: 0 32px 48px -24px rgb(42 20 24 / 0.45);
+    z-index: 1;
+  }
+  .aroma-card:focus-visible .aroma-card__info,
+  .aroma-card:has(:focus-visible) .aroma-card__info,
+  .aroma-card.is-open .aroma-card__info {
+    opacity: 1;
+  }
+  .aroma-card:focus-visible .aroma-card__info > *,
+  .aroma-card:has(:focus-visible) .aroma-card__info > *,
+  .aroma-card.is-open .aroma-card__info > * {
+    transform: none;
+  }
+  .aroma-card:focus-visible .aroma-card__front > :not(.aroma-card__photo):not(.aroma-card__scrim),
+  .aroma-card:has(:focus-visible) .aroma-card__front > :not(.aroma-card__photo):not(.aroma-card__scrim),
+  .aroma-card.is-open .aroma-card__front > :not(.aroma-card__photo):not(.aroma-card__scrim) {
+    opacity: 0;
+  }
+  .aroma-card:focus-visible .aroma-card__photo,
+  .aroma-card:has(:focus-visible) .aroma-card__photo,
+  .aroma-card.is-open .aroma-card__photo {
+    transform: scale(1.06);
+  }
+  /* Toque: resposta imediata. */
   @media (hover: none) {
     .aroma-card {
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
-    .aroma-card__inner {
-      transition-duration: 0.45s;
-      will-change: transform;
-    }
-  }
-  @media (hover: hover) {
-    .aroma-card:hover .aroma-card__inner {
-      transform: rotateY(180deg);
-    }
-  }
-  /* Teclado: vira com foco visível (no card ou no botão do verso). Toque: classe .is-flipped,
-     alternada a cada toque — foco por clique/toque não prende o card virado. */
-  .aroma-card:focus-visible .aroma-card__inner,
-  .aroma-card:has(:focus-visible) .aroma-card__inner,
-  .aroma-card.is-flipped .aroma-card__inner {
-    transform: rotateY(180deg);
   }
 
-  /* Desktop (mouse): o card levanta, inclina seguindo o cursor e a foto aproxima.
-     O giro (flip) continua por cima disso. */
-  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .aroma-card {
-      transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px));
-      transition:
-        transform 0.6s var(--ease-out-soft),
-        box-shadow 0.6s var(--ease-out-soft);
-      will-change: transform;
-    }
-    .aroma-card.is-tilting {
-      transition:
-        transform 0.15s linear,
-        box-shadow 0.6s var(--ease-out-soft);
-    }
-    .aroma-card:hover {
-      --lift: -8px;
-      box-shadow: 0 32px 48px -24px rgb(42 20 24 / 0.45);
-    }
-    .aroma-card__photo {
-      transition: transform 1.4s var(--ease-out-soft);
-    }
-    .aroma-card:hover .aroma-card__photo {
-      transform: scale(1.08);
-    }
-  }
-
-  /* Sem movimento: troca por esmaecimento, sem girar. */
+  /* Sem movimento: as informações só esmaecem; o card e a foto não crescem. */
   @media (prefers-reduced-motion: reduce) {
-    .aroma-card__inner,
-    .aroma-card:hover .aroma-card__inner,
-    .aroma-card:focus-visible .aroma-card__inner,
-    .aroma-card:has(:focus-visible) .aroma-card__inner,
-    .aroma-card.is-flipped .aroma-card__inner {
-      transform: none;
-    }
-    .aroma-card__back {
-      transform: none;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .aroma-card:hover .aroma-card__back,
-    .aroma-card:focus-visible .aroma-card__back,
-    .aroma-card:has(:focus-visible) .aroma-card__back,
-    .aroma-card.is-flipped .aroma-card__back {
-      opacity: 1;
+    .aroma-card,
+    .aroma-card:hover,
+    .aroma-card:focus-visible,
+    .aroma-card:has(:focus-visible),
+    .aroma-card.is-open,
+    .aroma-card .aroma-card__photo,
+    .aroma-card .aroma-card__info > * {
+      transform: none !important;
     }
   }
 </style>
 
 <script>
-  // Setas, arrastar com o mouse e "toque para virar" no celular.
+  // Setas, arrastar com o mouse e "toque para abrir" no celular.
   for (const root of document.querySelectorAll<HTMLElement>('[data-carousel]')) {
     const track = root.querySelector<HTMLElement>('[data-track]')!;
     const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
@@ -340,7 +346,7 @@ import { whatsappLink } from '../../config/site';
       addEventListener('pointermove', move);
       addEventListener('pointerup', up);
     });
-    // Depois de arrastar, o clique não abre links nem vira card.
+    // Depois de arrastar, o clique não abre links nem o card.
     track.addEventListener(
       'click',
       (e) => {
@@ -353,41 +359,17 @@ import { whatsappLink } from '../../config/site';
       true,
     );
 
-    // Desktop: inclinação 3D seguindo o cursor (só mouse, sem "reduzir movimento").
-    const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-    for (const card of track.querySelectorAll<HTMLElement>('.aroma-card')) {
-      card.addEventListener('pointermove', (e) => {
-        if (
-          e.pointerType !== 'mouse' ||
-          !finePointer.matches ||
-          reduce.matches ||
-          track.classList.contains('is-dragging')
-        )
-          return;
-        const r = card.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width;
-        const y = (e.clientY - r.top) / r.height;
-        card.classList.add('is-tilting');
-        card.style.setProperty('--ry', `${((x - 0.5) * 10).toFixed(2)}deg`);
-        card.style.setProperty('--rx', `${((0.5 - y) * 8).toFixed(2)}deg`);
-      });
-      card.addEventListener('pointerleave', () => {
-        card.classList.remove('is-tilting');
-        for (const p of ['--rx', '--ry']) card.style.removeProperty(p);
-      });
-    }
-
-    // Toque: vira o card (exceto ao tocar no botão do verso).
-    const flip = (target: HTMLElement) => {
+    // Toque: abre o card (exceto ao tocar no botão "Quero esse aroma").
+    const toggleCard = (target: HTMLElement) => {
       if (target.closest('a')) return false;
       const card = target.closest<HTMLElement>('.aroma-card');
       if (!card) return false;
-      for (const other of track.querySelectorAll('.aroma-card.is-flipped'))
-        if (other !== card) other.classList.remove('is-flipped');
-      card.classList.toggle('is-flipped');
+      for (const other of track.querySelectorAll('.aroma-card.is-open'))
+        if (other !== card) other.classList.remove('is-open');
+      card.classList.toggle('is-open');
       return true;
     };
-    // Vira já ao soltar o dedo (pointerup), sem esperar o "click" do navegador. Se o dedo andou
+    // Abre já ao soltar o dedo (pointerup), sem esperar o "click" do navegador. Se o dedo andou
     // (rolagem do carrossel), o navegador manda pointercancel e o toque não conta.
     let tap: { x: number; y: number } | null = null;
     let tappedAt = 0;
@@ -403,12 +385,12 @@ import { whatsappLink } from '../../config/site';
       if (!tap || e.pointerType === 'mouse') return;
       const moved = Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 10;
       tap = null;
-      if (!moved && flip(e.target as HTMLElement)) tappedAt = performance.now();
+      if (!moved && toggleCard(e.target as HTMLElement)) tappedAt = performance.now();
     });
-    // Leitores de tela e outros cliques sem pointerup: o "click" ainda vira (sem duplicar o toque).
+    // Leitores de tela e outros cliques sem pointerup: o "click" ainda abre (sem duplicar o toque).
     track.addEventListener('click', (e) => {
       if (pointerType === 'mouse' || performance.now() - tappedAt < 600) return;
-      flip(e.target as HTMLElement);
+      toggleCard(e.target as HTMLElement);
     });
   }
 </script>
