@@ -28,12 +28,23 @@ const pageUrl = canonicalUrl(Astro.url.pathname, Astro.site);
 
 const graph: Record<string, unknown>[] = [
   {
-    '@type': 'Organization',
+    // Negócio local que entrega na região (sem loja aberta ao público): cidade-sede, telefone e área atendida.
+    '@type': 'LocalBusiness',
     '@id': `${base}#organization`,
     name: site.name,
     url: base,
     logo: new URL(site.logo, Astro.site).href,
+    image: new URL(site.ogImage, Astro.site).href,
     slogan: site.tagline,
+    telephone: `+${site.whatsapp}`,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.city,
+      addressRegion: site.region,
+      addressCountry: 'BR',
+    },
+    priceRange: 'R$',
+    paymentAccepted: site.payment,
     sameAs: [site.instagram],
     areaServed: site.areaServed.map((name) => ({ '@type': 'City', name })),
   },

@@ -1,15 +1,15 @@
 ---
 // Seção "Quem faz" — referência: faixa da fundadora da LP Cellea (Moodboard › Lp's).
 // Foto da fundadora (Figma 192:111 / 192:113). Desktop (15:53): painel creme com a foto à esquerda
-// (343 de 1200) e o texto em bordô à direita, sem botão. Celular (48:139): foto no topo e painel bordô
-// com a citação, a assinatura e "Falar com a Giovaneli" (sem o parágrafo, como no Figma).
+// (343 de 1200) e o texto em bordô à direita, com "Falar com a Giovaneli". Celular (48:139): foto no topo e o mesmo painel
+// creme do desktop, com a citação, a assinatura e "Falar com a Giovaneli" (sem o parágrafo).
 import Button from '../ui/Button.astro';
 import { whatsappLink } from '../../config/site';
 ---
 
-<section id="quem-faz" aria-labelledby="quem-faz-titulo" class="lg:bg-white">
+<section id="quem-faz" aria-labelledby="quem-faz-titulo" class="bg-white">
   <div class="container-page pt-10 pb-16 lg:py-24">
-    <div class="grid overflow-hidden rounded-[var(--radius-panel)] bg-bordo lg:grid-cols-[minmax(0,343fr)_minmax(0,857fr)] lg:bg-creme">
+    <div class="grid overflow-hidden rounded-[var(--radius-panel)] bg-creme lg:grid-cols-[minmax(0,343fr)_minmax(0,857fr)]">
       <figure class="relative aspect-[343/369] lg:aspect-auto lg:min-h-[608px]" data-reveal="zoom">
         <img
           src="/img/fundadora.webp"
@@ -29,9 +29,9 @@ import { whatsappLink } from '../../config/site';
         data-reveal
         style="--reveal-delay: 120ms"
       >
-        <p class="text-label uppercase text-rosa lg:text-bordo">Quem faz</p>
+        <p class="text-label uppercase text-bordo">Quem faz</p>
         <blockquote>
-          <h2 id="quem-faz-titulo" class="text-h2 text-white lg:text-bordo">
+          <h2 id="quem-faz-titulo" class="text-h2 text-bordo">
             “Comecei fazendo velas para presentear quem eu amo. Cada pote que sai daqui ainda é feito assim.”
           </h2>
         </blockquote>
@@ -40,13 +40,12 @@ import { whatsappLink } from '../../config/site';
           sala cheia de visitas, o banho depois do trabalho, o livro no domingo.
         </p>
         <div class="flex flex-col gap-1">
-          <p class="text-title text-white lg:text-muted">Giovaneli Schroeder</p>
-          <p class="text-small text-rosa lg:text-bordo">Fundadora e artesã da Feito de Afeto</p>
+          <p class="text-title text-muted">Giovaneli Schroeder</p>
+          <p class="text-small text-bordo">Fundadora e artesã da Feito de Afeto</p>
         </div>
         <Button
           href={whatsappLink('Olá, Giovaneli! Vim pelo site e queria conversar sobre as velas.')}
-          variant="ondark"
-          class="lg:hidden!"
+          variant="primary"
         >
           Falar com a Giovaneli
         </Button>
