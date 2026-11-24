@@ -1,6 +1,6 @@
 // Conteúdo da landing. Fonte: Figma "Feito de Afeto — Landing Page" (frame Desktop 1440, node 1:49).
 // Notas olfativas (cabeça / corpo / fundo): cartões "Pirâmide olfativa" da página Moodboard do Figma.
-// Projeto conceitual: números e depoimentos são de exemplo (ver docs/briefing.md).
+// Depoimentos: de clientes reais, com nome e foto (confirmado pela dona). Não inventar depoimentos nem notas.
 import type { FaqItem } from '../components/JsonLd.astro';
 
 export type Tint = 'pimenta-rosa' | 'baunilha' | 'morango' | 'fadas' | 'cereja';
