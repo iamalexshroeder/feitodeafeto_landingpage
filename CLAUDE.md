@@ -2,7 +2,7 @@
 
 Landing page da marca Feito de Afeto, construída a partir do design no Figma (via Figma MCP).
 
-> **Status:** projeto **conceitual de portfólio**. A marca (velas aromáticas artesanais em Santos/SP), produtos, preços, depoimentos e contatos são **fictícios** e estão definidos em `docs/briefing.md` — usar só o que está lá, sem inventar claims novos. Página publicada com `noindex`. O rodapé traz "Feito de Afeto 2026 - Todos os direitos reservados." (decisão da dona, no lugar do antigo aviso "Projeto conceitual").
+> **Status:** projeto **conceitual de portfólio**. A marca (velas aromáticas artesanais em Santos/SP), produtos, preços, depoimentos e contatos são **fictícios** e estão definidos em `docs/briefing.md` — usar só o que está lá, sem inventar claims novos. Produção (feitodeafeto.com.br) **indexada** no Google: `PUBLIC_INDEXABLE=true` e `SITE_URL` no contexto de produção do `netlify.toml`; prévias de deploy seguem com `noindex`. Segurança: headers no `netlify.toml` + CSP gerada no build (`scripts/build-csp.mjs` → `dist/_headers`, scripts inline por hash). Ao chamar um serviço externo novo no navegador, incluir o domínio em `connect` nesse script. O rodapé traz "Feito de Afeto 2026 - Todos os direitos reservados." (decisão da dona, no lugar do antigo aviso "Projeto conceitual").
 
 ## Arquivos de contexto
 

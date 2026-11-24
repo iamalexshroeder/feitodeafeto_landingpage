@@ -1,5 +1,5 @@
 # Deploy na Netlify: site estático gerado pelo Astro em dist/.
-# Variáveis (painel da Netlify): SITE_URL e, quando for indexar, PUBLIC_INDEXABLE=true.
+# A Content-Security-Policy é gerada no build (scripts/build-csp.mjs → dist/_headers).
 
 [build]
   command = "npm run build"
@@ -8,6 +8,12 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Só a produção (feitodeafeto.com.br) é indexada pelo Google. Prévias de deploy e branches
+# continuam com noindex e robots.txt bloqueando, para não aparecerem na busca.
+[context.production.environment]
+  SITE_URL = "https://feitodeafeto.com.br"
+  PUBLIC_INDEXABLE = "true"
+
 # Segurança básica para todas as páginas.
 [[headers]]
   for = "/*"
@@ -15,7 +21,9 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     X-Frame-Options = "DENY"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()"
 
 # Arquivos com hash no nome (CSS/JS/fontes do build): cache de 1 ano.
 [[headers]]

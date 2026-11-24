@@ -1,4 +1,4 @@
-// Dados centrais da marca. Fonte: docs/briefing.md (projeto conceitual, dados fictícios).
+// Dados centrais da marca.
 
 export const site = {
   name: 'Feito de Afeto',
@@ -12,7 +12,7 @@ export const site = {
   ogImage: '/og-image.png',
   // Raster quadrado para o schema; os SVGs do logo ficam em /brand. Gerados por `npm run brand`.
   logo: '/brand/logo-512.png',
-  // Projeto conceitual: só indexar quando PUBLIC_INDEXABLE=true no ambiente.
+  // Indexação: PUBLIC_INDEXABLE=true só na produção (netlify.toml); prévias ficam com noindex.
   indexable: import.meta.env.PUBLIC_INDEXABLE === 'true',
   // WhatsApp de atendimento (formato internacional, só dígitos: 55 + DDD + número).
   whatsapp: '5513991639726',
@@ -20,6 +20,9 @@ export const site = {
   instagramHandle: '@feitodeafeto_velas',
   // Entrega e pagamento (informados pela dona do projeto).
   delivery: 'Santos e região',
+  // Cidade-sede (schema LocalBusiness e SEO local).
+  city: 'Santos',
+  region: 'SP',
   payment: 'Pix',
   areaServed: ['Santos', 'São Vicente', 'Guarujá', 'Praia Grande', 'Cubatão'],
 } as const;
