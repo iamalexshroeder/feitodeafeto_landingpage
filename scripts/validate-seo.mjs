@@ -62,9 +62,11 @@ for (const file of pages) {
   try {
     const data = JSON.parse(ld ?? '');
     const types = data['@graph'].map((n) => n['@type']);
+    // LocalBusiness é um subtipo de Organization (schema.org) e vale como a organização do site.
+    const hasOrg = types.includes('Organization') || types.includes('LocalBusiness');
     check(
-      ['Organization', 'WebSite', 'WebPage'].every((t) => types.includes(t)),
-      'JSON-LD Organization + WebSite + WebPage',
+      hasOrg && ['WebSite', 'WebPage'].every((t) => types.includes(t)),
+      'JSON-LD Organization (ou LocalBusiness) + WebSite + WebPage',
       types.join(', '),
     );
     const faq = data['@graph'].find((n) => n['@type'] === 'FAQPage');
