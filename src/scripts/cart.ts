@@ -17,15 +17,28 @@ export interface CartItem {
 
 export interface Customer {
   name: string;
-  city: string;
-  district: string;
+  cep: string;
+  /** Rua (logradouro). */
   address: string;
+  number: string;
+  complement: string;
+  district: string;
+  city: string;
   notes: string;
 }
 
 const ITEMS_KEY = 'fda-sacola';
 const CUSTOMER_KEY = 'fda-sacola-dados';
-const emptyCustomer: Customer = { name: '', city: '', district: '', address: '', notes: '' };
+const emptyCustomer: Customer = {
+  name: '',
+  cep: '',
+  address: '',
+  number: '',
+  complement: '',
+  district: '',
+  city: '',
+  notes: '',
+};
 
 const read = <T>(key: string, fallback: T): T => {
   try {
@@ -94,13 +107,15 @@ export function setCustomer(data: Partial<Customer>) {
 export function orderMessage(): string {
   const lines = items.map((i) => `• ${i.qty}× ${i.title}${i.detail ? ` — ${i.detail}` : ''} (${brl(i.unit * i.qty)})`);
   const c = customer;
-  const where = [c.address.trim(), c.district.trim(), c.city.trim()].filter(Boolean).join(', ');
+  const street = [c.address.trim(), c.number.trim()].filter(Boolean).join(', ');
+  const where = [street, c.complement.trim(), c.district.trim(), c.city.trim()].filter(Boolean).join(', ');
   return [
     'Olá! Quero fazer este pedido:',
     ...lines,
     `Total: ${brl(total())} (sem a entrega)`,
     c.name.trim() && `Nome: ${c.name.trim()}`,
     where && `Endereço de entrega: ${where}`,
+    c.cep.trim() && `CEP: ${c.cep.trim()}`,
     c.notes.trim() && `Observações: ${c.notes.trim()}`,
     'Pagamento via Pix.',
   ]
