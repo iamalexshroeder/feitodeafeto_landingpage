@@ -36,7 +36,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       <h2 id="sacola-titulo" class="text-title text-ink">
         Sua sacola
       </h2>
-      <button type="button" class="cart__link" data-cart-close>
+      <button type="button" class="cart__close" data-cart-close aria-label="Fechar a sacola">
         Fechar
       </button>
     </header>
@@ -98,8 +98,8 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     <section class="cart__body" data-step="1" aria-label="Dados para a entrega" hidden>
       <form class="flex flex-col gap-4" data-cart-form novalidate>
         <p class="text-small text-muted">
-          Entregamos em {site.delivery}. Preencha os dados para a entrega (só as observações são opcionais); o dia e a
-          taxa de entrega a gente combina com você no WhatsApp.
+          Entregamos em {site.delivery}. Preencha os dados para a entrega (complemento e observações são opcionais); o
+          dia e a taxa de entrega a gente combina com você no WhatsApp.
         </p>
         <label class="cart__field">
           <span>
@@ -120,24 +120,78 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
             Conta pra gente o seu nome.
           </small>
         </label>
+        <div class="cart__field">
+          <label for="cart-cep">
+            CEP{' '}
+            <span class="text-bordo" aria-hidden="true">
+              *
+            </span>
+          </label>
+          <div class="cart__cep">
+            <input
+              id="cart-cep"
+              name="cep"
+              inputmode="numeric"
+              autocomplete="postal-code"
+              required
+              minlength="9"
+              maxlength="9"
+              placeholder="00000-000"
+              aria-describedby="cep-status erro-cep"
+              data-cep
+            />
+            <span class="cart__cep-spin" aria-hidden="true" data-cep-spin hidden></span>
+          </div>
+          <small class="cart__hint" id="cep-status" aria-live="polite" data-cep-status>
+            Digite o CEP e a gente preenche o endereço.
+            <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank" rel="noopener">
+              Não sei meu CEP
+            </a>
+          </small>
+          <small class="cart__error" id="erro-cep" hidden>
+            Informe um CEP com 8 números.
+          </small>
+        </div>
         <label class="cart__field">
           <span>
-            Cidade{' '}
+            Rua{' '}
             <span class="text-bordo" aria-hidden="true">
               *
             </span>
           </span>
-          <select name="city" autocomplete="address-level2" required aria-describedby="erro-city">
-            <option value="">Escolha a cidade</option>
-            {site.areaServed.map((c) => (
-              <option value={c}>{c}</option>
-            ))}
-            <option value="Outra cidade">Outra cidade</option>
-          </select>
-          <small class="cart__error" id="erro-city" hidden>
-            Escolha a cidade da entrega.
+          <input name="address" autocomplete="address-line1" required minlength="3" aria-describedby="erro-address" />
+          <small class="cart__error" id="erro-address" hidden>
+            Informe a rua.
           </small>
         </label>
+        <div class="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-3">
+          <label class="cart__field">
+            <span>
+              Número{' '}
+              <span class="text-bordo" aria-hidden="true">
+                *
+              </span>
+            </span>
+            <input
+              name="number"
+              inputmode="numeric"
+              autocomplete="off"
+              required
+              minlength="1"
+              aria-describedby="erro-number"
+              data-number
+            />
+            <small class="cart__error" id="erro-number" hidden>
+              Informe o número.
+            </small>
+          </label>
+          <label class="cart__field">
+            <span>
+              Complemento <em class="font-normal text-muted not-italic">(opcional)</em>
+            </span>
+            <input name="complement" autocomplete="address-line2" placeholder="Ap., bloco" />
+          </label>
+        </div>
         <label class="cart__field">
           <span>
             Bairro{' '}
@@ -158,21 +212,20 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
         </label>
         <label class="cart__field">
           <span>
-            Rua e número{' '}
+            Cidade{' '}
             <span class="text-bordo" aria-hidden="true">
               *
             </span>
           </span>
-          <input
-            name="address"
-            autocomplete="street-address"
-            required
-            minlength="4"
-            placeholder="Ex.: Rua das Flores, 120, ap. 32"
-            aria-describedby="erro-address"
-          />
-          <small class="cart__error" id="erro-address" hidden>
-            Informe a rua e o número.
+          <select name="city" autocomplete="address-level2" required aria-describedby="erro-city">
+            <option value="">Escolha a cidade</option>
+            {site.areaServed.map((c) => (
+              <option value={c}>{c}</option>
+            ))}
+            <option value="Outra cidade">Outra cidade</option>
+          </select>
+          <small class="cart__error" id="erro-city" hidden>
+            Escolha a cidade da entrega.
           </small>
         </label>
         <label class="cart__field">
@@ -234,20 +287,20 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       </div>
     </section>
 
-    <footer class="flex flex-col gap-3 border-t border-line bg-white px-6 py-4" data-cart-footer>
-      <div class="flex gap-2">
+    <footer class="cart__footer flex flex-col gap-2 border-t border-line bg-white px-6 pt-4" data-cart-footer>
+      <div class="flex gap-3">
         <button type="button" class="cart__btn cart__btn--ghost" data-cart-back hidden>
           Voltar
         </button>
         <button type="button" class="cart__btn cart__btn--primary flex-1" data-cart-next>
-          Continuar
+          <span data-cart-next-label>Continuar</span>
         </button>
         <a href="#" target="_blank" rel="noopener" class="cart__btn cart__btn--primary flex-1" data-cart-send hidden>
           Enviar pelo WhatsApp<span class="sr-only"> (abre o WhatsApp)</span>
         </a>
       </div>
-      <button type="button" class="cart__link self-center text-small" data-cart-clear>
-        Esvaziar sacola
+      <button type="button" class="cart__clear self-center" data-cart-clear>
+        <span data-cart-clear-label>Esvaziar sacola</span>
       </button>
     </footer>
   </div>
@@ -387,28 +440,90 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       transition: none;
     }
   }
+  /* Botões principais: 64px de altura (grid de 8, alvo de toque bem acima dos 44px), texto 17px, sem ícone. */
   .cart__btn {
     display: inline-flex;
     white-space: nowrap;
-    min-height: 56px;
+    min-height: 64px;
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    padding: 0 24px;
+    padding: 0 32px;
+    font-size: 1.0625rem;
     font-weight: 600;
+    letter-spacing: -0.2px;
     line-height: 1;
-    transition: background-color 0.2s;
+    transition:
+      background-color 0.2s,
+      box-shadow 0.25s var(--ease-out-soft),
+      transform 0.15s var(--ease-out-soft);
+  }
+  .cart__btn:focus-visible {
+    outline: 3px solid var(--color-bordo);
+    outline-offset: 3px;
+  }
+  .cart__btn:active {
+    transform: scale(0.98);
   }
   .cart__btn--primary {
     background: var(--color-bordo);
     color: var(--color-white);
+    box-shadow: 0 10px 24px -12px rgb(107 30 46 / 0.6);
   }
   .cart__btn--primary:hover {
     background: var(--color-bordo-dark);
+    box-shadow: 0 14px 28px -12px rgb(74 18 31 / 0.65);
   }
   .cart__btn--ghost {
+    padding: 0 24px;
     color: var(--color-bordo);
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1.5px var(--color-line);
+  }
+  .cart__btn--ghost:hover {
+    background: var(--color-rosa-soft);
     box-shadow: inset 0 0 0 1.5px var(--color-bordo);
+  }
+  .cart__footer {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  /* Fechar: pílula de 48px. */
+  .cart__close {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 16px;
+    border-radius: 999px;
+    color: var(--color-bordo);
+    font-weight: 600;
+    font-size: var(--text-small);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+    transition: background-color 0.2s;
+  }
+  .cart__close:hover {
+    background: var(--color-rosa-soft);
+  }
+  /* Esvaziar: ação destrutiva e secundária, 48px de altura; pede um segundo toque para confirmar. */
+  .cart__clear {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 999px;
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    font-weight: 600;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .cart__clear:hover {
+    color: var(--color-bordo);
+    background: var(--color-rosa-soft);
+  }
+  .cart__clear.is-confirm {
+    color: var(--color-erro);
+    background: rgb(213 0 0 / 0.08);
   }
   .cart__link {
     color: var(--color-bordo);
@@ -417,6 +532,45 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
   }
   .cart__link:hover {
     color: var(--color-bordo-dark);
+  }
+  .cart__cep {
+    position: relative;
+  }
+  .cart__cep input {
+    width: 100%;
+    padding-right: 48px;
+  }
+  .cart__cep-spin {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    border-radius: 999px;
+    border: 2px solid var(--color-line);
+    border-top-color: var(--color-bordo);
+    animation: cep-spin 0.7s linear infinite;
+  }
+  @keyframes cep-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .cart__hint {
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    font-weight: 400;
+  }
+  .cart__hint a {
+    color: var(--color-bordo);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .cart__hint.is-ok {
+    color: var(--color-bordo);
+    font-weight: 600;
   }
   .cart__field {
     display: flex;
@@ -463,60 +617,6 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
   .cart__field [aria-invalid='true'] {
     box-shadow: inset 0 0 0 2px var(--color-erro);
   }
-  /* Seletor de quantidade: pílula com − e + em círculos, número no meio. */
-  .cart__qty {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px;
-    border-radius: 999px;
-    background: var(--color-white);
-    box-shadow: inset 0 0 0 1px var(--color-line);
-  }
-  .cart__qty button {
-    display: grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    background: var(--color-rosa-soft);
-    color: var(--color-bordo);
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1;
-    transition:
-      background-color 0.2s,
-      color 0.2s,
-      transform 0.15s;
-  }
-  .cart__qty button:hover:not(:disabled) {
-    background: var(--color-bordo);
-    color: var(--color-white);
-  }
-  .cart__qty button:active:not(:disabled) {
-    transform: scale(0.9);
-  }
-  .cart__qty button:disabled {
-    opacity: 0.35;
-    cursor: default;
-  }
-  .cart__qty output {
-    min-width: 32px;
-    text-align: center;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .cart__qty output.is-pop {
-      animation: qty-pop 0.35s var(--ease-out-soft);
-    }
-    @keyframes qty-pop {
-      40% {
-        transform: scale(1.25);
-        color: var(--color-bordo);
-      }
-    }
-  }
   @media (prefers-reduced-motion: no-preference) {
     .cart[open] {
       animation: cart-in 0.35s var(--ease-out-soft);
@@ -533,6 +633,89 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     @keyframes cart-fade {
       from {
         opacity: 0;
+      }
+    }
+  }
+</style>
+
+<!-- Itens da sacola são criados por JS (innerHTML) e não recebem o atributo de escopo do Astro:
+     por isso estas regras são globais, presas ao .cart. -->
+<style is:global>
+  /* Quantidade: pílula de 56px com botões de 48px (grid de 8, acima do mínimo de toque de 44px). */
+  .cart .cart__qty {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 999px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-line);
+  }
+  .cart .cart__qty button {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: var(--color-rosa-soft);
+    color: var(--color-bordo);
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      transform 0.15s;
+  }
+  @media (hover: hover) {
+    .cart .cart__qty button:hover:not(:disabled) {
+      background: var(--color-bordo);
+      color: var(--color-white);
+    }
+  }
+  .cart .cart__qty button:active:not(:disabled) {
+    transform: scale(0.9);
+  }
+  .cart .cart__qty button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .cart .cart__qty button:focus-visible,
+  .cart .cart__remove:focus-visible {
+    outline: 2px solid var(--color-bordo);
+    outline-offset: 2px;
+  }
+  .cart .cart__qty output {
+    min-width: 40px;
+    text-align: center;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-ink);
+  }
+  /* Remover: pílula de 48px, discreta. */
+  .cart .cart__remove {
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 16px;
+    border-radius: 999px;
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    font-weight: 600;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .cart .cart__remove:hover {
+    color: var(--color-bordo);
+    background: var(--color-rosa-soft);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cart .cart__qty output.is-pop {
+      animation: qty-pop 0.35s var(--ease-out-soft);
+    }
+    @keyframes qty-pop {
+      40% {
+        transform: scale(1.25);
+        color: var(--color-bordo);
       }
     }
   }
@@ -570,6 +753,12 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
     const panels = [...dialog.querySelectorAll<HTMLElement>('[data-step]')];
     const tabs = [...dialog.querySelectorAll<HTMLElement>('[data-step-tab]')];
     const progress = dialog.querySelector<HTMLElement>('[data-cart-progress]');
+    const svg = (d: string, size = 20) =>
+      `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="${d}" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const ICON_MINUS = svg('M5 12h14');
+    const ICON_PLUS = svg('M12 5v14M5 12h14');
+    const nextLabel = $<HTMLElement>('[data-cart-next-label]');
+    const clearLabel = $<HTMLElement>('[data-cart-clear-label]');
     let step = 0;
     let lastChanged = '';
 
@@ -578,23 +767,27 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       list.replaceChildren(
         ...items.map((i) => {
           const li = document.createElement('li');
-          li.className = 'flex gap-4 py-4';
+          li.className = 'flex flex-col gap-3 py-4';
+          // Quantidade e Remover numa linha própria, com a largura toda do item: no celular não cabem
+          // ao lado da foto. Em telas largas a linha alinha com o texto (64px da foto + 16px de espaço).
           li.innerHTML = `
-            <img src="${i.thumb}" alt="" width="64" height="64" class="size-16 flex-none rounded-lg object-cover ring-1 ring-line" />
-            <div class="flex min-w-0 flex-1 flex-col gap-2">
-              <div class="flex justify-between gap-2">
-                <p class="font-semibold text-ink">${i.title}</p>
-                <p class="flex-none font-semibold text-ink">${brl(i.unit * i.qty)}</p>
-              </div>
-              ${i.detail ? `<p class="text-small text-muted">${i.detail}</p>` : ''}
-              <div class="flex items-center justify-between gap-2">
-                <div class="cart__qty" role="group" aria-label="Quantidade de ${i.title}">
-                  <button type="button" data-dec aria-label="Tirar uma" ${i.qty <= 1 ? 'disabled' : ''}>−</button>
-                  <output aria-live="polite" class="${i.key === lastChanged ? 'is-pop' : ''}">${i.qty}</output>
-                  <button type="button" data-inc aria-label="Adicionar mais uma">+</button>
+            <div class="flex gap-4">
+              <img src="${i.thumb}" alt="" width="64" height="64" class="size-16 flex-none rounded-lg object-cover ring-1 ring-line" />
+              <div class="flex min-w-0 flex-1 flex-col gap-1">
+                <div class="flex justify-between gap-2">
+                  <p class="font-semibold text-ink">${i.title}</p>
+                  <p class="flex-none font-semibold text-ink">${brl(i.unit * i.qty)}</p>
                 </div>
-                <button type="button" class="cart__link text-small" data-remove>Remover</button>
+                ${i.detail ? `<p class="text-small text-muted">${i.detail}</p>` : ''}
               </div>
+            </div>
+            <div class="flex items-center justify-between gap-2 lg:pl-20">
+              <div class="cart__qty" role="group" aria-label="Quantidade de ${i.title}${i.detail ? `, ${i.detail}` : ''}">
+                <button type="button" data-dec aria-label="Tirar uma" ${i.qty <= 1 ? 'disabled' : ''}>${ICON_MINUS}</button>
+                <output aria-live="polite" class="${i.key === lastChanged ? 'is-pop' : ''}">${i.qty}</output>
+                <button type="button" data-inc aria-label="Adicionar mais uma">${ICON_PLUS}</button>
+              </div>
+              <button type="button" class="cart__remove" data-remove aria-label="Remover ${i.title}${i.detail ? `, ${i.detail}` : ''}">Remover</button>
             </div>`;
           li.querySelector('[data-dec]')!.addEventListener('click', () => {
             lastChanged = i.key;
@@ -634,7 +827,15 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
         }),
       );
       const c = getCustomer();
-      const place = [c.address, c.district, c.city].filter((v) => v.trim()).join(', ');
+      const place = [
+        [c.address, c.number].filter((v) => v.trim()).join(', '),
+        c.complement,
+        c.district,
+        c.city,
+        c.cep && `CEP ${c.cep}`,
+      ]
+        .filter((v) => v && v.trim())
+        .join(', ');
       where.textContent =
         [c.name && `Para ${c.name}`, place && `entrega em ${place}`].filter(Boolean).join(' · ') ||
         'Sem dados de entrega: a gente combina no WhatsApp.';
@@ -682,7 +883,7 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       next.hidden = step === 2;
       send.hidden = step !== 2;
       clearBtn.hidden = step !== 0;
-      next.textContent = step === 0 ? 'Continuar' : 'Revisar pedido';
+      nextLabel.textContent = step === 0 ? 'Continuar' : 'Revisar pedido';
       if (step === 2) renderReview();
       if (step === 1) track('begin_checkout', { value: total(), items: count() });
       if (step !== 1)
@@ -699,6 +900,87 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
       const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
       setCustomer(data);
     });
+    // CEP: máscara 00000-000 e busca do endereço (ViaCEP, com BrasilAPI de reserva).
+    const cepInput = $<HTMLInputElement>('[data-cep]');
+    const cepStatus = $<HTMLElement>('[data-cep-status]');
+    const cepSpin = $<HTMLElement>('[data-cep-spin]');
+    const cepHint = cepStatus.innerHTML;
+    const citySelect = form.elements.namedItem('city') as HTMLSelectElement;
+    const setField = (name: string, value: string) => {
+      const el = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null;
+      if (!el || !value) return;
+      el.value = value;
+      showError(el, false);
+    };
+    type Endereco = { street: string; district: string; city: string; uf: string };
+    const withTimeout = (url: string, ms = 5000) => {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), ms);
+      return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(t));
+    };
+    const lookup = async (cep: string): Promise<Endereco | null | 'erro'> => {
+      try {
+        const r = await withTimeout(`https://viacep.com.br/ws/${cep}/json/`);
+        const d = await r.json();
+        if (d.erro) return null;
+        return { street: d.logradouro, district: d.bairro, city: d.localidade, uf: d.uf };
+      } catch {
+        try {
+          const r = await withTimeout(`https://brasilapi.com.br/api/cep/v1/${cep}`);
+          if (r.status === 404) return null;
+          const d = await r.json();
+          return { street: d.street, district: d.neighborhood, city: d.city, uf: d.state };
+        } catch {
+          return 'erro';
+        }
+      }
+    };
+    let lastCep = '';
+    const say = (html: string, ok = false) => {
+      cepStatus.innerHTML = html;
+      cepStatus.classList.toggle('is-ok', ok);
+    };
+    cepInput.addEventListener('input', async () => {
+      const digits = cepInput.value.replace(/\D/g, '').slice(0, 8);
+      cepInput.value = digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+      if (digits.length < 8) {
+        if (lastCep) say(cepHint);
+        lastCep = '';
+        return;
+      }
+      if (digits === lastCep) return;
+      lastCep = digits;
+      showError(cepInput, false);
+      cepSpin.hidden = false;
+      say('Buscando o endereço…');
+      const res = await lookup(digits);
+      if (digits !== lastCep) return; // o CEP mudou enquanto buscava
+      cepSpin.hidden = true;
+      if (res === 'erro') {
+        say('Não conseguimos buscar o CEP agora. Preencha o endereço abaixo.');
+        return;
+      }
+      if (!res) {
+        say('CEP não encontrado. Confira os números ou preencha o endereço abaixo.');
+        return;
+      }
+      setField('address', res.street);
+      setField('district', res.district);
+      const served = [...citySelect.options].some((o) => o.value === res.city);
+      citySelect.value = served ? res.city : 'Outra cidade';
+      showError(citySelect, false);
+      say(
+        served
+          ? `Endereço encontrado em ${res.city}. Agora é só o número.`
+          : `Esse CEP é de ${res.city}/${res.uf}, fora da nossa área de entrega. Pode seguir que a gente combina no WhatsApp.`,
+        served,
+      );
+      form.dispatchEvent(new Event('input')); // salva os dados preenchidos
+      // CEP de rua única: vai direto ao número. CEP geral de cidade (sem rua): vai para a rua.
+      const nextField = form.elements.namedItem(res.street ? 'number' : 'address') as HTMLInputElement;
+      nextField.focus();
+    });
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       go(2);
@@ -706,7 +988,24 @@ const steps = ['Sacola', 'Entrega', 'Enviar'];
 
     next.addEventListener('click', () => go(step + 1));
     back.addEventListener('click', () => go(step - 1));
-    clearBtn.addEventListener('click', () => clear());
+    // Esvaziar pede confirmação: o primeiro toque arma, o segundo (em até 3 s) esvazia.
+    let armed = 0;
+    const disarm = () => {
+      clearTimeout(armed);
+      armed = 0;
+      clearBtn.classList.remove('is-confirm');
+      clearLabel.textContent = 'Esvaziar sacola';
+    };
+    clearBtn.addEventListener('click', () => {
+      if (armed) {
+        disarm();
+        clear();
+        return;
+      }
+      clearBtn.classList.add('is-confirm');
+      clearLabel.textContent = 'Toque de novo para esvaziar';
+      armed = window.setTimeout(disarm, 3000);
+    });
     send.addEventListener('click', (e) => {
       if (!fields.every(isValid)) {
         e.preventDefault();
