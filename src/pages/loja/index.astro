@@ -1,0 +1,49 @@
+---
+// Loja (protótipo de e-commerce) — Figma "E-commerce — nova versão" (página 215:112, Desktop 1440, 215:113).
+// Ordem do Figma: faixa + menu, hero, benefícios, modelos, feito para durar, faixa de ajuda, quem faz,
+// depoimentos, como fazemos, dúvidas, CTA final e rodapé. Melhorias: avaliações sob o hero, seção de aromas
+// (o menu do Figma aponta para ela) e páginas de produto em /loja/<produto>.
+// Protótipo: fica fora do Google (noindex) e do sitemap até ser aprovado.
+import Base from '../../layouts/Base.astro';
+import LojaHeader from '../../components/loja/LojaHeader.astro';
+import LojaHero from '../../components/loja/LojaHero.astro';
+import Avaliacoes from '../../components/loja/Avaliacoes.astro';
+import Vitrine from '../../components/loja/Vitrine.astro';
+import AromasLoja from '../../components/loja/AromasLoja.astro';
+import FeitoParaDurar from '../../components/loja/FeitoParaDurar.astro';
+import AjudaEscura from '../../components/loja/AjudaEscura.astro';
+import TrustStrip from '../../components/sections/TrustStrip.astro';
+import Founder from '../../components/sections/Founder.astro';
+import Testimonials from '../../components/sections/Testimonials.astro';
+import HowWeMake from '../../components/sections/HowWeMake.astro';
+import Faq from '../../components/sections/Faq.astro';
+import FinalCta from '../../components/sections/FinalCta.astro';
+import SiteFooter from '../../components/sections/SiteFooter.astro';
+import MobileCta from '../../components/sections/MobileCta.astro';
+import CartDrawer from '../../components/cart/CartDrawer.astro';
+import { faq } from '../../data/content';
+---
+
+<Base
+  title="Loja | Feito de Afeto — velas aromáticas artesanais"
+  description="Loja da Feito de Afeto: escolha a sua vela de cera vegetal feita à mão em Santos (100g, floral, 40g ou kit com 3), monte o pedido e envie pelo WhatsApp."
+  noindex
+  faq={faq}
+>
+  <LojaHeader slot="header" />
+  <LojaHero />
+  <Avaliacoes />
+  <TrustStrip />
+  <Vitrine />
+  <AromasLoja />
+  <FeitoParaDurar />
+  <AjudaEscura />
+  <Founder />
+  <Testimonials />
+  <HowWeMake />
+  <Faq />
+  <FinalCta />
+  <MobileCta />
+  <CartDrawer />
+  <SiteFooter slot="footer" />
+</Base>

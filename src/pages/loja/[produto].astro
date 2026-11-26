@@ -1,0 +1,61 @@
+---
+// Página de produto da loja: /loja/<produto> (uma para cada card da vitrine).
+// Reaproveita o bloco de modelo da landing (galeria de aromas, tamanho do kit, sacola e WhatsApp) com o
+// nome do produto como h1, e mostra os outros modelos embaixo.
+import Base from '../../layouts/Base.astro';
+import LojaHeader from '../../components/loja/LojaHeader.astro';
+import Vitrine from '../../components/loja/Vitrine.astro';
+import ModelFeature from '../../components/sections/ModelFeature.astro';
+import TrustStrip from '../../components/sections/TrustStrip.astro';
+import FinalCta from '../../components/sections/FinalCta.astro';
+import SiteFooter from '../../components/sections/SiteFooter.astro';
+import CartDrawer from '../../components/cart/CartDrawer.astro';
+import { lojaProdutos, modeloDo } from '../../data/loja';
+
+export function getStaticPaths() {
+  return lojaProdutos.map((p) => ({ params: { produto: p.slug }, props: { slug: p.slug } }));
+}
+
+const { slug } = Astro.props;
+const produto = lojaProdutos.find((p) => p.slug === slug)!;
+const model = modeloDo(produto);
+const outros = lojaProdutos.filter((p) => p.slug !== slug);
+---
+
+<Base
+  title={`${model.name} | Loja Feito de Afeto`}
+  description={`${model.name}: ${produto.resumo} Feita à mão em Santos, sob encomenda. Peça pelo WhatsApp.`}
+  noindex
+>
+  <LojaHeader slot="header" base="/loja" />
+  <nav aria-label="Você está aqui" class="container-page pt-6 text-small text-muted">
+    <ol class="flex flex-wrap items-center gap-2">
+      <li>
+        <a href="/loja" class="transition-colors hover:text-bordo">
+          Loja
+        </a>
+      </li>
+      <li aria-hidden="true">›</li>
+      <li>
+        <a href="/loja#modelos" class="transition-colors hover:text-bordo">
+          Modelos
+        </a>
+      </li>
+      <li aria-hidden="true">›</li>
+      <li aria-current="page" class="font-semibold text-ink">
+        {model.name}
+      </li>
+    </ol>
+  </nav>
+  <ModelFeature model={model} headingLevel={1} />
+  <TrustStrip />
+  <Vitrine
+    produtos={outros}
+    label="Veja também"
+    titulo="Outros jeitos de levar afeto para casa"
+    texto="Todas feitas à mão, sob encomenda, com cera vegetal e pote de vidro."
+  />
+  <FinalCta />
+  <CartDrawer />
+  <SiteFooter slot="footer" />
+</Base>

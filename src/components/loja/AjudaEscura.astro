@@ -1,0 +1,31 @@
+---
+// Loja — "Faixa de ajuda" (Figma 217:125): painel bordô-escuro (raio 32), título creme, texto rosa suave e
+// botão rosa com texto bordô-escuro. Leva ao WhatsApp com a mensagem pronta.
+import Button from '../ui/Button.astro';
+import { whatsappLink } from '../../config/site';
+---
+
+<aside aria-labelledby="loja-ajuda-titulo" class="bg-creme">
+  <div class="container-page py-8 lg:py-12">
+    <div
+      class="flex flex-col items-start gap-8 rounded-[var(--radius-panel)] bg-bordo-dark px-8 py-10 md:px-[72px] md:py-14 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+      data-reveal
+    >
+      <div class="flex max-w-[606px] flex-col gap-3">
+        <h2 id="loja-ajuda-titulo" class="text-h3 text-creme">
+          Não sabe qual escolher?
+        </h2>
+        <p class="max-w-[473px] text-body-l text-rosa-soft">
+          Conta pra gente o ambiente e o clima que você quer. A gente indica o aroma e o modelo certos pelo WhatsApp.
+        </p>
+      </div>
+      <Button
+        href={whatsappLink('Olá! Não sei qual vela escolher, pode me ajudar?')}
+        variant="soft"
+        class="shrink-0 text-bordo-dark! hover:bg-white! hover:text-bordo-dark!"
+      >
+        Me ajuda a escolher
+      </Button>
+    </div>
+  </div>
+</aside>

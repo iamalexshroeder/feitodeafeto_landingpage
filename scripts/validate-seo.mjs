@@ -59,7 +59,10 @@ for (const file of pages) {
   check(imgsNoAlt === 0, 'todas as imagens com alt', `${imgsNoAlt} sem alt`);
 
   const ld = attr(html, /<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
-  try {
+  // Páginas noindex (ex.: o protótipo da loja) não levam JSON-LD — o Base.astro só emite em páginas indexáveis.
+  if (!ld && /noindex/.test(robots ?? '')) {
+    check(true, 'JSON-LD dispensado (página noindex)');
+  } else try {
     const data = JSON.parse(ld ?? '');
     const types = data['@graph'].map((n) => n['@type']);
     // LocalBusiness é um subtipo de Organization (schema.org) e vale como a organização do site.

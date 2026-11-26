@@ -11,8 +11,11 @@ import { candles, type Model } from '../../data/content';
 interface Props {
   model: Model;
   reverse?: boolean;
+  /** Na página do produto (/loja/<produto>) o nome do modelo é o h1. */
+  headingLevel?: 1 | 3;
 }
-const { model, reverse = false } = Astro.props;
+const { model, reverse = false, headingLevel = 3 } = Astro.props;
+const Heading = headingLevel === 1 ? 'h1' : 'h3';
 
 const tints = {
   'pimenta-rosa': 'bg-tint-pimenta-rosa',
@@ -122,9 +125,9 @@ const slots = order?.type === 'kit' ? [1, 2, 3] : [1];
 
   <div class="flex flex-col items-start gap-6" data-reveal style="--reveal-delay: 120ms">
     <p class="text-label uppercase text-bordo max-lg:-mb-4">{model.label}</p>
-    <h3 id={headingId} class="text-h2 text-ink">
+    <Heading id={headingId} class="text-h2 text-ink">
       {model.name}
-    </h3>
+    </Heading>
     <p class="max-w-[504px] text-body-l text-muted">{model.description}</p>
 
     {/* No kit, as opções de tamanho já dizem o que os chips diriam: chips só nos modelos avulsos. */}

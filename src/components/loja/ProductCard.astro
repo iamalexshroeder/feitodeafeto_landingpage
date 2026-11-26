@@ -1,0 +1,152 @@
+---
+// Card de produto da loja — Figma "Modelo / …" (216:205): branco, raio 24, foto 258 × 280 (raio 16) com
+// etiqueta creme, nome, descrição, preço + tamanho e botão. Melhoria: miniaturas dos aromas no card —
+// escolher troca a foto e "Adicionar à sacola" já leva o aroma. O kit leva à página dele (tamanho + 3 aromas).
+import Button from '../ui/Button.astro';
+import { candles } from '../../data/content';
+import { modeloDo, type LojaProduto } from '../../data/loja';
+
+interface Props {
+  produto: LojaProduto;
+  /** Nível do título do card (h3 na vitrine). */
+  headingLevel?: 2 | 3;
+}
+const { produto: p, headingLevel = 3 } = Astro.props;
+const model = modeloDo(p);
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+const url = `/loja/${p.slug}`;
+const aromas = p.pasta ? candles.map((c) => ({ id: c.id, name: c.name })) : [];
+const inicial = p.pasta === '40g' ? 'cereja-com-avela' : 'pimenta-rosa';
+const nomeInicial = candles.find((c) => c.id === inicial)?.name ?? '';
+---
+
+<article
+  class="product-card group flex h-full flex-col gap-4 rounded-[var(--radius-card)] bg-white p-3 pb-5"
+  data-product
+  data-model={model.id}
+  data-title={model.name}
+  data-unit={model.priceValue}
+  data-pasta={p.pasta}
+>
+  <a href={url} class="relative block overflow-hidden rounded-2xl" tabindex="-1" aria-hidden="true">
+    <img
+      src={p.foto}
+      alt=""
+      width="640"
+      height="597"
+      loading="lazy"
+      decoding="async"
+      class="product-photo aspect-[258/280] w-full object-cover transition-transform duration-700 ease-[var(--ease-out-soft)] group-hover:scale-[1.04]"
+      data-product-photo
+    />
+    <span class="absolute top-3 left-3 rounded-full bg-creme px-3 py-1.5 text-label text-bordo-dark uppercase">
+      {p.etiqueta}
+    </span>
+  </a>
+
+  <div class="flex flex-1 flex-col gap-2 px-2">
+    <Heading class="font-semibold text-ink">
+      <a href={url} class="transition-colors hover:text-bordo">
+        {model.name}
+      </a>
+    </Heading>
+    <p class="text-muted md:min-h-18">{p.resumo}</p>
+    <p class="mt-auto flex items-center justify-between gap-2 pt-1">
+      <span class="text-h3 text-bordo max-lg:text-title" data-product-price>
+        {p.preco}
+      </span>
+      <span class="text-label text-muted uppercase">{p.detalhe}</span>
+    </p>
+    {aromas.length > 0 && (
+      <fieldset class="flex flex-col gap-2 pt-1">
+        <legend class="sr-only">Aroma</legend>
+        <p class="text-small text-muted" aria-hidden="true">
+          Aroma:{' '}
+          <span class="font-semibold text-ink" data-product-aroma>
+            {nomeInicial}
+          </span>
+        </p>
+        <div class="flex gap-2">
+          {aromas.map((a) => (
+            <label class="relative cursor-pointer" title={a.name}>
+              <input
+                type="radio"
+                name={`${p.slug}-aroma`}
+                value={a.name}
+                checked={a.id === inicial}
+                class="peer sr-only"
+                data-aroma-id={a.id}
+              />
+              <img
+                src={`/img/${p.pasta}/${a.id}-thumb.webp`}
+                alt=""
+                width="160"
+                height="160"
+                loading="lazy"
+                decoding="async"
+                class="size-8 rounded-full object-cover ring-1 ring-line transition-[box-shadow,transform] duration-200 peer-checked:ring-2 peer-checked:ring-bordo peer-checked:ring-offset-2 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-bordo hover:scale-110"
+              />
+              <span class="sr-only">{a.name}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )}
+    {/* Kit: no lugar das miniaturas, o que a pessoa escolhe na página dele (mantém os cards alinhados). */}
+    {aromas.length === 0 && (
+      <div class="flex min-h-[64px] flex-col gap-1 pt-1 text-small text-muted">
+        <p>
+          Tamanho: <span class="font-semibold text-ink">100g ou 40g</span>
+        </p>
+        <p>
+          Aromas: <span class="font-semibold text-ink">os 3 à sua escolha</span>
+        </p>
+      </div>
+    )}
+  </div>
+
+  {p.pasta ? (
+    <Button class="w-full! lg:min-h-14!" data-product-add="">
+      Adicionar à sacola
+    </Button>
+  ) : (
+    <Button href={url} external={false} class="w-full! lg:min-h-14!">
+      Montar meu kit
+    </Button>
+  )}
+</article>
+
+<script>
+  import { add } from '../../scripts/cart';
+  for (const card of document.querySelectorAll<HTMLElement>('[data-product]')) {
+    const photo = card.querySelector<HTMLImageElement>('[data-product-photo]');
+    const nome = card.querySelector<HTMLElement>('[data-product-aroma]');
+    const pasta = card.dataset.pasta;
+    const escolhido = () => card.querySelector<HTMLInputElement>('input[data-aroma-id]:checked');
+    card.addEventListener('change', () => {
+      const r = escolhido();
+      if (!r || !pasta) return;
+      if (nome) nome.textContent = r.value;
+      if (photo) photo.src = `/img/${pasta}/${r.dataset.aromaId}-640.webp`;
+    });
+    const btn = card.querySelector<HTMLButtonElement>('[data-product-add]');
+    btn?.addEventListener('click', () => {
+      const r = escolhido();
+      if (!r || !pasta) return;
+      add({
+        key: `${card.dataset.model}|${r.value}`,
+        title: card.dataset.title ?? '',
+        detail: r.value,
+        unit: Number(card.dataset.unit ?? 0),
+        thumb: `/img/${pasta}/${r.dataset.aromaId}-thumb.webp`,
+      });
+      const label = btn.textContent;
+      btn.textContent = 'Adicionado à sacola';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = label;
+        btn.disabled = false;
+      }, 1600);
+    });
+  }
+</script>

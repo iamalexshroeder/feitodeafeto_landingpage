@@ -1,0 +1,136 @@
+---
+// Loja — Figma 215:114 (faixa) + 215:116 (menu): logo, links em semibold, "Sacola (n)" em contorno e
+// "Fale com a gente" preenchido. Fixo no topo ao rolar. Celular: ícone da sacola com a quantidade.
+import Button from '../ui/Button.astro';
+import { site, whatsappLink } from '../../config/site';
+
+interface Props {
+  /** Na página inicial da loja os links rolam até a seção; nas páginas de produto, voltam para /loja. */
+  base?: string;
+}
+const { base = '' } = Astro.props;
+
+const links = [
+  { href: `${base}#aromas`, label: 'Aromas' },
+  { href: `${base}#modelos`, label: 'Modelos' },
+  { href: `${base}#quem-faz`, label: 'Quem faz' },
+  { href: `${base}#duvidas`, label: 'Dúvidas' },
+];
+---
+
+<p class="bg-bordo-dark px-6 py-3 text-center text-label uppercase text-rosa">
+  <span class="shimmer">
+    Feitas à mão, sob encomenda<span class="hidden sm:inline"> · Peça direto pelo WhatsApp</span>
+  </span>
+</p>
+<header class="sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur-md">
+  <nav aria-label="Principal" class="container-page flex items-center justify-between gap-6 py-3">
+    <a href="/loja" class="shrink-0" aria-label={`${site.name} — início da loja`}>
+      <img src="/brand/logo.svg" alt="" width="84" height="67" class="h-12 w-auto lg:h-16" />
+    </a>
+    <ul class="hidden items-center gap-10 lg:flex">
+      {links.map((link) => (
+        <li>
+          <a href={link.href} class="font-semibold text-ink transition-colors hover:text-bordo">
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="flex items-center gap-3">
+      <Button variant="secondary" size="sm" data-open-cart="" class="max-lg:hidden">
+        Sacola (<span data-loja-count>0</span>)
+      </Button>
+      <Button href={whatsappLink('Olá! Vim pela loja da Feito de Afeto.')} size="sm" class="max-lg:hidden">
+        Fale com a gente
+      </Button>
+      {/* Celular: ícone de carrinho com a quantidade (exceção à regra "botões sem ícone"). */}
+      <button
+        type="button"
+        class="relative grid size-11 place-items-center rounded-full bg-rosa text-bordo transition-colors hover:bg-bordo hover:text-white lg:hidden"
+        data-open-cart
+        data-loja-icon
+        aria-label="Abrir a sacola, vazia"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="9" cy="20" r="1.5" fill="currentColor"></circle>
+          <circle cx="18" cy="20" r="1.5" fill="currentColor"></circle>
+          <path
+            d="M2.5 3.5h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1l1.7-6.8H6.3"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+        </svg>
+        <span class="loja-badge" data-loja-badge hidden>
+          0
+        </span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    .shimmer {
+      background: linear-gradient(
+          100deg,
+          var(--color-rosa) 0%,
+          var(--color-rosa) 35%,
+          var(--color-white) 50%,
+          var(--color-rosa) 65%,
+          var(--color-rosa) 100%
+        )
+        0 0 / 250% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 4.5s linear infinite;
+    }
+    @keyframes shimmer {
+      from {
+        background-position: 100% 0;
+      }
+      to {
+        background-position: 0 0;
+      }
+    }
+  }
+  .loja-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--color-bordo);
+    color: var(--color-white);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    box-shadow: 0 0 0 2px var(--color-white);
+  }
+</style>
+
+<script>
+  import { count } from '../../scripts/cart';
+  const nums = document.querySelectorAll<HTMLElement>('[data-loja-count]');
+  const badges = document.querySelectorAll<HTMLElement>('[data-loja-badge]');
+  const icons = document.querySelectorAll<HTMLElement>('[data-loja-icon]');
+  const render = () => {
+    const c = count();
+    const label = c ? `Abrir a sacola, ${c} ${c === 1 ? 'item' : 'itens'}` : 'Abrir a sacola, vazia';
+    nums.forEach((el) => (el.textContent = String(c)));
+    badges.forEach((el) => {
+      el.textContent = c > 99 ? '99+' : String(c);
+      el.hidden = c === 0;
+    });
+    icons.forEach((el) => el.setAttribute('aria-label', label));
+  };
+  window.addEventListener('cart:change', render);
+  render();
+</script>

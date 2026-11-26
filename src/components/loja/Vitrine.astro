@@ -1,0 +1,59 @@
+---
+// Loja — "Modelos" (Figma 216:205): fundo rosa suave, cabeçalho com label + título à esquerda e texto à
+// direita, grade de 4 cards (24 entre eles). Celular: os cards rolam na horizontal com encaixe; tablet: 2
+// colunas; desktop: 4.
+import ProductCard from './ProductCard.astro';
+import { lojaProdutos, type LojaProduto } from '../../data/loja';
+
+interface Props {
+  /** Página de produto: mostra os outros modelos ("Veja também"). */
+  produtos?: LojaProduto[];
+  label?: string;
+  titulo?: string;
+  texto?: string;
+}
+const {
+  produtos = lojaProdutos,
+  label = 'Os modelos',
+  titulo = 'Escolha o tamanho do seu afeto',
+  texto = 'Todas feitas à mão, sob encomenda. Monte o seu pedido em poucos cliques.',
+} = Astro.props;
+---
+
+<section id="modelos" aria-labelledby="vitrine-titulo" class="bg-rosa-soft py-20 lg:py-24">
+  <div class="container-page flex flex-col gap-10 lg:gap-12">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between" data-reveal>
+      <div class="flex max-w-[640px] flex-col gap-4">
+        <p class="text-label text-bordo-dark uppercase">{label}</p>
+        <h2 id="vitrine-titulo" class="text-h2 text-bordo">
+          {titulo}
+        </h2>
+      </div>
+      <p class="max-w-[340px] text-muted">{texto}</p>
+    </div>
+    <ul
+      class="vitrine -mx-[var(--gutter)] flex snap-x snap-mandatory gap-4 overflow-x-auto px-[var(--gutter)] pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4"
+      aria-label="Modelos à venda"
+    >
+      {produtos.map((p, i) => (
+        <li
+          class="w-[78vw] max-w-[300px] shrink-0 snap-start md:w-auto md:max-w-none"
+          data-reveal
+          style={`--reveal-delay: ${i * 80}ms`}
+        >
+          <ProductCard produto={p} />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .vitrine {
+    scrollbar-width: none;
+    scroll-padding-inline: var(--gutter);
+  }
+  .vitrine::-webkit-scrollbar {
+    display: none;
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+// Loja — melhoria (referência de e-commerce): faixa de avaliações logo abaixo do hero, com as frases reais
+// dos depoimentos passando devagar. Pausa ao passar o mouse; com "reduzir movimento", fica parada e rola
+// na mão. Leitores de tela ouvem a lista uma vez só.
+import { testimonials } from '../../data/content';
+const frases = testimonials.map((t) => ({ texto: t.quote.split('. ')[0].replace(/\.$/, ''), autor: t.author }));
+---
+
+<section aria-label="Avaliações de clientes" class="border-b border-line bg-white">
+  <div class="flex items-center gap-6 py-4">
+    <p class="shrink-0 pl-[var(--gutter)] text-small font-semibold text-ink lg:pl-[max(var(--gutter),calc((100vw-1200px)/2))]">
+      <span class="text-estrela" aria-hidden="true">
+        ★★★★★
+      </span>
+      <span class="ml-2">Clientes de Santos e região</span>
+    </p>
+    <div class="avaliacoes relative min-w-0 flex-1 overflow-hidden">
+      <ul class="avaliacoes-trilho flex w-max gap-10">
+        {[0, 1].map((copia) =>
+          frases.map((f) => (
+            <li class="text-small whitespace-nowrap text-muted" aria-hidden={copia === 1 ? 'true' : undefined}>
+              “{f.texto}” <span class="font-semibold text-ink">— {f.autor}</span>
+            </li>
+          )),
+        )}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .avaliacoes {
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .avaliacoes-trilho {
+      animation: passar 40s linear infinite;
+    }
+    .avaliacoes:hover .avaliacoes-trilho {
+      animation-play-state: paused;
+    }
+    @keyframes passar {
+      to {
+        transform: translateX(calc(-50% - 20px));
+      }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .avaliacoes {
+      overflow-x: auto;
+    }
+  }
+</style>
