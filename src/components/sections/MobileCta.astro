@@ -75,7 +75,9 @@ const from = Math.min(...values).toLocaleString('pt-BR', { style: 'currency', cu
   // Mostra a barra quando o hero saiu da tela e nenhum bloco de fechamento (CTA final, rodapé)
   // ou de pedido está visível.
   const bar = document.querySelector<HTMLElement>('[data-mobile-cta]');
-  const hero = document.getElementById('hero-titulo')?.closest('section');
+  // O "hero" é a seção do h1: o topo da loja ou o bloco de compra na página de produto.
+  const h1 = document.querySelector('main h1');
+  const hero = h1?.closest('section, article') ?? h1?.parentElement;
   if (bar && hero && 'IntersectionObserver' in window) {
     const blockers = new Set<Element>();
     let heroVisible = true;

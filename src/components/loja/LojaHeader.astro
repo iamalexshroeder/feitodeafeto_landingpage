@@ -1,6 +1,6 @@
 ---
-// Loja — Figma 215:114 (faixa) + 215:116 (menu): logo, links em semibold, "Sacola (n)" em contorno e
-// "Fale com a gente" preenchido. Fixo no topo ao rolar. A sacola fica só no botão flutuante (canto inferior direito).
+// Loja — Figma 215:114 (faixa) + 215:116 (menu): logo, links em semibold, "Fale com a gente" preenchido.
+// Fixo no topo ao rolar. Sacola: botão flutuante no desktop; no celular, a barra fixa de compra.
 import Button from '../ui/Button.astro';
 import { site, whatsappLink } from '../../config/site';
 
@@ -43,11 +43,11 @@ const links = [
   </nav>
 </header>
 
-{/* Sacola: só o botão flutuante no canto inferior direito (desktop e celular), com a quantidade.
-    No celular sobe quando a barra fixa de compra aparece, para não ficar por baixo dela. */}
+{/* Sacola no desktop: botão flutuante no canto inferior direito, com a quantidade. No celular a sacola
+    fica na barra fixa de compra (Figma "Celular / Barra fixa de compra", 91:518). */}
 <button
   type="button"
-  class="cart-fab fixed right-4 bottom-6 z-40 grid size-14 place-items-center rounded-full bg-bordo text-white transition-[background-color,bottom] duration-300 hover:bg-bordo-dark lg:right-8 lg:bottom-8"
+  class="cart-fab fixed right-8 bottom-8 z-40 grid size-14 place-items-center rounded-full bg-bordo text-white transition-colors duration-300 hover:bg-bordo-dark max-lg:hidden"
   data-open-cart
   data-loja-icon
   aria-label="Abrir a sacola, vazia"
@@ -96,11 +96,6 @@ const links = [
   }
   .cart-fab {
     box-shadow: 0 16px 32px -12px rgb(42 20 24 / 0.45);
-  }
-  @media (width < 64rem) {
-    :global(html:has(.mobile-cta.is-visible)) .cart-fab {
-      bottom: calc(96px + env(safe-area-inset-bottom));
-    }
   }
   .loja-badge {
     position: absolute;

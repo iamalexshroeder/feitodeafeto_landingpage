@@ -1,7 +1,7 @@
 ---
 // Loja — "Modelos" (Figma 216:205): fundo rosa suave, cabeçalho com label + título à esquerda e texto à
-// direita, grade de 4 cards (24 entre eles). Celular: cards empilhados (fixos, sem arrastar); tablet: 2
-// colunas; desktop: 4.
+// direita, 4 cards lado a lado (24 entre eles). Celular e tablet: carrossel com encaixe — um card por
+// gesto (scroll-snap-stop), sem "puxar" a página junto (overscroll contido) e sem o deslize de entrada nos cards.
 import ProductCard from './ProductCard.astro';
 import { lojaProdutos, type LojaProduto } from '../../data/loja';
 
@@ -34,12 +34,45 @@ const {
       </div>
       <p class="max-w-[340px] text-body-l text-muted lg:text-body">{texto}</p>
     </div>
-    <ul class="grid gap-6 md:grid-cols-2 lg:grid-cols-4" aria-label="Modelos à venda">
+    <ul
+      class="vitrine -mx-[var(--gutter)] flex snap-x snap-mandatory gap-4 overflow-x-auto px-[var(--gutter)] pb-2 lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:px-0 lg:pb-0"
+      aria-label="Modelos à venda"
+    >
       {produtos.map((p, i) => (
-        <li class="flex" data-reveal style={`--reveal-delay: ${i * 80}ms`}>
+        <li class="flex w-[78vw] max-w-[300px] shrink-0 snap-start lg:w-auto lg:max-w-none" data-reveal style={`--reveal-delay: ${i * 80}ms`}>
           <ProductCard produto={p} />
         </li>
       ))}
     </ul>
   </div>
 </section>
+
+<style>
+  .vitrine {
+    scrollbar-width: none;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .vitrine::-webkit-scrollbar {
+    display: none;
+  }
+  .vitrine > li {
+    scroll-snap-stop: always;
+  }
+  /* No carrossel, os cards ficam parados: sem o deslize de entrada que mexia neles ao arrastar. */
+  @media (width < 64rem) {
+    /* Trava o carrossel na horizontal: sem rolagem para cima/baixo dentro dele (overflow-x: auto
+       deixaria o eixo vertical em "auto" e o card "grudava" no dedo ao arrastar). */
+    .vitrine {
+      overflow-y: hidden;
+      touch-action: pan-x pan-y;
+      overscroll-behavior-y: none;
+    }
+    :global(.js) .vitrine > li[data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
