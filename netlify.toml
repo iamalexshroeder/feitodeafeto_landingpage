@@ -41,3 +41,15 @@
   for = "/brand/*"
   [headers.values]
     Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+
+# A loja virou a página inicial (/) e os produtos foram para /produtos/<produto>.
+# Os links antigos de /loja (já compartilhados) continuam funcionando.
+[[redirects]]
+  from = "/loja"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/loja/*"
+  to = "/produtos/:splat"
+  status = 301

@@ -1,6 +1,6 @@
-# Feito de Afeto — landing page
+# Feito de Afeto — site (loja)
 
-Landing page de velas aromáticas artesanais (Santos e região). Site estático em **Astro 7 + Tailwind 4**: todo o conteúdo sai pronto no HTML, com JavaScript pequeno só para os efeitos e para montar o pedido do WhatsApp.
+Loja de velas aromáticas artesanais (Santos e região): página inicial com a vitrine e uma página por produto em `/produtos/<produto>`. O pedido é montado na sacola e enviado pelo WhatsApp. Site estático em **Astro 7 + Tailwind 4**: todo o conteúdo sai pronto no HTML, com JavaScript pequeno só para os efeitos e para montar o pedido do WhatsApp.
 
 > Projeto conceitual de portfólio: depoimentos e números de vendas são de exemplo. O site sai com `noindex` até `PUBLIC_INDEXABLE=true`.
 

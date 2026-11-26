@@ -1,6 +1,6 @@
-# Feito de Afeto — Landing Page
+# Feito de Afeto — Site (loja)
 
-Landing page da marca Feito de Afeto, construída a partir do design no Figma (via Figma MCP).
+Site da marca Feito de Afeto, construído a partir do design no Figma (via Figma MCP). Desde nov/2026 a página inicial (`/`) é a **loja** (Figma "E-commerce — nova versão"), com uma página por produto em `/produtos/<produto>`. A landing antiga saiu do site (fica no histórico do git e no Figma, página "Landing Page").
 
 > **Status:** marca **real** no ar (velas aromáticas artesanais em Santos/SP), com WhatsApp, Instagram e depoimentos de clientes reais. O `docs/briefing.md` é da fase conceitual: o conteúdo atual segue o Figma e `src/data/content.ts`. Não inventar claims, números ou depoimentos. Produção (feitodeafeto.com.br) **indexada** no Google: `PUBLIC_INDEXABLE=true` e `SITE_URL` no contexto de produção do `netlify.toml`; prévias de deploy seguem com `noindex`. Segurança: headers no `netlify.toml` + CSP gerada no build (`scripts/build-csp.mjs` → `dist/_headers`, scripts inline por hash). Ao chamar um serviço externo novo no navegador, incluir o domínio em `connect` nesse script. O rodapé traz "Feito de Afeto 2026 - Todos os direitos reservados." (decisão da dona, no lugar do antigo aviso "Projeto conceitual").
 
@@ -12,7 +12,7 @@ Landing page da marca Feito de Afeto, construída a partir do design no Figma (v
 | `DESIGN.md` | Identidade visual: tokens, tipografia, componentes, do's & don'ts — extraído do Figma | pronto |
 | `docs/briefing.md` | Briefing (fictício) da marca; o **conteúdo segue o Figma** | pronto |
 
-**Figma (fonte da verdade visual e de conteúdo):** https://www.figma.com/design/LTGkf5XlUZs3OcGsCbFeLG — frame "Feito de Afeto — Landing (Desktop 1440)", node `1:49`. Cada componente em `src/components/sections/` cita o node de origem. Imagens-fonte ficam em `assets/` (ver "Arquivos de imagem") e são otimizadas para `public/img/` com `npm run images`.
+**Figma (fonte da verdade visual e de conteúdo):** https://www.figma.com/design/LTGkf5XlUZs3OcGsCbFeLG — página "E-commerce — nova versão" (215:112): design original da dona `215:113`, versão como no site `226:123` (desktop) e `227:328` (mobile), página de produto `227:541`/`227:668` e o quadro "Loja — Documentação" `228:218`. A landing antiga continua na página "Landing Page" (`1:49`/`47:37`), com seções reaproveitadas pela loja. Cada componente em `src/components/sections/` cita o node de origem. Imagens-fonte ficam em `assets/` (ver "Arquivos de imagem") e são otimizadas para `public/img/` com `npm run images`.
 | `docs/requisitos-tecnicos.md` | SEO (title, description, semântica, JSON-LD, canonical, indexação), performance e responsividade | **obrigatório** |
 
 ## Definição de pronto
@@ -56,6 +56,9 @@ Estrutura:
 - `src/components/SEO.astro` — title, description, canonical, robots, Open Graph, Twitter.
 - `src/components/JsonLd.astro` — `@graph` Organization + WebSite + WebPage (+ FAQPage).
 - `src/layouts/Base.astro` — `<html lang>`, skip link, `<main>` único.
+- `src/pages/index.astro` — página inicial = loja. `src/pages/produtos/[produto].astro` — uma página por produto (vem de `src/data/loja.ts`, com título/descrição de SEO de cada um).
+- `src/components/loja/` — seções da loja (LojaHeader, LojaHero, Avaliacoes, Vitrine, ProductCard, AromasLoja, FeitoParaDurar, AjudaEscura); as demais vêm de `src/components/sections/`.
+- `netlify.toml` redireciona os links antigos: `/loja` → `/` e `/loja/*` → `/produtos/*` (301).
 - `src/pages/robots.txt.ts` — libera ou bloqueia conforme `PUBLIC_INDEXABLE`; sitemap via `@astrojs/sitemap`.
 - `src/styles/global.css` — tokens do Figma (cores, tints, estilos de texto fluidos, `container-page`) e fonte Inter self-hosted.
 - `src/components/ui/Button.astro` — botão (primary/secondary/ondark); repassa atributos `data-*`.
@@ -75,7 +78,7 @@ Comandos:
 
 **Regras fixas (ver DESIGN.md › Regras do projeto):** paleta do DESIGN.md, contraste AA, grid de 8, títulos com -3px, botões sem ícone/emoji, efeitos leves com `prefers-reduced-motion`.
 
-**Fluxo de trabalho:** a dona do projeto edita direto o frame da landing no Figma (página "Landing Page", node `1:49`). A cada pedido "repassar alterações": ler `get_metadata` do frame, comparar com o código e aplicar o que mudou — mantendo as regras fixas abaixo quando o Figma divergir (ex.: botões ficam com 56px no grid de 8). Quando uma mudança aparece só em um item repetido (ex.: só na Vela 01), aplicar em todos e avisar.
+**Fluxo de trabalho:** a dona do projeto edita direto o frame da loja no Figma (página "E-commerce — nova versão", node `215:113`; seções compartilhadas também na página "Landing Page"). A cada pedido "repassar alterações": ler `get_metadata` do frame, comparar com o código e aplicar o que mudou — mantendo as regras fixas abaixo quando o Figma divergir (ex.: botões ficam com 56px no grid de 8). Quando uma mudança aparece só em um item repetido (ex.: só na Vela 01), aplicar em todos e avisar.
 
 **Figma:** páginas "Landing Page", "Componentes" e "Moodboard". Camadas em português, no padrão `Grupo / Item` (ex.: "Modelos / 40g", "Coleção / Carrossel de aromas", "Rótulo 100g / Baunilha", "Baunilha / Pirâmide olfativa"); textos nomeados pelo papel (Título, Texto, Label), imagens pelo conteúdo (Foto, Pote, Rótulo, Sombra, Logo). Blocos antigos ficam como "Antigo / … (oculto)". Botão: propriedade `Estilo` (Primário, Contorno, Sobre escuro, Menu, Menu preenchido). O Moodboard é referência visual e **fonte de informação** (notas olfativas = cartões "Pirâmide olfativa"); as fotos de lá são de referência — não usar produtos de outras marcas.
 

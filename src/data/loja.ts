@@ -1,6 +1,6 @@
-// Loja (protótipo de e-commerce) — Figma "E-commerce — nova versão" (página 215:112, frame 215:113).
+// Loja — Figma "E-commerce — nova versão" (página 215:112, frame 215:113). É a página inicial do site (/).
 // Cada produto da vitrine aponta para um modelo de `models` (preço, fotos e pedido vêm de lá) e tem a
-// sua página em /loja/<slug>. Os textos curtos dos cards são os do Figma (diferentes dos da landing).
+// sua página em /produtos/<slug>. Os textos curtos dos cards são os do Figma.
 import { models, type Model } from './content';
 
 export interface LojaProduto {
@@ -19,11 +19,17 @@ export interface LojaProduto {
   /** Foto do card (versão de 640px). */
   foto: string;
   alt: string;
+  /** SEO da página do produto: título (50–60) e descrição (140–160 caracteres). */
+  seoTitle: string;
+  seoDescription: string;
 }
 
 export const lojaProdutos: LojaProduto[] = [
   {
     slug: 'vela-floral-100g',
+    seoTitle: 'Vela floral de 100g em cera vegetal | Feito de Afeto',
+    seoDescription:
+      'Vela floral de 100g com flores de cera sobre a vela, feita à mão em Santos com cera vegetal e pote de vidro. Escolha o aroma e peça pelo WhatsApp.',
     modelId: 'modelo-100g-floral',
     etiqueta: 'Clássica',
     resumo: 'Pote de vidro com tampa de madeira e cerca de 25h de queima.',
@@ -35,6 +41,9 @@ export const lojaProdutos: LojaProduto[] = [
   },
   {
     slug: 'vela-100g',
+    seoTitle: 'Vela aromática de 100g em cera vegetal | Feito de Afeto',
+    seoDescription:
+      'Vela aromática de 100g feita à mão em Santos, com cera vegetal, pote de vidro e tampa de madeira. Cerca de 25h de queima. Escolha o aroma e peça já.',
     modelId: 'modelo-100g',
     etiqueta: 'Clássica',
     resumo: 'O nosso formato de sempre, com cerca de 25h de queima.',
@@ -46,6 +55,9 @@ export const lojaProdutos: LojaProduto[] = [
   },
   {
     slug: 'vela-40g',
+    seoTitle: 'Vela aromática de 40g em cera vegetal | Feito de Afeto',
+    seoDescription:
+      'Vela aromática de 40g feita à mão em Santos, com cera vegetal e pote de vidro. Do tamanho certo para experimentar um aroma novo ou dar de presente.',
     modelId: 'modelo-40g',
     etiqueta: 'Mini',
     resumo: 'Do tamanho certo para experimentar um aroma novo ou presentear.',
@@ -57,6 +69,9 @@ export const lojaProdutos: LojaProduto[] = [
   },
   {
     slug: 'kit-3-velas',
+    seoTitle: 'Kit com 3 velas aromáticas artesanais | Feito de Afeto',
+    seoDescription:
+      'Kit com 3 velas aromáticas feitas à mão em Santos: escolha o tamanho (100g ou 40g) e os três aromas, iguais ou diferentes. Mais em conta que as avulsas.',
     modelId: 'kit-3-velas',
     etiqueta: 'Para presentear',
     resumo: 'Monte o seu trio com os aromas que quiser, iguais ou diferentes.',
@@ -66,6 +81,9 @@ export const lojaProdutos: LojaProduto[] = [
     alt: 'Kit com 3 velas de 100g: uma na frente e duas atrás',
   },
 ];
+
+/** Endereço da página do produto. */
+export const urlDo = (p: LojaProduto) => `/produtos/${p.slug}`;
 
 export const modeloDo = (p: LojaProduto): Model => {
   const m = models.find((x) => x.id === p.modelId);

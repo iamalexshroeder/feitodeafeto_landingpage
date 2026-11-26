@@ -4,7 +4,7 @@
 // escolher troca a foto e "Adicionar à sacola" já leva o aroma. O kit leva à página dele (tamanho + 3 aromas).
 import Button from '../ui/Button.astro';
 import { candles } from '../../data/content';
-import { modeloDo, type LojaProduto } from '../../data/loja';
+import { modeloDo, urlDo, type LojaProduto } from '../../data/loja';
 
 interface Props {
   produto: LojaProduto;
@@ -14,7 +14,7 @@ interface Props {
 const { produto: p, headingLevel = 3 } = Astro.props;
 const model = modeloDo(p);
 const Heading = headingLevel === 2 ? 'h2' : 'h3';
-const url = `/loja/${p.slug}`;
+const url = urlDo(p);
 const aromas = p.pasta ? candles.map((c) => ({ id: c.id, name: c.name })) : [];
 const inicial = p.pasta === '40g' ? 'cereja-com-avela' : 'pimenta-rosa';
 const nomeInicial = candles.find((c) => c.id === inicial)?.name ?? '';

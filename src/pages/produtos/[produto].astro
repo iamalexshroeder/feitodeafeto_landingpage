@@ -1,7 +1,7 @@
 ---
-// Página de produto da loja: /loja/<produto> (uma para cada card da vitrine).
-// Reaproveita o bloco de modelo da landing (galeria de aromas, tamanho do kit, sacola e WhatsApp) com o
-// nome do produto como h1, e mostra os outros modelos embaixo.
+// Página de produto: /produtos/<produto> (uma para cada card da vitrine da página inicial).
+// Reaproveita o bloco de compra (galeria de aromas, tamanho do kit, sacola e WhatsApp) com o nome do
+// produto como h1, e mostra os outros modelos embaixo. Figma: "Produto — Desktop 1440" e "Produto — Mobile 390".
 import Base from '../../layouts/Base.astro';
 import LojaHeader from '../../components/loja/LojaHeader.astro';
 import Vitrine from '../../components/loja/Vitrine.astro';
@@ -20,24 +20,25 @@ const { slug } = Astro.props;
 const produto = lojaProdutos.find((p) => p.slug === slug)!;
 const model = modeloDo(produto);
 const outros = lojaProdutos.filter((p) => p.slug !== slug);
+
+// JSON-LD: o produto desta página (o kit leva os dois preços, 3 de 40g e 3 de 100g).
+const prices = model.order?.type === 'kit' ? model.order.sizes.map((s) => s.priceValue) : [model.priceValue ?? 0];
+const image = model.media.kind === 'photo' ? model.media.src : produto.foto;
+const products = [{ id: model.id, name: model.name, description: model.description, image, prices }];
 ---
 
-<Base
-  title={`${model.name} | Loja Feito de Afeto`}
-  description={`${model.name}: ${produto.resumo} Feita à mão em Santos, sob encomenda. Peça pelo WhatsApp.`}
-  noindex
->
-  <LojaHeader slot="header" base="/loja" />
+<Base title={produto.seoTitle} description={produto.seoDescription} products={products}>
+  <LojaHeader slot="header" base="/" />
   <nav aria-label="Você está aqui" class="container-page pt-6 text-small text-muted">
     <ol class="flex flex-wrap items-center gap-2">
       <li>
-        <a href="/loja" class="transition-colors hover:text-bordo">
-          Loja
+        <a href="/" class="transition-colors hover:text-bordo">
+          Início
         </a>
       </li>
       <li aria-hidden="true">›</li>
       <li>
-        <a href="/loja#modelos" class="transition-colors hover:text-bordo">
+        <a href="/#modelos" class="transition-colors hover:text-bordo">
           Modelos
         </a>
       </li>

@@ -11,7 +11,6 @@ export default defineConfig({
   trailingSlash: 'never',
   // CSS embutido no HTML: página única, evita a requisição que bloqueia a renderização.
   build: { format: 'file', inlineStylesheets: 'always' },
-  // A loja (protótipo) fica fora do sitemap até ser aprovada.
-  integrations: [sitemap({ filter: (page) => !page.includes('/404') && !page.includes('/loja') })],
+  integrations: [sitemap({ filter: (page) => !page.includes('/404') })],
   vite: { plugins: [tailwindcss()] },
 });

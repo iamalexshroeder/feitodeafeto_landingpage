@@ -11,7 +11,7 @@ import { candles, type Model } from '../../data/content';
 interface Props {
   model: Model;
   reverse?: boolean;
-  /** Na página do produto (/loja/<produto>) o nome do modelo é o h1. */
+  /** Na página do produto (/produtos/<produto>) o nome do modelo é o h1. */
   headingLevel?: 1 | 3;
 }
 const { model, reverse = false, headingLevel = 3 } = Astro.props;
