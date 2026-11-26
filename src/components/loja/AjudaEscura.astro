@@ -1,6 +1,6 @@
 ---
-// Loja — "Faixa de ajuda" (Figma 217:125): painel bordô-escuro (raio 32), título creme, texto rosa suave e
-// botão rosa com texto bordô-escuro. Leva ao WhatsApp com a mensagem pronta.
+// Loja — "Faixa de ajuda": celular com painel bordô-escuro, título creme, texto rosa suave e botão rosa;
+// desktop com painel tint-cereja, título bordô-escuro, texto bordô e botão primário. Leva ao WhatsApp.
 import Button from '../ui/Button.astro';
 import { whatsappLink } from '../../config/site';
 ---
@@ -8,24 +8,31 @@ import { whatsappLink } from '../../config/site';
 <aside aria-labelledby="loja-ajuda-titulo" class="bg-creme">
   <div class="container-page py-8 lg:py-12">
     <div
-      class="flex flex-col items-start gap-8 rounded-[var(--radius-panel)] bg-bordo-dark px-8 py-10 md:px-[72px] md:py-14 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
+      class="flex flex-col items-start gap-8 rounded-[var(--radius-panel)] bg-bordo-dark px-8 py-10 lg:bg-tint-cereja md:px-[72px] md:py-14 lg:flex-row lg:items-center lg:justify-between lg:gap-12"
       data-reveal
     >
       <div class="flex max-w-[606px] flex-col gap-3">
-        <h2 id="loja-ajuda-titulo" class="text-h3 text-creme">
+        <h2 id="loja-ajuda-titulo" class="text-h3 text-creme lg:text-bordo-dark lg:tracking-[-3px]">
           Não sabe qual escolher?
         </h2>
-        <p class="max-w-[473px] text-body-l text-rosa-soft">
+        <p class="max-w-[473px] text-body-l text-rosa-soft lg:text-bordo">
           Conta pra gente o ambiente e o clima que você quer. A gente indica o aroma e o modelo certos pelo WhatsApp.
         </p>
       </div>
+      {/* Celular: rosa "Me ajuda a escolher" (Figma mobile); desktop: primário pequeno "Fale com a gente". */}
       <Button
         href={whatsappLink('Olá! Não sei qual vela escolher, pode me ajudar?')}
         variant="soft"
-        class="shrink-0 text-bordo-dark! hover:bg-white! hover:text-bordo-dark!"
+        class="shrink-0 text-bordo-dark! hover:bg-white! hover:text-bordo-dark! lg:hidden"
       >
-        <span class="lg:hidden">Me ajuda a escolher</span>
-        <span class="max-lg:hidden">Fale com a gente</span>
+        Me ajuda a escolher
+      </Button>
+      <Button
+        href={whatsappLink('Olá! Não sei qual vela escolher, pode me ajudar?')}
+        size="sm"
+        class="shrink-0 max-lg:hidden"
+      >
+        Fale com a gente
       </Button>
     </div>
   </div>

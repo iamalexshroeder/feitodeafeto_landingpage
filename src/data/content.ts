@@ -313,10 +313,10 @@ export const candles: Candle[] = [
 
 /** Benefícios (Figma 1:92): cada destaque com a sua cor (classe Tailwind). */
 export const trust = [
-  { title: 'Cera 100% vegetal', text: 'Queima limpa e mais lenta', color: 'text-muted' },
-  { title: 'Feita à mão', text: 'Em pequenos lotes, uma a uma', color: 'text-bordo' },
-  { title: 'Vidro + tampa de madeira', text: 'Pote reutilizável depois da vela', color: 'text-wood-dark' },
-  { title: 'Pedido pelo WhatsApp', text: 'Atendimento direto com a gente', color: 'text-bordo-dark' },
+  { title: 'Cera 100% vegetal', text: 'Queima limpa e mais lenta', color: 'text-bordo' },
+  { title: 'Feita à mão', text: 'Em pequenos lotes, uma a uma', color: 'text-ink' },
+  { title: 'Vidro + tampa de madeira', text: 'Pote reutilizável depois da vela', color: 'text-bordo' },
+  { title: 'Pedido pelo WhatsApp', text: 'Atendimento direto com a gente', color: 'text-bordo' },
 ];
 
 export const steps = [

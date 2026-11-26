@@ -10,6 +10,7 @@ const c = {
   ink: '#2a1418',
   muted: '#7a6266',
   white: '#ffffff',
+  'tint-cereja': '#ebd6cf',
   erro: '#d50000',
   'wood-dark': '#8e6a4c',
   whatsapp: '#37ce65',
@@ -80,7 +81,9 @@ const pairs = [
   ['white', 'hero-veu', 4.5, 'título do hero (celular, sobre o véu)'],
   ['erro', 'white', 4.5, 'mensagens de erro nos campos da sacola'],
   ['erro', 'creme', 4.5, 'mensagens de erro sobre o creme'],
-  ['wood-dark', 'creme', 4.5, 'título "Vidro + tampa" nos benefícios'],
+  ['white', 'muted', 4.5, 'Quem faz no celular (painel cinza): textos brancos'],
+  ['bordo', 'tint-cereja', 4.5, 'texto da faixa de ajuda (desktop)'],
+  ['bordo-dark', 'tint-cereja', 4.5, 'título da faixa de ajuda (desktop)'],
 ];
 // Exceções aprovadas pela dona do projeto (aparecem como aviso, não reprovam).
 const exceptions = [['white', 'whatsapp', 4.5, 'botões do WhatsApp no desktop (verde do Figma, escolha de marca)']];

@@ -1,6 +1,6 @@
 ---
 // Loja — Figma 215:114 (faixa) + 215:116 (menu): logo, links em semibold, "Sacola (n)" em contorno e
-// "Fale com a gente" preenchido. Fixo no topo ao rolar. Celular: ícone da sacola com a quantidade.
+// "Fale com a gente" preenchido. Fixo no topo ao rolar. A sacola fica só no botão flutuante (canto inferior direito).
 import Button from '../ui/Button.astro';
 import { site, whatsappLink } from '../../config/site';
 
@@ -37,39 +37,36 @@ const links = [
         </li>
       ))}
     </ul>
-    <div class="flex items-center gap-3">
-      <Button variant="secondary" size="sm" data-open-cart="" class="max-lg:hidden">
-        Sacola (<span data-loja-count>0</span>)
-      </Button>
-      <Button href={whatsappLink('Olá! Vim pelo site da Feito de Afeto.')} size="sm" class="max-lg:hidden">
-        Fale com a gente
-      </Button>
-      {/* Celular: ícone de carrinho com a quantidade (exceção à regra "botões sem ícone"). */}
-      <button
-        type="button"
-        class="relative grid size-11 place-items-center rounded-full bg-rosa text-bordo transition-colors hover:bg-bordo hover:text-white lg:hidden"
-        data-open-cart
-        data-loja-icon
-        aria-label="Abrir a sacola, vazia"
-      >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <circle cx="9" cy="20" r="1.5" fill="currentColor"></circle>
-          <circle cx="18" cy="20" r="1.5" fill="currentColor"></circle>
-          <path
-            d="M2.5 3.5h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1l1.7-6.8H6.3"
-            stroke="currentColor"
-            stroke-width="1.75"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
-        </svg>
-        <span class="loja-badge" data-loja-badge hidden>
-          0
-        </span>
-      </button>
-    </div>
+    <Button href={whatsappLink('Olá! Vim pelo site da Feito de Afeto.')} size="sm" class="max-lg:hidden">
+      Fale com a gente
+    </Button>
   </nav>
 </header>
+
+{/* Sacola: só o botão flutuante no canto inferior direito (desktop e celular), com a quantidade.
+    No celular sobe quando a barra fixa de compra aparece, para não ficar por baixo dela. */}
+<button
+  type="button"
+  class="cart-fab fixed right-4 bottom-6 z-40 grid size-14 place-items-center rounded-full bg-bordo text-white transition-[background-color,bottom] duration-300 hover:bg-bordo-dark lg:right-8 lg:bottom-8"
+  data-open-cart
+  data-loja-icon
+  aria-label="Abrir a sacola, vazia"
+>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="9" cy="20" r="1.5" fill="currentColor"></circle>
+    <circle cx="18" cy="20" r="1.5" fill="currentColor"></circle>
+    <path
+      d="M2.5 3.5h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1l1.7-6.8H6.3"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    ></path>
+  </svg>
+  <span class="loja-badge" data-loja-badge hidden>
+    0
+  </span>
+</button>
 
 <style>
   @media (prefers-reduced-motion: no-preference) {
@@ -97,6 +94,14 @@ const links = [
       }
     }
   }
+  .cart-fab {
+    box-shadow: 0 16px 32px -12px rgb(42 20 24 / 0.45);
+  }
+  @media (width < 64rem) {
+    :global(html:has(.mobile-cta.is-visible)) .cart-fab {
+      bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+  }
   .loja-badge {
     position: absolute;
     top: -4px;
@@ -107,8 +112,8 @@ const links = [
     height: 20px;
     padding: 0 6px;
     border-radius: 999px;
-    background: var(--color-bordo);
-    color: var(--color-white);
+    background: var(--color-rosa);
+    color: var(--color-bordo);
     font-size: 12px;
     font-weight: 600;
     line-height: 1;
@@ -118,13 +123,11 @@ const links = [
 
 <script>
   import { count } from '../../scripts/cart';
-  const nums = document.querySelectorAll<HTMLElement>('[data-loja-count]');
   const badges = document.querySelectorAll<HTMLElement>('[data-loja-badge]');
   const icons = document.querySelectorAll<HTMLElement>('[data-loja-icon]');
   const render = () => {
     const c = count();
     const label = c ? `Abrir a sacola, ${c} ${c === 1 ? 'item' : 'itens'}` : 'Abrir a sacola, vazia';
-    nums.forEach((el) => (el.textContent = String(c)));
     badges.forEach((el) => {
       el.textContent = c > 99 ? '99+' : String(c);
       el.hidden = c === 0;
