@@ -4,9 +4,14 @@
 import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const dist = new URL('../dist/', import.meta.url).pathname;
-const html = readdirSync(dist).filter((f) => f.endsWith('.html'));
+// fileURLToPath: funciona no Windows (pathname daria "C:\C:\…") e no Linux da Netlify.
+const dist = fileURLToPath(new URL('../dist/', import.meta.url));
+// Inclui as subpastas (ex.: dist/loja/<produto>.html), senão os scripts dessas páginas ficam fora da CSP.
+const html = readdirSync(dist, { recursive: true })
+  .map(String)
+  .filter((f) => f.endsWith('.html'));
 
 const hashes = new Set();
 for (const file of html) {
