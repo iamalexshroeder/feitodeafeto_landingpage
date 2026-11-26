@@ -95,7 +95,7 @@ Uma família só (Inter). Hierarquia por tamanho e peso, nunca por cor extra. La
 - **Paleta**: só os tokens acima. Nada de cor nova sem passar pelo DESIGN.md.
 - **Acessibilidade**: todo par texto/fundo em WCAG AA — `npm run contrast` confere os 18 pares usados. No hero, texto só em ink/bordô sobre o véu creme (o muted não passa sobre a parede).
 - **Grid de 8**: espaçamentos, raios, alturas e entrelinhas em múltiplos de 8 (4 só em detalhes). Classes Tailwind de passo ímpar (`gap-1.5`, `py-3.5`…) não são usadas.
-- **Títulos** (display e h2): letter-spacing **-3px**.
+- **Títulos** (display e h2): letter-spacing **-3px** no desktop; no celular **-1%** em todos os títulos (display, h2, h3, title), com os cabeçalhos de seção centralizados e subtítulos sempre 18/32.
 - **Botões**: só texto, sem ícone nem emoji (exceção: o ícone de sacola — no menu do celular e, no desktop, flutuante no canto inferior direito, 56px bordô com o contador em rosa); no desktop, os botões de conversa ("Tirar dúvida", "Pedir pelo WhatsApp") são verdes (`whatsapp`), no celular bordô; 56px de altura no celular e 48px no desktop. **No celular ocupam toda a largura disponível** (respeitando o padding do container ou do painel); dentro de cards (card de aroma aberto) ocupam a largura do card. Exceção: o botão do menu.
 - **Cards lado a lado têm a mesma altura** (depoimentos, passos): o grid estica todos e o rodapé do card (assinatura) fica alinhado embaixo.
 - **Faixa do topo**: o texto tem um brilho contínuo (rosa-bebê → branco → rosa-bebê, 4,5s, linear); com "reduzir movimento" fica parado no rosa. No Figma, o texto leva esse degradê como preenchimento.

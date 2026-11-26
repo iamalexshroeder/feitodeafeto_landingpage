@@ -1,8 +1,8 @@
 ---
 // Página inicial = loja — Figma "E-commerce — nova versão" (página 215:112, Desktop 1440 215:113; versão
 // como no site: 226:123 desktop e 227:328 mobile).
-// Ordem do Figma: faixa + menu, hero, benefícios, modelos, feito para durar, faixa de ajuda, quem faz,
-// depoimentos, como fazemos, dúvidas, CTA final e rodapé. Melhorias: avaliações sob o hero e seção de
+// Ordem do Figma: faixa + menu, hero, avaliações, benefícios, modelos, aromas, faixa de ajuda, como fazemos,
+// quem faz, depoimentos, dúvidas, CTA final e rodapé (no celular, como fazemos vem antes da faixa). Melhorias: avaliações sob o hero e seção de
 // aromas (o menu do Figma aponta para ela). Cada produto tem a sua página em /produtos/<produto>.
 import Base from '../layouts/Base.astro';
 import LojaHeader from '../components/loja/LojaHeader.astro';
@@ -10,7 +10,6 @@ import LojaHero from '../components/loja/LojaHero.astro';
 import Avaliacoes from '../components/loja/Avaliacoes.astro';
 import Vitrine from '../components/loja/Vitrine.astro';
 import AromasLoja from '../components/loja/AromasLoja.astro';
-import FeitoParaDurar from '../components/loja/FeitoParaDurar.astro';
 import AjudaEscura from '../components/loja/AjudaEscura.astro';
 import TrustStrip from '../components/sections/TrustStrip.astro';
 import Founder from '../components/sections/Founder.astro';
@@ -37,12 +36,15 @@ const products = models.flatMap((m) => {
   <Avaliacoes />
   <TrustStrip />
   <Vitrine />
-  <AromasLoja />
-  <FeitoParaDurar />
-  <AjudaEscura />
-  <Founder />
-  <Testimonials />
-  <HowWeMake />
+  {/* Ordem do Figma: desktop aromas → faixa de ajuda → como fazemos → quem faz → depoimentos;
+      celular: aromas → como fazemos → faixa de ajuda → quem faz → depoimentos. */}
+  <div class="flex flex-col max-lg:[&>#aromas]:-order-2 max-lg:[&>#como-fazemos]:-order-1">
+    <AromasLoja />
+    <AjudaEscura />
+    <HowWeMake />
+    <Founder />
+    <Testimonials />
+  </div>
   <Faq />
   <FinalCta />
   <MobileCta />

@@ -76,7 +76,7 @@ Comandos:
 - `npm run verify` — check + build + validate + contrast (rodar antes de publicar/commitar)
 - `npm run assets` — `brand` + `images` + `hero`; `npm run images` gera cada foto em 2 larguras (grande + `-640`/`-360` para o `srcset`)
 
-**Regras fixas (ver DESIGN.md › Regras do projeto):** paleta do DESIGN.md, contraste AA, grid de 8, títulos com -3px, botões sem ícone/emoji, efeitos leves com `prefers-reduced-motion`.
+**Regras fixas (ver DESIGN.md › Regras do projeto):** paleta do DESIGN.md, contraste AA, grid de 8, títulos com -3px no desktop e -1% no celular (cabeçalhos centralizados, subtítulos 18/32), botões sem ícone/emoji, efeitos leves com `prefers-reduced-motion`.
 
 **Fluxo de trabalho:** a dona do projeto edita direto o frame da loja no Figma (página "E-commerce — nova versão", node `215:113`; seções compartilhadas também na página "Landing Page"). A cada pedido "repassar alterações": ler `get_metadata` do frame, comparar com o código e aplicar o que mudou — mantendo as regras fixas abaixo quando o Figma divergir (ex.: botões ficam com 56px no grid de 8). Quando uma mudança aparece só em um item repetido (ex.: só na Vela 01), aplicar em todos e avisar.
 

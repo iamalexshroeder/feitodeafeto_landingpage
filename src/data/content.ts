@@ -347,7 +347,7 @@ export const testimonials = [
   },
   {
     quote: 'Atendimento pelo WhatsApp super rápido. Me ajudaram a escolher e acertaram em cheio.',
-    author: 'Edimur',
+    author: 'Edmur',
     photo: '/img/clientes/edimur.webp',
     detail: 'Comprou Morango com Champanhe',
   },

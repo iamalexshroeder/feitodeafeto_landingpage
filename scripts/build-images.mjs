@@ -82,8 +82,8 @@ await variants(`${SRC}/fundadora/giovaneli.png`, `${OUT}/fundadora`, {
 mkdirSync(`${OUT}/clientes`, { recursive: true });
 const CLIENTES = {
   'jadhe-nunes': null, // quadrada, inteira
-  edimur: { left: 127, top: 482, width: 477, height: 477 }, // recorte do Figma (192:119)
-  'julia-pereira': { left: 0, top: 430, width: 739, height: 739 }, // centro da foto em pé
+  edimur: { left: 127, top: 482, width: 477, height: 477 }, // rosto (recorte do Figma)
+  'julia-pereira': { left: 127, top: 482, width: 477, height: 477 }, // rosto (recorte do Figma)
 };
 for (const [id, crop] of Object.entries(CLIENTES)) {
   const img = crop ? sharp(`${SRC}/clientes/${id}.png`).extract(crop) : sharp(`${SRC}/clientes/${id}.png`);

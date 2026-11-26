@@ -3,9 +3,7 @@
 // Foto do Moodboard com os ingredientes. Ao passar o mouse, focar ou tocar, o card cresce um pouco e
 // as informações (pirâmide olfativa e CTA) sobem por cima, num painel bordô. Sem giro.
 // Arraste com o mouse, use as setas ou o teclado.
-import Button from '../ui/Button.astro';
 import { candles, aromaPhotos } from '../../data/content';
-import { whatsappLink } from '../../config/site';
 ---
 
 <div class="flex flex-col gap-8" data-carousel>
@@ -90,15 +88,6 @@ import { whatsappLink } from '../../config/site';
                   ))}
                 </dl>
               </div>
-              <Button
-                href={whatsappLink(`Olá! Quero encomendar uma vela ${c.name}. Quais tamanhos vocês têm?`)}
-                data-track-item={c.id}
-                variant="ondark"
-                size="sm"
-                class="w-full"
-              >
-                Quero esse aroma
-              </Button>
             </div>
           </div>
         </article>
@@ -359,7 +348,7 @@ import { whatsappLink } from '../../config/site';
       true,
     );
 
-    // Toque: abre o card (exceto ao tocar no botão "Quero esse aroma").
+    // Toque: abre e fecha o card.
     const toggleCard = (target: HTMLElement) => {
       if (target.closest('a')) return false;
       const card = target.closest<HTMLElement>('.aroma-card');

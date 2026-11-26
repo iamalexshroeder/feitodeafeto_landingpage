@@ -116,6 +116,11 @@
       --text-body-l--line-height: 1.7778;
       --text-title: 1.5rem; /* 24 / 32 (celular mantém) */
       --text-title--line-height: 1.3333;
+      /* Celular: títulos com espaçamento -1% (pedido da dona; mais legível em telas pequenas). */
+      --text-display--letter-spacing: -0.01em;
+      --text-h2--letter-spacing: -0.01em;
+      --text-h3--letter-spacing: -0.01em;
+      --text-title--letter-spacing: -0.01em;
     }
   }
   @media (48rem <= width < 64rem) {
@@ -139,6 +144,9 @@
   }
 
   body {
+    /* Rede de segurança: nada empurra a página para os lados no celular (sem zoom-out nem rolagem lateral).
+       "clip" não cria contêiner de rolagem, então o menu fixo (sticky) continua funcionando. */
+    overflow-x: clip;
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
     letter-spacing: var(--text-body--letter-spacing);
